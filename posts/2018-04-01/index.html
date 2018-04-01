@@ -12,12 +12,16 @@ natural mild generalization of $k$-means, which turned out to in fact have a
 nice $k$-meansy sort of solution. Here's how it goes:
 
 <p>Suppose you have some data, and you know that it's structured as clusters, but the clusters
-themselves have some structure. For example, maybe you know that has clusters
+themselves have some structure. For example, maybe you know that your data has clusters
 near three points $a$, $b$, and $c$,<br>
+
 <img src="diagram.png"><br>
-but <I>also</I> has clusters near the midpoints of those centers, $(a+b)/2, (b+c)/2,$ and $(a+c)/2$.
-That is, suppose you want to find the best $a, b, c$ such that the sum of squared distances
-over all data points to their nearest 'center' (i.e. one of $a, b, c, (a+b)/2, (b+c)/2,$ and $(a+c)/2$) is minimized.
+
+but it <I>also</I> has clusters near the midpoints of those centers,
+$(a+b)/2, (b+c)/2,$ and $(a+c)/2$. That is, suppose you want to find
+the best $a, b, c$ such that the sum of squared distances over all
+data points to their nearest 'center' (i.e. one of $a, b, c, (a+b)/2,
+(b+c)/2,$ and $(a+c)/2$) is minimized.
 
 <p>In general, suppose we're given $n$ are supposed to choose points $P_1, \ldots, P_n \in \R^d$.
 We're also given $m$, the total number of 'centers' that we bucket datapoints into,
