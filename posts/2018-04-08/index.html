@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+  </head>
+  <body style="width: 800px">
+	 <h1>Wellen's Synthetic Differential Geometry</h1> A couple
+	 of weeks ago I went to a research meeting in pittsburgh with
+	 various HoTT folks. One of them
+	 was <a href="http://www.andrew.cmu.edu/user/fwellen/">Felix
+		Wellen</A>, who gave a really interesting talk about doing
+	 synthetic differential geometry using a modality. You can read
+	 his <a href="http://www.math.kit.edu/iag3/~wellen/media/diss.pdf">thesis</A>,
+	 or look
+	 at <a href="https://ncatlab.org/schreiber/files/wellenDGinHoTT.pdf">these
+		slides</A>, or
+	 read <a href="https://ncatlab.org/schreiber/print/thesis+Wellen">this
+		ncatlab.org summary written by his advisor</a>. I'm going to just expositorily
+	 summarize what I understood of it, and add on a very conjectural
+	 half-baked idea that I had following another really interesting
+	 talk
+	 by <a href="http://www.math.ku.dk/english/about/news/buchholtz/">Ulrik
+		Buchholtz</a>.
+
+	 <h2>What's the main idea?</h2>
+
+	 In regular HoTT, it's cool that you get to do <I>synthetic
+		homotopy theory</I> by just having types and identity types and
+	 univalence: you don't need to do a bunch of set theory and
+	 point-set topology to build up the structures over which homotopy
+	 theory is traditionally defined, you can just have <I>types</I>
+	 which, if correctly axiomatized, behave just like spaces up to
+	 homotopy, and all definable functions in the type theory are
+	 homotopy invariant.
+
+	 Wellen's idea appears to be --- and I found this surprising and
+	 exciting -- that it doesn't take very much
+	 <I>additional</I> structure on top of the HoTT we know and love to
+	 start doing synthetic <I>differential geometry</I>; basically, you
+	 just have to assume the existence of some unknown modality.
+
+	 <h2>What you get from modalities</h2>
+
+    I mean 'modality' in the sense
+	 of <a href="https://homotopytypetheory.org/book/">book HoTT</a>,
+	 section 7.7, which really means (as is poitned out in the Notes)
+	 an idempotent monadic modality, as opposed to say, comonadic ones.
+	 I get the feeling this is common terminology for HoTT folks, but
+	 with my logician hat on, I confess it always sounds weird, since
+	 for us, a modality can mean just about anything; it's scarcely
+	 more specific a term than 'type constructor'.
+
+	 <p>Anyway, let's postulate a modality, call it $I : \rset \to
+		\rset$, which comes equipped with a natural transformation $\eta_A
+		: A \to IA$. The intuition is that $I$ takes a type, thought of as
+		a space containing some elements that are infinitesimally close to
+		one another, and, well, it
+		<I>collapses</I> all points that are infinitesimally close to one
+		another.
+	 </p>
+	 <center><img src="diag1.png"></center>
+
+	 <p>Right away we can define the <I>tangent space</I> $T_a$ at a
+		point $a \in A$. It's
+ 		<blockquote>
+		  $T_\_ : \{A : \rset\} \to A \to \rset$<br>
+		  $T_\_\ \{A\}\ a = (a_0 : A) \x (\eta a \equiv \eta a_0)$
+		</blockquote>
+		That is, $T_a$ is just the points in $A$ itself that are those
+		that collide with $a$ after application of $\eta$, i.e. those
+		that are infinitesimally close to $a$. We think of such an
+		infinitesimal partner $a_0$ of $a$ as a tangent vector pointing
+		from $a$ to $a_0$.
+	 </p>
+	 <center><img src="diag2.png"></center>
+
+	 <p>We can define the entire tangent bundle $T_\infty A$ by just
+		taking a sigma over all of $A$:
+		<blockquote>
+		  $T_\infty : \rset \to \rset$<br>
+		  $T_\infty\ A = (a : A) \x T_a$
+		</blockquote>
+	 </p>
+	 <h2>A baby theorem</h2>
+	 Probably the simplest possible example
+	 of what you can prove from this definition that illustrates how
+	 the type structure gives you sensible things 'for free' is just
+	 showing that functions from one type to another are
+	 automatically 'differentiable'.
+
+	 <p>What does this actually mean? That if you have a function $f :
+		A \to B$, you get a map on the tangent spaces, $(a : A) (v : T_a)
+		\to T_{f(a)}$. This is the derivative of $f$ in the direction $v$!
+		<blockquote>
+		  $\mathsf{deriv} : \{A\ B : \rset\} (f : A \to B) (v : T_a) \to T_{f\ a}$<br>
+		  $\mathsf{deriv} : \{A\}\ \{B\}\ f\ (a_0 , (p : \eta a \equiv \eta a_0)) =
+        (f\ a_0, \cdots)$
+		</blockquote>
+		where the missing path expression '$\cdots$' is a proof that
+		$\eta f a \equiv \eta f a_0$. But because we have naturality for $\eta$,
+		we know $\eta f a = f \eta a$, so this is the same thing as showing that
+		$f\eta a = f\eta a_0$, which trivially follows from $p$ by $\mathsf{ap}$-ing $f$.
+	 </p>
+	 <p>Merely having a monad around, and doing utterly routine
+		path-induction reasoning on paths, means us the fact that
+		every function we can define is automatically differentiable! I
+		think that's really cool.
+	 </p>
+	 <h2>A slightly less trivial theorem</h2>
+	 Wellen's example in his slides of a theorem we can prove synthetically
+	 goes like this:
+	 <p>We can define
+		an <a href="https://en.wikipedia.org/wiki/H-space">$H$-space</a>
+		(i.e. a topological unital magma) as being a
+		set $X$ together with
+		<ol>
+		  <li>$e : X$
+		  <li>$\mu : X \x X \to X$
+		  <li>$(x : X) \to \mu\ e\ x \equiv x$
+		  <li>$(x : X) \to \mu\ x\ e \equiv x$
+		</ol>
+		and say that it's <i>left invertible</i> if
+		$(x : X) \to \mathsf{isEquiv}(\lambda y . \mu\ y\ x)$. The theorem is
+	 </p>
+    <p><b>Theorem</b> Suppose $(V, e, \mu)$ is a left invertible
+		$H$-space, and let $\mathbb{D} = T_e$ be the tangent space at
+		the unit. Then the tangent bundle of $V$ is trivial, i.e. there
+		is an equivalence $e: T_\infty V \to \mathbb{D} \x V$.
+	 </p>
+	 <p>And I can almost picture how you'd go about just hacking this
+		up! The input to $e$ is essentially two infinitesimally close
+		points, and you use the equivalence that constitutes left
+		invertibility to transport this back to find a point
+		infinitesimally close to the unit of the $H$-space, using
+		again using functoriality of $T$.
+	 </p>
+	 <h2>Half-Baked Idea</h2> Later on Ulrik was talking about
+	 topological groups and trying to encode <I>orientability</I> of
+	 manifolds, which seemed to depend on sussing out the dimension of them as well.
+	 <p>I was able to formulate the following, but I don't know if it's workable or not.
+		Say an automorphism of the tangent space $T_a$ fixing the 'zero vector'
+		is a <I>swirl</I> at $a$.</p>
+	 <center><img src="diag3.png"></center>
+	 <blockquote>
+		$\mathsf{0}_\_ : \{A : \rset\} (a : A) \to T_a$<br>
+		$\mathsf{0}_a = (a, \mathsf{idp})$<br>
+		$\mathsf{swirls} : (A : \rset) (a : A) \to \rset$<br>
+		$\mathsf{swirls}\ A\ a = (f : T_a \to T_a) \x (f\ {\mathsf 0_a} \equiv {\mathsf 0_a})$
+	 </blockquote>
+	 Then a <I>global swirl</I> of a set $A$ is a function $(a : A) \to
+	 \mathsf{swirls}\ A\ a$, and a <I>loop</I> in the space of global swirls of $A$
+	 is a map from the circle $\mathsf{S}^1$ to $(a : A) \to \mathsf{swirls}\ A\ a$.
+	 <p><b>Conjecture</B> Under possibly further suitable axioms or
+		assumptions, types $A$ that 'are 2-dimensional orientable
+		manifolds' have the property that
+
+\[ \mathsf{S}^1 \to (a : A) \to \mathsf{swirls}\ A\ a \equiv \mathbb{Z}\]
+
+since it makes
+		some intuitive sense to me that if you have to come up with a
+		consistent amount of 'spin' across a whole 2-dimensional sheet,
+		you have to either spin each tangent space around (clockwise or
+		counterclockwise) zero times, or once, or twice, or etc., and if your space $A$
+		isn't orientable at all, you'll only be able to not spin it, and you'll have instead
+
+\[ \mathsf{S}^1 \to (a : A) \to \mathsf{swirls}\ A\ a \equiv \top\]
+
+	 </p>
+  </body>
+  <script>
+	 renderMathInElement(
+    document.body,
+    {
+    delimiters: [
+    {left: "$$", right: "$$", display: true},
+    {left: "\\[", right: "\\]", display: true},
+    {left: "$", right: "$", display: false},
+    {left: "\\(", right: "\\)", display: false}
+    ],
+    macros: {
+    "\\R": "\\mathbb{R}",
+    "\\rset": "\\mathsf{Set}",
+    "\\x": "\\times",
+    }
+    }
+    );
+  </script>
+  <script src="demo.js"></script>
+</html>
