@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>Some Notes on Representing Focused Logical Connectives</h1>
+	 <h2>or: "Everything I've Learned About Logic in the Last Decade or So, Part 1"</h2>
+	 <p>
+		I made the following
+		provocative but rather opaque tweet a little while ago:
+		<blockquote>
+<!--		  <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Ok, so now I think I can fit everything I&#39;ve learned about logic in the last decade into about ~30 lines of agda <a href="https://t.co/nweoRRKMKg">pic.twitter.com/nweoRRKMKg</a></p>&mdash; jason reed (@jcreed) <a href="https://twitter.com/jcreed/status/980119451038375936?ref_src=twsrc%5Etfw">March 31, 2018</a></blockquote> -->
+		</blockquote>
+		<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+      I wanted to start writing down some things working up to what I
+		actually meant by it. So I'm going to start by telling a little backstory:
+	 </p>
+	 <h2>Linear Types in Logic Programming Proofs</h2>
+	 <p>
+		The line of thinking the tweet is referring to is something I've
+		been ruminating about ever since
+		my <a href="http://jcreed.org/papers/thesis-final-color.pdf">phd
+		thesis</a>. The thesis work, in turn, came directly out of, some
+		time in the early-mid 2000s,
+		 <a href="http://www.cs.cmu.edu/~fp/">Frank</a> suggesting I think about the
+		problem of, hey, wouldn't it be nice if we could
+		take <a href="https://www.itu.dk/~carsten/">carsten's</a> LLF
+		&mdash; a generalization of LF incorporating linear logic into
+		the types &mdash; and actually prove theorems the same
+		logic-programming sort of way you do in LF. The main problem is
+		that even <I>stating</I> the theorems we wanted to prove seemed
+		difficult!
+	 </p>
+	 <h3>Cut Admissibility</h3>
+	 <p>
+		A fairly representative hello-world sort of thing you prove in LF <I>without</I> any linearity
+		is cut-elimination theorem for an intuitionistic propositional sequent calculus.
+		You say things like
+		<tt class="code">
+		  o : type.
+		</tt>
+		to declare that <tt>o</tt> is a type of propositions, and
+		<tt class="code">
+		  hyp : o -> type.
+		  conc : o -> type.
+		</tt>
+		to declare that you're able to hypothesize and conclude propositions, and then the type
+		of the cut elimination function &mdash; to be written as a logic program &mdash; is
+		<tt class="code">
+		  cutAdmissible : conc A → (hyp A → conc C) → conc C → type.
+		</tt>
+		(with implicit universal quantification over both <tt>A</tt> and <tt>C</tt> since they're capitalized)
+		together with some declarations saying that you intend to perform <tt>cutAdmissible</tt> with
+		the first two arguments being input, and the last being output, and then twelf's totality checker
+		goes to work on your logic program and (if it's written correctly) verifies that indeed logic programming
+		execution will always terminate yielding something of type <tt>conc C</tt>.
+	 </p>
+	 <p>
+		Thanks to the magic of higher-order abstract syntax, this can be
+		shown to correspond exactly to proving the cut admissibility theorem as you'd usually state it:
+
+		<center>If $\Gamma \prov A$ and $\Gamma, A \prov C$, then $\Gamma \prov C$.</center>
+
+		The $\Gamma$s correspond to whatever assumptions <tt>hyp A</tt>
+		are floating around ambiently when you run the logic program.
+		It's a definite advantage of the twelf programming style that
+		you don't really have to think about them except when you
+		actually add variables to the context, or need to extract them
+		from it. They just go along for the ride in a nice way, and what
+		we wanted was exactly that same niceness to generalize to the
+		linear case.
+	 </p>
+	 <h3>Linear Cut Admissibility</h3>
+	 <p>
+		So, I might paraphrase Frank as saying to me, let's think about
+		how the <I>linear</I> cut admissibility theorem looks. It's
+
+		<center>If $\Gamma \prov A$ and $\Delta, A \prov C$, then $\Gamma, \Delta \prov C$.</center>
+
+		Where $\Gamma$ and $\Delta$ are now contexts of linear
+		assumptions that don't satisfy contraction or weakening. If we
+		try to write down a version of <tt>cutAdmissible</tt> for this
+		theorem, we need to somehow accound for the fact that
+		<ol>
+		  <li> The set of <tt>hyp</tt>s used by the first two arguments
+		  to <tt>cutAdmissible</tt> (the things that would correspond to
+		  $\Gamma \prov A$ and $\Delta, A \prov C$) are
+		  somehow <b>disjoint</b>
+		  <li> The union of those two disjoint sets (which represents $\Gamma, \Delta$ together) is somehow
+			 <b>the same as</b> &mdash; or, one might say, <b>shared with</b> &mdash; the <tt>hyp</tt>s used in the third argument to <tt>cutAdmissible</tt>, the
+			 thing that would correspond to the proof of $\Gamma, \Delta \prov C$.
+		</ol>
+		Now the good news is that linear logic absolutely gives us ways
+		to talk about disjointness and sharing! To be able to obtain $A \tensor B$
+		is something like the ability to obtain $A$ and $B$
+		from disjoint pools of resources, and to construct $A \& B$ is
+		to be able to construct either one of $A$ or $B$ from the same
+		set of resources.
+	 </p>
+	 <p>
+		Bearing that in mind, Frank writes on the chalkboard:
+		<tt class="code">
+		  cutAdmissible : ((conc A $\tensor$ (hyp A $\lol$ conc C)) $\&$ conc C) $\lol$ type.
+		</tt>
+		which seems really slick and nice &mdash; just like higher-order
+		abstract syntax uses binding in the metalanguage to simulate
+		binding in an object language, here it looks like we can use linearity in the metalanguage
+		to talk about linearity in the object language.
+	 </p>
+	 <p>
+		The only problem is that it totally doesn't work! One obvious
+		problem is that LLF didn't have $\tensor$ (even though CLF did)
+		but it's not terrifically difficult to imagine working around
+		that by coding up something kind of like $\tensor$ even without the
+		elim rules working right &mdash; such a thing would probably be
+		good enough for representing 'disjointness of resources' in the
+		sense that <tt>cutAdmissible</tt> needs.
+	 </p>
+	 <p>
+		Another obvious problem is that instead of the type family
+		having a nice distinct set of arguments joined by $\to$, ending
+		in <tt>type</tt>, it has just one arguent, which is a decently
+		complicated beast. How are we to even <I>name</I> the subparts
+		of it when we want to talk about logic programming input/output
+		modes, and about which argument is supposed to get smaller when
+		doing totality checking? Not at all impossible to address, but
+		it sounds a little like an ergonomic nightmare.
+	 </p>
+	 <h3>Linear Dependency</h3>
+	 <p>
+		But the real kicker, the biggest obstacle, isn't either of
+		these, but something more basic: we didn't know how to actually
+		have kinds of the form $A \lol \rtype$ in the type theory
+		without everything blowing up. If you try to have a dependent
+		function type like $\Pi (x \hat : A) . B(x)$ where the bound
+		variable appears in $B$, but is also supposed to be somehow
+		linear, all kinds of weird phenomena pop up where the variable's
+		double rol as an expendable resource and as an index for other
+		type families seem at odds with one another; the variable gets
+		stranded on one side of a multiplicative context split, despite
+		still being necessary on the other side to make a type make
+		sense, and it's confusion everywhere you look.
+	 <p>
+	 </p>
+		There has been work about linear dependency that's come out
+		since, things like
+		McBride's <a href="https://personal.cis.strath.ac.uk/conor.mcbride/pub/Rig.pdf">I
+		Got Plenty o' Nuttin'</A> &mdash; but I'm still not sure they enable
+		stating cut admissibility like the above. I'd love to be corrected
+		if I'm wrong, though!
+	 </p>
+	 <p>
+		Anyhow, I'm going continue by shamelessly discussing
+		how <I>I</I> ended up thinking about the problem, and where it
+		led me, because I do genuinely think it ended up in an
+		interesting place.
+	 </p>
+	 <h2>To Be Continued</h2>
+	 But not right now! This feels like a natural stopping point in the
+	 story, which I'm going to try to break up into reasonably small
+	 chunks so I don't put off writing because it's too much all at once.
+	 <p>
+		This is where I was in the middle of trying to work on my
+		thesis, trying to imagine what sense could be made of $A \lol \rtype$.
+		Next time I'm going to try to summarize what, looking
+		back from the present, I think of as The Point of my thesis,
+		which is a certain way of doing an end-run around the problems
+		of linear dependency by disentangling the linearity of it from the dependency.
+	 </p>
+  </body>
+  <script>
+	 renderMathInElement(
+    document.body,
+    {
+    delimiters: [
+    {left: "$$", right: "$$", display: true},
+    {left: "\\[", right: "\\]", display: true},
+    {left: "$", right: "$", display: false},
+    {left: "\\(", right: "\\)", display: false}
+    ],
+    macros: {
+    "\\R": "\\mathbb{R}",
+    "\\rset": "\\mathsf{Set}",
+    "\\x": "\\times",
+    "\\prov": "\\vdash",
+    "\\tensor": "\\otimes",
+    "\\lol": "\\multimap",
+	 "\\rtype": "\\mathsf{type}",
+    }
+    }
+    );
+  </script>
+</html>
