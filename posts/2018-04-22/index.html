@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>Everything I've Learned About Logic in the Last Decade or So, Part 2</h1>
+	 <p>
+		I left off last time leaving unanswered the question of what
+		sense could be made of the ill-formed but suggestive kind
+		exression
+		\[A \lol \rtype\]
+		that is, the kind of types that depend on an element of type $A$, but which also somehow linearly 'consume' it.
+	 </p>
+	 <p>
+		The answer to this question that I had propounded in my thesis
+		was to go back and say that the <I>kind</I> of even the
+		types <I>eligible</I> for participating in <I>linear</I> logical
+		connectives like $\lol$, $\tensor$, etc. was different from the
+		usual 'type' that classifies regular old nonsubstructural types.
+		Before I explain what that kind is, I want to make a more fuzzy
+		and abstract observation:
+	 </p>
+	 <p>
+		I think I see more clearly now than I did then that I was
+		following the same guideline that I (not necessarily with any
+		originality) articulated in
+		an <a href="http://jcreed.org/papers/jdml.pdf">unpublished draft</a>:
+		<center>(*) Different judgments judge different things</center>
+</p><p>
+      That is, each judgment in a judgmental logical system applies to
+		only <I>one</I> distinct syntactic class of proposition-like
+		entities, and if you think you want different judgments to apply
+		to the same propositions, then make up some coercions and
+		trivial syntactic classes if you have to.
+</p><p>
+		I'm not actually going to assert that I really believe in this
+		dogmatically as an Important Principle of the Design of Logics
+		or anything. I don't think that it's a guideline that ought to
+		always be followed, on par with say, You Should Have a Cut Elim
+		Theorem, or Focusing Should Work. But for me it's at least been
+		a useful tool in the toolbox to <I>try</I> to separate out
+		different syntactic classes of propositions and see what
+		happens.
+	 </p>
+	 <h2>The Kind of Substructural Propositions</h2>
+<p>    The above fuzzy abstract thinking causes me to say more concretely:
+
+    when you write down the judgments for linear propositions and you
+	 say $\Gamma \prov A\ \mathsf{eph}$ for the judgment of
+	 the <I>ephemeral truth</I> of $A$
+	 (as <a href="https://www.cs.cmu.edu/~fp/courses/15816-s12/lectures/02-propositions.pdf">Frank
+	 does here</A>) you notice that ephemeral truth is not the same
+	 thing as ordinary true-ity true truth. According to (*),
+	 the <I>kind of thing</I> that is eligible to be ephemerally true
+	 is a different kind of thing that is eligible to be ordinarily
+	 true. And the kind of thing that is eligible to be ephemerally
+	 true, I'm going to say --- essentially defining what I mean by
+	 'ephemerally true' --- is something that has the function kind
+
+	 \[w \to \rtype\]
+	 where $w$ is a fresh type that I am postulating exists, thought of
+	 as a <I>type of worlds</I> or <I>type of resources</I> or <I>type
+	 of situations</I> in a very intentionally Kripke-semantics sort of
+	 way.
+	 </p>
+	 <p>
+		An ephemeral proposition, a linear proposition, is a thing of
+		kind $w \to \rtype$, a <I>world-indexed proposition</I>. Well,
+		hold on: so far everything I've said doesn't actually seem at
+		all different from possible-world Kripke semantics of a modal
+		logic. You usually don't, in Kripke semantics, make big sober
+		pronouncements about how What A Modal Proposition <I>Is</I> Is a
+		World-Indexed Proposition, but you certainly <I>could</I>
+		without being wrong --- simply take the relation $w \vDash A$
+		that says whether a proposition holds at a world and repackage
+		it as a partially applied function. What the meaning of $A$ 'is' is the function $\lambda w . w \vDash A$.
+	 </p>
+	 <p>
+		So... I'm inclined to confess that this distinction between, on
+      the one hand, having an external relation like $\models$ and, on
+      the other hand, identifying propositions with their meaning as
+      functions over the other data that $\models$ takes, is possibly
+      inessential and just a question of how you curry stuff around.
+		But (*) makes me prefer the latter option, so I'm going with it for now!
+	 </p>
+	 <p>
+		But! One thing that's genuinely different here versus modal logic semantics
+      (but similar to resource semantics for bunched logic!) is that we also postulate
+		some structure on the type $w$, specifically a commutative monoid structure: we assert that we have
+		\[1 : w\]
+		\[\tensor : w \to w \to w\]
+		and that $\tensor$ is associative and commutative and satisfies unit laws.
+	 </p>
+	 <h2>'Constructive' Semantics</h2>
+	 The other difference I wanted to note about what's going on in my thesis (and in later work like the so-called
+	 <a href="http://www.cs.cmu.edu/~fp/papers/substruct10.pdf">Ill-Fated
+	 Paper</A> that Frank and I never could seem to find a venue for)
+	 is that it's not a semantics in the ordinary sense of taking a
+	 syntax and giving it a meaning in... you know, <I>math</I>. Just
+	 whatever maximally meta background notion you have of what
+	 mathematical structures and statements are.
+	 <p>
+		They're translations into fairly small constructive (and in the
+      Ill-Fated paper's case, polarized and focused) logics, which
+      don't just map provability to truth, but map proofs to proofs
+      bijectively. Maybe you could draw some kind of analogy between
+      how people talk about 'transpilers' as distinct from the general
+      class of compilers to which they nonetheless seem to sort of
+      belong? --- transpilers being things whose target language is
+      typically quite close to their source language, and which is itself probably an interpreted language not
+      necessarily close at all in feel to the full unadorned power of machine code.
+	 </p>
+	 <p>
+		Anyhow, the bijection between proofs of the syntax and the
+		proofs in the syntax-after-interpretation is genuinely
+		important, I think. That's the thing that actually makes it a
+		potentially meaningful thing to claim, for example, that a
+		proposition literally <I>is</I> a $w \to \rtype$ rather than
+		merely that a linear proposition <I>can be interpreted as</I> as
+		$w \to \rtype$. This is because if you <I>define</I> a
+		proposition that way, you still can recover the entire proof
+		theory.
+	 </p>
+	 <h2>Building Up Linear Propositions</h2>
+	 So if we know what linear
+	 propositions are suppose to be, we should be able to build them up
+	 out of logical connectives, shouldn't we? Suppose $A$ and $B$ are linear propositions, (things of kind $w \to \rtype$)
+	 then $A \lol B$ should be one, too. We can <I>define</I> $A \lol B : w \to \rtype$ by saying:
+	 \[(A \lol B)(x) =  \Pi y {:} w . A(y) \to B(x \tensor y)\]
+	 assuming the logical framework into which we're translating gives us a way of $\Pi$-quantifying over the type $w$.
+	 <p>
+		One quick check we can do to see if this makes sense is try to prove some proposition known to be provable in linear logic,
+		like for example?
+		\[(A \lol B) \lol (B \lol C) \lol (A \lol C)\]
+		Ok, are there any inhabitants of the type that results from expanding the above definition of $\lol$? Trick question!
+		What results from expanding the definition isn't a <I>type</I>, it's a $w \to \rtype$. So we have to modify our
+		question from 'is this type inhabited' to 'is this linear type inhabited <I>at a particular world</I>'. Which world?
+		Well, in this case, we believe $(A \lol B) \lol (B \lol C) \lol (A \lol C)$ is a tautology, so it should be provable in the empty
+		context, so at the world $1$. Let's expand the definition of $((A \lol B) \lol (B \lol C) \lol (A \lol C))(1)$. It's:
+		\[ \Pi y {:} w . (A \lol B)(y) \to  (B \lol C) \lol (A \lol C))(1 \tensor y)\]
+		\[=  \Pi y {:} w . (A \lol B)(y) \to  \Pi z {:} w . (B \lol C)(z) \lol (A \lol C))(1 \tensor y \tensor z)\]
+		\[=  \Pi y {:} w . (A \lol B)(y) \to  \Pi z {:} w . (B \lol C)(z) \to \Pi x {:} w .  A(x) \to C(1 \tensor y \tensor z \tensor x)\]
+		\[=  \Pi y {:} w . (A \lol B)(y) \to  \Pi z {:} w . (B \lol C)(z) \to \Pi x {:} w .  A(x) \to C( y \tensor z \tensor x)\]
+		\[=  \Pi y {:} w . (\Pi t{:} w . A(t) \lol B(y \tensor t)) \to  \Pi z {:} w . (\Pi t{:} w . B(t) \lol C(z \tensor t)) \to \Pi x {:} w .  A(x) \to C( y \tensor z \tensor x)\]
+		and it's completely straightforward to write down a term that inhabits this type: it's
+		\[\lambda y . \lambda F . \lambda z . \lambda G . \lambda x . \lambda a . G\ (y\tensor x)\ (F\ x\ a)\]
+	 </p>
+	 <p>
+		Another logical connective we can easily define in the same way is additive conjunction $\&$. We simply say
+		\[(A \& B)(x) =  A(x) \x B(x)\]
+		assuming there's some notion of product types in the language we're interpreting into. Exercise for the reader: pick some proposition
+		involving both $\lol$ and $\&$ and try to prove it at world $1$.
+	 </p>
+		<h2>How to State Linear Cut Elimination</h2>
+		We now basically have enough machinery set up to deal with
+		<tt class="code">
+		  cutAdmissible : ((conc A $\tensor$ (hyp A $\lol$ conc C)) $\&$ conc C) $\lol$ type.
+		</tt>
+		But let's first just return to the case of
+		\[A \lol \rtype\]
+		If we naively unpack that according to the definition of $\lol$ above, we'd get
+		\[(A \lol \rtype)(x) = \Pi y {:}w \to A(y) \to \rtype(x \tensor y)\]
+		But this is nonsense in at least two ways! The expression $A \lol \rtype$ was meant to be a <I>kind</I>; it doesn't take an argument.
+		Same thing with the $\rtype$ on the right. So let's try solving the problem by blindly erasing both of those problematic arguments:
+		\[A \lol \rtype = \Pi y {:}w \to A(y) \to \rtype\]
+	 <p>
+		Hey, this actually seems to make sense! If we substitute <tt>((conc A $\tensor$ (hyp A $\lol$ conc C)) $\&$ conc C)</tt> for $A$, we get
+		<tt class="code">
+		  cutAdmissible : $\Pi x {:}w.$ ((conc A $\tensor$ (hyp A $\lol$ conc C)) $\&$ conc C)(x) $\to$ type.
+		</tt>
+		and unpacking the definition of $\&$ would give us
+ 		<tt class="code">
+		  cutAdmissible : $\Pi x {:}w.$ (conc A $\tensor$ (hyp A $\lol$ conc C))(x) $\to$ (conc C)(x) $\to$ type.
+		</tt>
+		and doing a little bit of squinting and guessing and hoping ---
+		I haven't yet said what the propositional connective $\tensor$ is, and I'll be saying more about
+		that in a moment --- we can take a leap of faith to
+ 		<tt class="code">
+		  cutAdmissible : $\Pi y {:}w.\Pi z {:}w.$ (conc A)(y) $\to$ (hyp A $\lol$ conc C)(z) $\to$ (conc C) (y $\tensor$ z) $\to$ type.
+		</tt>
+		This is the statement of cut admissibility that I arrived at in my thesis! I think it's pretty cool in three ways:
+		<ol>
+		  <li>It breaks up its arguments into a flat $\to$-delimited list of curried arguments, so I got to reuse a lot of twelf's conventions
+			 about how you specify modes and termination orders and so on.
+		  <li>It doesn't have any mystery left in what $\lol \rtype$ is supposed to mean --- there's <I>explicit</I> quantification over worlds,
+			 and the final return-kind is just plain old familiar $\rtype$.
+		  <li> Those explicit quantifications correspond in a beautifully simple way with the actual contexts in the paper-proof
+			 statement of cut elimination, i.e. think about
+			 <center>If $\Gamma \prov A$ and $\Delta, A \prov C$, then $\Gamma, \Delta \prov C$.</center>
+			 and $y$ corresponds to the $\Gamma$ and $z$ corresponds to the $\Delta$.
+		</ol>
+	 </p>
+	 <h2>What's Missing?</h2>
+	 This is what I knew around the time I was finishing up my thesis.
+	 The main limitation of this whole shebang is that it <I>only treats negative types</I> like $\lol, \&, \top, \forall$ and provides no direct
+	 answers for what positive types $\tensor, \oplus, 1, 0, \exists$ are. For Twelf-ish purposes, this was more or less fine, since Twelf
+	 only directly exposes negative types anyway, and expects you to declare constants simulating the appropriate parts of positive types
+	 if you want to use them --- CLF was its own significant project for trying to add $\tensor$ to LLF in such a way that commuting conversions
+	 were actually respected.
+	 <p>
+		But, at least for me and my personal journey of discovery or
+		whatever, trying to incorporate positives both
+		required <I>understanding</I> focusing a bit better, and
+		provided a bunch of interesting information about what is
+		happening in focusing. More on that next time!
+	 </p>
+  </body>
+  <script>
+	 renderMathInElement(
+    document.body,
+    {
+    delimiters: [
+    {left: "$$", right: "$$", display: true},
+    {left: "\\[", right: "\\]", display: true},
+    {left: "$", right: "$", display: false},
+    {left: "\\(", right: "\\)", display: false}
+    ],
+    macros: {
+    "\\R": "\\mathbb{R}",
+    "\\rset": "\\mathsf{Set}",
+    "\\x": "\\times",
+    "\\prov": "\\vdash",
+    "\\tensor": "\\otimes",
+    "\\lol": "\\multimap",
+	 "\\rtype": "\\mathsf{type}",
+    }
+    }
+    );
+  </script>
+</html>
