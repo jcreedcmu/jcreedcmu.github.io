@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>Everything I've Learned About Logic in the Last Decade or So, Part 3</h1>
+	 <p>
+		Last time I left the dangling problem that my thesis had something to say about the combination of substructural types
+		with dependency, but <I>only for (focusing-)negative types</I>. I want to now summarize the thinking I did in the few
+		years or so after I graduated, which crystallized into a decent story for how positive types worked as well.
+	 </p>
+	 <h2>First, A Very Brief Refresher on Focusing</h2>
+	 <p>
+    If you want a better, longer version of this part of the story,
+	 check out anything Pfenning has written on the subject, for
+	 example
+    <a href="https://www.cs.cmu.edu/~fp/courses/oregon-m10/04-focusing.pdf">these
+		OPLSS notes</a>. But I'll try to give a very high-level picture of what focusing is, and how it informs what I wanted to figure
+	 out about linear logic.
+	 </p>
+	 <p>
+		Historically what focusing was when it was discovered &mdash;
+		and it's still a pretty reasonably close-central part of What It
+		Really Is as far as I'm concerned even knowing what I know now
+		&mdash; is an <I>optimization</I> technique for proof search. It
+		is, in a way, a complement to an even simpler-to-explain
+		optimization that was well-known before, which is simply that
+		some rules for some logical connectives are <I>invertible</I>.
+	 </p>
+	 <p>
+		For example, the sequent right rule for $\lol$,
+
+		\[ \Gamma, A \prov B \over \Gamma \prov A \lol B \]
+
+		has the property that if the bottom line of the rule is true,
+		then so is the top &mdash; and since the rule, by definition,
+		says that if the top holds, then the bottom, that means merely
+		that we have an if-and-only-if between the top and bottom. This
+		is a proof search optimization because whenever we are trying to
+		find a proof for $\Gamma \prov A \lol B$, we can <I>always</I>
+		safely decide that the proof we're looking for ends with the
+		$\lol$ right rule, and continue trying to prove $\Gamma, A \prov
+		B$ as a subgoal: we never have to wonder if we were supposed to
+		pick some other rule first, so we can prune away from our proof
+		search all the searching that we might have otherwise done for
+		proofs that <I>don't</I> end with $\lol$-right.
+	 </p>
+	 <p>
+		It's pretty easy to prove that this if-and-only-if holds, by
+		using the
+		<I>cut-admissibility property</I> of linear logic,
+
+		\[ \Gamma \prov A \qquad \Delta, A \prov C \over \Gamma, \Delta \prov C \]
+
+		and the <I>identity property</I>
+
+		\[ \over A \prov A \]
+
+		for if we have a derivation of $\Gamma \prov A \lol B$, then we just construct a derivation $A\lol B, A \prov B$ using identity
+		and the left rule for $\lol$, and cut the two together to get $\Gamma, A \prov B$.
+	 </p>
+	 <p>
+		Similarly, we find that rules like the left rule for $\tensor$
+
+		\[\Gamma, A, B \prov C \over \Gamma, A \tensor B \prov C\]
+
+		and the left rule for $\oplus$
+
+		\[\Gamma, A \prov C \qquad \Gamma, B \prov C \over \Gamma, A \oplus B \prov C\]
+
+		and the right rule for $\&$
+
+		\[\Gamma \prov A \qquad \Gamma\prov B  \over \Gamma \prov A \& B\]
+
+		are invertible. Generally we tend to find that the commonest
+		situation is that for every connective, <I>one of</I> the left
+		or right sequent rule for it is invertible, but not the other.
+	 </p>
+	 <p>
+		This suggests that there are two underlying kinds of
+		propositions, the <I>positive</I> (those whose left rules are
+		invertible) and the <I>negative</I> (those whose right rules are
+		invertible). What <I>focusing</I> is, is a further optimization
+		on top of "eagerly decompose invertible rules": it tells us that
+		when we start decomposing a positive connective, we should
+		eagerly <I>keep decomposing all the subpropositions</I> of it,
+		as long as they still positive connectives. And likewise when we
+		start decomposing a negative connective, we should keep
+		decomposing negative connectives until we hit something that
+		isn't negative.
+	 </p>
+	 <p>
+		What this means is that a proposition made of a bunch of
+		positive connectives only (or negative connectives only) behaves
+		nicely as if it were a <I>single $n$-ary logical connective</I>
+		that can itself be given first-class well-behaved sequent left
+		and right rules, while a mixture of negative and positive
+		connectives usually can't. For example, $A \tensor (B \oplus C)$
+		can be construed as a single connective, by saying that its left
+		rule is
+		\[\Gamma, A, B \prov D \qquad \Gamma, A, C \prov D \over \Gamma, A \tensor (B \oplus C) \prov D\]
+		and its right rules are
+		\[\Gamma \prov  A \qquad \Delta \prov  B  \over \Gamma, \Delta \prov A \tensor (B \oplus C) \]
+		\[\Gamma \prov  A \qquad \Delta \prov  C  \over \Gamma, \Delta \prov A \tensor (B \oplus C) \]
+		Note that these rules are obviously <I>sound</I> with respect to ordinary linear logic proof rules, but they're
+		not obviously <I>complete</I>. The right rules tell us we need to commit to a division of the context into $\Gamma, \Delta$
+		and a choice of $B$ or $C$ <I>at the same time</I>. Trying to prove $A \tensor (B \oplus C)$ in linear logic as usual,
+		we have the freedom to interleave those choices with other decompositions elsewhere in the sequent.
+	 </p>
+	 <p>
+		The punchline of focusing is that these sorts of mega-connective
+		rules <I>are</I> complete, and the higher-level moral of the
+		story is that <I>paying attention to whether propositions are
+		positive or negative</I> is crucial to understanding what they
+		mean and how they compose.
+	 </p>
+	 <h2>Polarization</h2>
+	 The modern thing to do is to take this realization and put it directly in the
+	 the syntax of propositions &mdash; although certainly you can
+	 express focusing, as Andreoli did in his original paper, without
+	 doing it &mdash; which is called <I>polarizing</I> the syntax into two different classes of propositions.
+	 <center>
+		<table>
+		  <tr><td>Positive Propositions</td><td>$P::=$</td><td>$\dns N \celse P \tensor P \celse 1 \celse P \oplus P \celse 0 \celse \cdots$</td></tr>
+		  <tr><td>Negative Propositions</td><td>$N::=$</td><td>$\ups P \celse N \& N \celse \top \celse P \lol P \celse \cdots$</td></tr>
+		</table>
+	 </center>
+	 which makes <I>explicit</I> the passage back and forth between
+	 positive and negative <I>propositions</I> by making you
+	 write <I>shift operators</I> $\ups$ and $\dns$ that coerce back and forth between them.
+	 <h2>World-Indexing and Polarity-Indexing</h2>
+	 <p>
+	 Last time, I talked about realizing that a <I>substructural proposition</I> was not a thing of kind <tt>type</tt> but
+	 more like a thing of kind
+	 \[w \to \rtype\]
+	 for $w$ being an abstract monoid structure.
+	 </p>
+	 <p>
+		What I realized was necessary to explain what positive
+		substructural propositions were was <I>refining the unpolarized
+		type $w$</I> into positive and negative versions of it.
+		In <a href="http://jcreed.org/papers/rp-substruct-lics-2010.pdf">this
+		paper that I wrote with Frank</A>, (the so-called "ill-fated
+		paper", since we could never seem to get reviewers that didn't
+		viscerally dislike the idea of "constructive semantics") we
+		called them <I>worlds</I> (positive) and <I>frames</I>
+		(negative) but this is a little confusing, since I was calling
+		the unpolarized things 'worlds' to start with. So let's say that
+		we have two types, $w^+$, the type of <I>resources</I>, (which
+		might equally well be called 'positive worlds') and $w^-$ the
+		type of <I>frames</I> (or 'negative worlds').
+	 </p>
+	 <p>
+		Given the existence of those things, I can say that <I>what a positive substructural proposition is</I>, is something
+		of kind
+
+		\[ w^+ \to \rtype \]
+
+		and <I>what a negative substructural proposition is</I>, is something of kind
+
+		\[ w^- \to \rtype \]
+
+		The algebra on these pals is only slightly more elaborate than
+		before. The type $w^+$ still has a monoid structure $(\tensor,
+		1)$ on it, and there's additionally an operation \[\lol : w^+ \to w^- \to w^-\]
+		and a relation
+		\[\tri : w^+ \to w^- \to \rtype\]
+		and the requirement that there's an "adjunction" isomorphism
+		\[ (\alpha \tensor \beta) \tri \phi \cong \alpha \tri (\beta \lol \phi) \]
+		for any $\alpha, \beta : w^+$ and any $\phi : w^-$.
+	 </p>
+	 <p>
+		I have to confess here that if you read ill-fated paper, you'll
+		see that things weren't actually this clean at all; I'm sneaking
+		in some features of a later version of this idea. In the
+		original, negative propositions were translated "at a positive
+		world $w^+$" and negatives were translated at... a continuation
+		taking a positive world and returning a destination-language
+		proposition. The reason for this confusion is that I was still
+		hampered by trying to translate <I>into</I> negative
+		propositions in the destingation language, which required
+		dualizing more things than necessary.
+	 </p>
+	 <p>
+		A much nicer way of doing things, which I wrote
+		down <a href="http://jcreed.org/papers/logical-recipes-2.pdf">a
+		few years later in some detail</a>, is to translate everything
+		into positive propositions in the destination language. When we
+		do this, we get simple
+		semantics-clause-esque <I>explanations</I> of logical
+		connectives, consistent with the "what a (positive/negative)
+		proposition <I>is</I> is a ..." claims above.
+	 </p>
+	 <p>
+		Take the logical connective $\lol$: It's suppose to take a
+		positive proposition $P$ and a negative proposition $N$ and
+		yield a negative proposition $P \lol N$. We therefore assume $P
+		: w^+ \to \rtype$ and $N : w^- \to \rtype$ and define
+		$P \lol N : w^+ \to \rtype$ as
+		\[(P \lol N)(\alpha) = \exists (\beta : w^+) . \exists (\phi : w^-) . (\alpha = \beta \lol \phi) \land P(\beta) \land N(\phi) \]
+		Similarly, for $P_1 \tensor P_2$, we can make an almost identical looking definition except for the different polarities involved:
+		\[(P_1 \tensor P_2)(\alpha) = \exists (\beta_1 : w^+) . \exists (\beta_2 : w^+) . (\alpha = \beta_1 \lol \beta_2) \land P_1(\beta_1)
+		\land P_2(\beta_2) \]
+		And since polarity-shift connectives exist in this syntax, we need to provide an explanation for them, as well: We say
+		\[(\ups P)(\phi) = \forall (\alpha : w^+) . P(\alpha) \imp (\alpha \tri \phi)\]
+		and
+		\[(\dns N)(\alpha) = \forall (\phi : w^-) . N(\phi) \imp (\alpha \tri \phi)\]
+		<h2>The Payoff</h2>
+	 <p>
+		These definitions may seem a bit opaque and weird, but the big
+		end-of-the-day touchstone theorem you can prove about them I
+		think is pretty cool: that they constitute a <I>constructive
+		semantics</I> of linear logic, that is, a translation of it into
+		vanilla (i.e. no linearity) focused first-order intuitionistic
+		proof theory, in such a way that you not only accurately
+		model <I>when</I> a linear logic proposition is provable, but
+		also the <I>set of its focused proofs</I>.
+	 </p>
+	 <p>
+		And having said that, I think I've almost set myself up for explaining
+		what the original tweet was talking about next post, or perhaps the
+		post after that...
+	 </p>
+  </body>
+  <script>
+	 renderMathInElement(
+    document.body,
+    {
+    delimiters: [
+    {left: "$$", right: "$$", display: true},
+    {left: "\\[", right: "\\]", display: true},
+    {left: "$", right: "$", display: false},
+    {left: "\\(", right: "\\)", display: false}
+    ],
+    macros: {
+    "\\R": "\\mathbb{R}",
+    "\\rset": "\\mathsf{Set}",
+    "\\x": "\\times",
+    "\\prov": "\\vdash",
+    "\\tensor": "\\otimes",
+    "\\lol": "\\multimap",
+	 "\\rtype": "\\mathsf{type}",
+	 "\\dns": "{\\downarrow}",
+	 "\\ups": "{\\uparrow}",
+	 "\\celse": "{\\ |\\ }",
+	 "\\tri": "\\triangleright",
+	 "\\imp": "\\Rightarrow",
+    }
+    }
+    );
+  </script>
+</html>
