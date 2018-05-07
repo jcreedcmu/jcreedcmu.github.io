@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>Everything I've Learned About Logic in the Last Decade or So, Part 4</h1>
+	 <p>
+		Last time I had finished talking about a focusing-compatible
+		constructive semantics for linear logic, which sought to explain
+		positive <I>substructural</I> types as being merely ordinary types
+		indexed by 'resources', and negative substructural types as
+		being ordinary types indexed by 'frames'.
+		This sort of semantics seems like a nice tidy (constructive,
+		focusing-compatible) generalization of Girard-style phase
+		semantics, and it also seemed pretty evident how to generalize
+		it to ordered logic, non-associative logic, bunched logic, etc.
+		&mdash; you just vary the algebraic requirements on the 'worlds'
+		and 'frames'.
+	 </p>
+	 <p>
+		It's also pretty easy to imagine extending to a situation where
+		you don't just have one substructural mode, but a whole bunch of
+		them, each with its own notion of world and frame, as a way of
+		formalizing the
+		"<a href="http://jcreed.org/papers/jdml.pdf">judgmental
+		deconstruction</a>" style of having many modalities. I thought
+		about this kind of thing a lot during the early 2010s but never
+		really finished writing down anything comprehensive.
+	 </p>
+	 <p>
+		Thankfully, Licata, Sulman, and Riley did a fantastic job of
+		figuring out a lot more stuff in that direction than I ever did,
+		in a paper
+		called <a href="http://dlicata.web.wesleyan.edu/pubs/lsr17multi/lsr17multi-ex.pdf">A
+		Fibrational Framework for Substructural and Modal Logics</a>. It
+		doesn't feature focusing, and it I think is somewhat less nicely
+		symmetric for having only the analog of resources without having
+		an explicit notion frames &mdash; but that omission does
+		actually make perfect sense in light of what I think is the most
+		crucial observation of the paper, which is:
+		<blockquote>you should expect a substructral (or modal, or
+		otherwise fancy) logic to have structure that is <I>fibered</I>
+		over corresponding structure in an underlying logic</blockquote>
+		which is connected to what they call a principle of
+		"structurality over structurality", for which, just read their
+		paper already, it's great.
+	 </p>
+	 <p>
+		But I should at least try to explain a little about what I mean
+		broadly by "you should expect things to look fibered". It means,
+		for example, that when I demand that my <I>types</I> exist at
+		various <I>modes</I> of truth (i.e. merely true, possible,
+		valid, linearly true, etc.) what I am really doing is grouping
+		the types together in the fibers over a kind of type discipline
+		'downstairs'; the 'upstairs' types are what I think of
+		ordinarily as types, and the 'downstairs' types are modes.
+	 </p>
+	 <p>
+		But then if modes are type-like, we should perhaps expect terms
+		to exist going between them, just like real terms compute from
+		some input type to some output type &mdash; and indeed paying
+		close attention to multiple <I>ways</I> of getting from one mode
+		to another (as opposed to just the binary choice of modes being
+		accessible or inaccessible as I did
+		in <a href="http://jcreed.org/papers/jdml.pdf">judgmental
+		deconstruction</a> by having a preorder of modes) lets you have
+		much more flexibility in defining modal-like logics. And then we
+		should demand that all ordinary terms that we're going to define
+		between term-types should live <I>over</I> some particular
+		mode-term that explains exactly how all our variables are being
+		used.
+	 </p>
+	 <h2>Trying to Categorify Focusing-compatible Semantics</h2>
+	 <p>
+		So the time is now late 2017, and I'm actively having
+		conversations with Dan Licata trying to catch up to
+		understanding all this stuff he and collaborators have been
+		doing, and I become convinced it would be a good idea at least
+		to do the exercise of trying to categorify up my
+		"<a href="http://jcreed.org/papers/logical-recipes-2.pdf">logical
+		recipes</a>" draft by sort of following
+		what <a href="http://dlicata.web.wesleyan.edu/pubs/lsr17multi/lsr17multi-ex.pdf">A
+		Fibrational Framework for Substructural and Modal Logics</a> is
+		doing.
+	 </p>
+	 <p>
+		The result of that line of thinking I did actually write up:
+		it's <a href="http://jcreed.org/papers/phase.pdf">in this short draft note</a>.
+	 </p>
+	 <p>
+		For the case of linear logic in particular, what you do is you
+		take what you had in the non-categorified case &mdash;
+		the <I>sets</I> of worlds and frames (equipped with a monoid
+		structure $(\tensor, 1)$, and a $\lol$, and a hom-like relation
+		$\tri$ making $\lol$ right adjoint to $\tensor$ &mdash; and you
+		replace it with a <I>category</I>  $\P$  of worlds, and a category $\N$ of
+		frames, with some algebraic structure on them, like functors
+		\[\tensor : \P \x \P \to \P \qquad \lol : \P \x \N \to \N\]
+		Positive (resp. negative) propositions are not
+		interpreted merely as functions taking worlds (resp. frames) to
+		sets, but <I>functors</I> in $\rset^\P$ (resp. $\rset^\N$)
+		Also, $\tri$ is no longer merely a relation on worlds and frames,
+		but a functor $\P \x \N \to \rset$.
+	 </p>
+	 <p>
+		What happens to the definition of the semantics? We have to
+		replace existential quantifiers (in the definition of
+		multiplicative connectives) with <I>coends</I> and universal
+		quantifiers (in the definition of the meaning of shifts)
+		with <I>ends</I>. Just taking $\tensor$ and $\ups$ as examples, we'd
+		say
+		\[(P_1 \tensor P_2)(\alpha : \P) = \int^{\beta_1, \beta_2 \in \P} \hom_\P(\beta_1 \tensor \beta_2, \alpha) \x P_1(\beta_1)
+		\x P_2(\beta_2) \]
+		\[(\ups P)(\phi : \N) = \int_{\alpha \in \P}  P(\alpha) \imp (\alpha \tri \phi)\]
+		Notice how what was formerly an equality between $\alpha$ and $\beta_1 \tensor \beta_2$
+		(back when we said
+		\[(P_1 \tensor P_2)(\alpha) = \exists (\beta_1 : w^+) . \exists (\beta_2 : w^+) . (\alpha = \beta_1 \tensor \beta_2) \land P_1(\beta_1)
+		\land P_2(\beta_2) \] in the uncategorified semantics)
+		is now a homset in $\P$; the choice of which direction the hom should be taken in
+		is very nicely determined by the fact that we need $\alpha$, since it's the argument
+		of the functor $P_1 \tensor P_2 : \rset^\P$, to occur covariantly.
+	 </p>
+	 <h2>Generalizing Just a Little More</h2>
+	 <p>
+		In a conversation with
+		Dan, he pointed out that the coend formula for the meaning of
+		$\tensor$ surely looked just like a profunctor composition, since,
+		well, profunctor composition is defined by coend. So could this
+		whole semantics be done in a proarrow equipment, instead of the
+		particular proarrow equipment that is categories-and-profunctors?
+	 </p>
+	 <p>
+		It turns out that the answer to that question looks to be yes
+		&mdash; and in fact an emphatic yes that you can ignore that you
+		ever heard the words 'proarrow equipment' and only work with the
+		2-category consisting of <I>only</I> the proarrows in the
+		proarrow-equipment, forgetting that morphisms can behave like
+		proper functors. But I don't really want to go down that road
+		right now, because (a) I never finished writing that up neatly,
+		and (b) the actual point I wanted to take away from this was
+		just the insight that one doesn't have to think about the
+		'downstairs' $\tensor$ in <I>functional</I> sense, but
+		merely <I>relationally</I>.
+	 </p>
+	 <p>
+		That is, the critical thing is that can abstract away the
+		\[\hom_\P(\beta_1 \tensor \beta_2, \alpha)\] in the definition
+		of the meaning of the propositional connective as merely
+		some <I>relation</I> (well, in the categorified case, a
+		profunctor $\P \x \P \x \P^\op$) that's handed to us by someone
+		wanting to define a logic, call it \[R_\tensor(\beta_1, \beta_2,
+		\alpha)\]
+	 </p>
+	 <h2>Multiplicative Connectives are Dual to Shifts?</h2>
+	 So if I take this insight back to the plain old uncategorified proof-theoretic semantics, I change
+	 a definition like
+		\[(P_1 \tensor P_2)(\alpha) = \exists (\beta_1 : w^+) . \exists (\beta_2 : w^+) . P_1(\beta_1) \x P_2(\beta_2) \x (\alpha = \beta_1 \tensor \beta_2)   \]
+	 where the user of the semantics is required to define an <I>operation</I> $\tensor$ on worlds, to
+		\[(P_1 \tensor P_2)(\alpha) = \exists (\beta_1 : w^+) . \exists (\beta_2 : w^+) .P_1(\beta_1) \x P_2(\beta_2) \x R_\tensor(\alpha, \beta_1, \beta_2)   \]
+	 and in general, if we had an $n$-ary multiplicative connective $\star$ whose arguments were of modes/polarities $\mu_1, \mu_2, \ldots, \mu_n$,
+	 and whose output was mode/polarity $\mu$, then we'd require the user specify an $n+1$-ary relation $R : \mu_1 \x \cdots \mu_n \x \mu \to \rset$ and we'd define
+		\[(\star(A_1, \ldots, A_n))(\beta : \mu) = \exists (\bar\alpha : \bar \mu) . \bar A(\bar \alpha) \x R(\bar \alpha, \beta)\]
+	 which suddenly looks an awful lot like a dual version of the way shifts were defined, e.g.
+		\[(\ups P)(\phi) = \forall (\alpha : w^+) . P(\alpha) \imp (\alpha \tri \phi)\]
+	 with the only difference being that shifts have only one input argument. But why not let them have more than one?
+		\[(\Updownarrow(A_1, \ldots, A_n))(\beta : \mu) = \forall (\bar\alpha : \bar \mu) . \bar A(\bar \alpha) \imp R(\bar \alpha, \beta)\]
+	 So that's what my opaque tweet is about:
+
+		<blockquote>
+		  <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Ok, so now I think I can fit everything I&#39;ve learned about logic in the last decade into about ~30 lines of agda <a href="https://t.co/nweoRRKMKg">pic.twitter.com/nweoRRKMKg</a></p>&mdash; jason reed (@jcreed) <a href="https://twitter.com/jcreed/status/980119451038375936?ref_src=twsrc%5Etfw">March 31, 2018</a></blockquote>
+		</blockquote>
+		<script async src="https://platform.twitter.com/widgets.js"
+		charset="utf-8"></script> If you think of focusing polarities as
+		just another kind of mode distinction, then multiplicative
+		connectives and focusing shifts are sort of merely dual versions
+		of each other. You could even, as Dan pointed out to me
+		recently, take the relation <I>of</I> a multiplicative
+		and <I>use</I> it as a shift &mdash; or vice-versa! What does
+		that actually look like? I don't really have any idea yet. It
+		would be neat if such a thing actually has applications.
+  </body>
+  <script>
+	 renderMathInElement(
+    document.body,
+    {
+    delimiters: [
+    {left: "$$", right: "$$", display: true},
+    {left: "\\[", right: "\\]", display: true},
+    {left: "$", right: "$", display: false},
+    {left: "\\(", right: "\\)", display: false}
+    ],
+    macros: {
+    "\\R": "\\mathbb{R}",
+    "\\rset": "\\mathbf{Set}",
+    "\\x": "\\times",
+    "\\prov": "\\vdash",
+    "\\tensor": "\\otimes",
+    "\\lol": "\\multimap",
+	 "\\rtype": "\\mathsf{type}",
+	 "\\dns": "{\\downarrow}",
+	 "\\ups": "{\\uparrow}",
+	 "\\celse": "{\\ |\\ }",
+	 "\\tri": "\\triangleright",
+	 "\\imp": "\\Rightarrow",
+	 "\\P": "\\mathbf{P}",
+	 "\\N": "\\mathbf{N}",
+	 "\\op": "\\mathrm{op}",
+    }
+    }
+    );
+  </script>
+</html>
