@@ -20,4 +20,5 @@ body { padding-left: 40px; max-width: 50em; }
   40% { opacity: 1; }
   50% { opacity: 0; }
   90% { opacity: 0; }
+  100% { opacity: 1; }
 }
