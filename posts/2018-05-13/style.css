@@ -1,0 +1,24 @@
+body { padding-left: 40px; max-width: 50em; }
+.code { white-space: pre; display: block; }
+.twoimg { position: relative; display: inline-block; }
+.twoimg img.overlay { position: absolute; top: 0px; left: 0px; }
+@media not handheld {
+  .twoimg img.overlay { visibility: hidden; }
+  .twoimg:hover img.overlay { visibility: visible; }
+}
+@media handheld {
+  .twoimg img.overlay {
+	 animation-name: alternate;
+	 animation-duration: 4000ms;
+	 animation-iteration-count: infinite;
+	 animation-timing-function: linear;
+  }
+  .mouseovermessage { visibility: hidden; }
+}
+
+@keyframes alternate {
+  0% { opacity: 1; }
+  40% { opacity: 1; }
+  50% { opacity: 0; }
+  90% { opacity: 0; }
+}

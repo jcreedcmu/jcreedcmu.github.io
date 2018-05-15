@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	 <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+  </head>
+  <body>
+	 <h1>Slices of Presheaf Categories</h1>
+	 <p>
+		I wanted to give a little attention to a well-known, but I think
+		under-hyped, lemma from elementary category theory. Honestly I
+		think it's about as lovely and simple as the Yoneda lemma or the
+		fact that the Grothendieck construction works, and it has a
+		somewhat related flavor to both of them. You can find it
+		mentioned <a href="https://ncatlab.org/nlab/show/category+of+presheaves">here
+		on nLab</a>, which has a pointer to some nice sheaf-theoretic
+		generalizations in MacLane and Moerdijk.
+	 </p>
+	 <p>the statement of it is: Suppose $\C$ is a category, and $P$ is a presheaf in $\hat \C = \rset^{\C^\op}$. Then
+		\[ \hat \C / P \cong \widehat{\int P} \]
+		That is, the slice
+		category $\hat \C / P$ whose objects are natural transformations $Q \to P$ of any other presheaf $Q$ into $P$,
+		and whose morphisms are commutative triangles,
+		is isomorphic to $\widehat {\int P}$, the presheaf category on the category of elements of $P$, whose objects
+		are pairs $(C, x)$ consisting of an object $C\in \C$ and an element $x \in P(C)$ of the presheaf, and whose morphisms
+		$(C, x) \to (D, y)$ are morphisms $f : C \to D \in \C$ such that $P(f)(y) = x$.
+	 </p>
+		<h2>Proof</h2>
+		Stare at the following diagram:
+		<center>
+		  <div class="twoimg">
+			 <img src="diagram1.png">
+			 <img class="overlay" src="diagram2.png">
+		  </div>
+		  <span class="mouseovermessage">(Mouseover to show other side of isomorphism)</span>
+		</center>
+		If we have a presheaf $Q \in \hat \C$ and a projection $\pi : Q \to P$,
+		then the way we build a presheaf in $\widehat{\int P}$ is by taking the inverse
+		image under $\pi^{-1}$:
+		\[Q'(C, x) =  (\pi(C))^{-1}(x)\]
+		Conversely, if we have a presheaf $Q' \in \widehat{\int P}$, we can define
+		\[Q(C) = \bigcup_{x \in P(C)} Q'(C, x)\]
+		and the choice of what to do at morphisms in both directions is pretty much forced.
+		<h2>What It's Good For</h2>
+	 <p>
+		For one thing, this is sort of the crux of the reason you can do
+		dependent type theory in presheaf categories. Since slices of
+		presheaf categories are themselves presheaf categories, and
+		since all presheaf categories are cartesian closed, that means
+		all presheaf categories are <I>locally</I> cartesian closed.
+	 </p>
+	 <p>
+		Another nice use of it was as a very useful simplifying tool when I was
+		trying to think recently about what sort of situations you might find
+		yourself in where you have a type theory and a type $\ii$ such
+		that something like '$\ii \to \rtype$' is equivalent to a span
+		of types, $(A\ B\ C : \rtype) \x (C \to A) \x (C \to B)$.
+	 </p>
+	 <p>
+		Restricting our attention to the situation where 'type' means 'presheaf in $\hat \C$ for
+		some choice of category $\C$', this means that $\ii \in \hat\C$.
+		And thinking Grothendieck-ily, you could
+		instead of '$\ii \to \rtype$' just ask for a choice of type $P\in\hat\C$
+		 and a map $P \to \ii$.
+	 </p>
+	 <p>
+		But the above lemma is telling us this is the same thing as a presheaf in
+		$\widehat{\int \ii}$! And "a span of types in $\rset^{\C^\op}$" is also really
+		just a presheaf-y notion, since it's the same thing as
+		$(\rset^{\C^\op})^S = \rset^{\C^\op \x S}$ for the span category $S$ that
+		has three objects $\{A_1, A_2, \star\}$ and only two nontrivial morphisms $\star \to A_1$
+		and $\star \to A_2$.
+	 </p>
+	 <p>
+		Therefore all we really need to find is a $\ii$ such that the
+		base categories of these two different categories are the same,
+		i.e. $\left(\int \ii\right)^\op \cong \C^\op \x S$. This is way
+		simpler than trying to analyze all possible presheaves $\ii$ and
+		other presheaves $P$, and their mappings into $\ii$ directly.
+	 </p>
+	 <p>
+		For example, I can say, let the category $\C$ be the category whose objects are
+		<center>Contexts $\Gamma,\Delta,\Omega$ ::= $\cdot \celse \Gamma , x$</center>
+		And whose morphisms $\Gamma \to \Delta$ are
+		substitutions $\Gamma \prov \theta : \Delta$ whose syntax is
+		<center>Substitutions $\theta$ ::= $\cdot \celse \theta[M/ x]$</center>
+		<center>Terms $M$ ::= $x \celse \ep 1 \celse \ep 2$</center>
+		which are typed like
+		\[
+		{\Gamma \prov \theta : \Delta \qquad \Omega \prov M
+		\over
+		\Gamma, \Omega \prov \theta[M/x] : \Delta, x}
+		\qquad {\over \cdot \prov \ep 1}
+		\qquad {\over \cdot \prov \ep 2}
+		\qquad {\over x \prov x}
+		\]
+
+		In the typing of substitutions, we <b>don't</b> assume that contexts have
+		contraction, weakening, or exchange.
+	 </p>
+	 <p>
+		Now let $\ii$ be the presheaf in $\hat \C$ such that
+		<center> <table>
+			 <tr><td>$\ii(\cdot)$</td><td>$=$</td><td>$\{\ep 1, \ep 2\}$</td></tr>
+			 <tr><td>$\ii(\Gamma, x)$</td><td>$=$</td><td>$\{\ep 1, \ep 2, x\}$</td></tr>
+		</table></center>
+		with the action of morphisms being the only reasonable thing it can be; syntactically
+		carrying out the substitution.
+	 </p>
+	 <p>I now claim that $(\int \ii)^\op$ is the same thing as $\C^\op \x S$. Let's
+		describe a map $\rho$ from $\C^\op \x S$ to $(\int \ii)^\op$. The input
+		we're given is an object $\Gamma \in \C$ and an object of $S$. The object of $S$
+		can either be $\star, A_1$, or $A_2$. We need to output a pair consisting of
+		an object in $\C$ and an element of $\ii(\Gamma)$. So we define
+		\[\rho(\Gamma, \star) = ((\Gamma, x), x) \]
+		\[\rho(\Gamma, A_1) = (\Gamma, \ep 1) \]
+		\[\rho(\Gamma, A_2) = (\Gamma, \ep 2) \]
+		And if we examine the morphisms of $\int \ii$ &mdash; which are substitutions
+		preserving the distinguished element &mdash; we find that they can be classified
+		into "doing something to the context $\Gamma$" and "doing something to what's left", i.e.
+		"a morphism in $\C^\op$" and "a morphism in $S$", respectively.
+		<center><img src="diagram3.png"></center>
+	 </p>
+	 <p>
+		And I think this example works even if you <I>do</I> add various
+		structural rules to $\Gamma$. Which is interesting since as far
+		as I can tell, Bernardy-Moulin internalized parametricity seems
+		to require &mdash; or at least naturally works best with &mdash;
+		exactly the structural rules it has, namely, weakening,
+		exchange, and <I>not</I> contraction. Still pretty mysterious to
+		me why! I suppose it must have something to do with what happens
+		with the surrounding context, since everything I'm doing above
+		is considering "closed" types that are full-stop presheaves not
+		depending on any other variables.
+	 </p>
+  </body>
+  <script>
+	 renderMathInElement(
+    document.body,
+    {
+    delimiters: [
+    {left: "$$", right: "$$", display: true},
+    {left: "\\[", right: "\\]", display: true},
+    {left: "$", right: "$", display: false},
+    {left: "\\(", right: "\\)", display: false}
+    ],
+    macros: {
+    "\\R": "\\mathbb{R}",
+    "\\rset": "\\mathbf{Set}",
+    "\\x": "\\times",
+    "\\prov": "\\vdash",
+    "\\tensor": "\\otimes",
+    "\\lol": "\\multimap",
+	 "\\rtype": "\\mathsf{type}",
+	 "\\dns": "{\\downarrow}",
+	 "\\ups": "{\\uparrow}",
+	 "\\celse": "{\\ |\\ }",
+	 "\\tri": "\\triangleright",
+	 "\\imp": "\\Rightarrow",
+	 "\\C": "\\mathbf{C}",
+	 "\\P": "\\mathbf{P}",
+	 "\\N": "\\mathbf{N}",
+	 "\\op": "\\mathrm{op}",
+	 "\\ii": "\\mathbb{I}",
+	 "\\ep": "\\underline",
+    }
+    }
+    );
+  </script>
+</html>
