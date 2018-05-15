@@ -2,11 +2,10 @@ body { padding-left: 40px; max-width: 50em; }
 .code { white-space: pre; display: block; }
 .twoimg { position: relative; display: inline-block; }
 .twoimg img.overlay { position: absolute; top: 0px; left: 0px; }
-@media not handheld {
-  .twoimg img.overlay { visibility: hidden; }
-  .twoimg:hover img.overlay { visibility: visible; }
-}
-@media handheld {
+.twoimg img.overlay { visibility: hidden; }
+.twoimg:hover img.overlay { visibility: visible; }
+
+@media (hover: none) {
   .twoimg img.overlay {
 	 animation-name: alternate;
 	 animation-duration: 4000ms;
