@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
-<channel>
- <title>jcreedcmu.github.io</title>
- <link>http://jcreedcmu.github.io/index.html</link>
- <lastBuildDate>Sun, 13 May 2018 04:00:00 GMT</lastBuildDate>
- <pubDate>Sun, 13 May 2018 04:00:00 GMT</pubDate>
- <ttl>1800</ttl>
-
- <item>
-  <title>Slices of Presheaf Categories</title>
-  <description>Here is some text containing an interesting description.</description>
-  <link>http://www.example.com/blog/post/1</link>
-  <pubDate>Sun, 13 May 2018 04:00:00 GMT</pubDate>
- </item>
-
-</channel>
+  <channel>
+	 <title>jcreedcmu.github.io</title>
+	 <description>Occasional blogging about math</description>
+	 <link>https://jcreedcmu.github.io/index.html</link>
+	 <pubDate>Sun, 13 May 2018 04:00:00 GMT</pubDate>
+	 <ttl>1800</ttl>
+	 <item>
+		<title>Slices of Presheaf Categories</title>
+		<description>Here is some text containing an interesting description.</description>
+		<link>https://jcreedcmu.github.io/posts/2018-05-13/index.html</link>
+		<pubDate>Sun, 13 May 2018 04:00:00 GMT</pubDate>
+	 </item>
+  </channel>
 </rss>
