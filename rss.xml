@@ -4,13 +4,40 @@
 	 <title>jcreedcmu.github.io</title>
 	 <description>Occasional blogging about math</description>
 	 <link>https://jcreedcmu.github.io/index.html</link>
-	 <pubDate>Sun, 13 May 2018 04:00:00 GMT</pubDate>
-	 <ttl>1800</ttl>
-	 <item>
-		<title>Slices of Presheaf Categories</title>
-		<description>Here is some text containing an interesting description.</description>
+	 <pubDate>Sun, 13 May 2018 00:00:00 GMT</pubDate>
+    <item>
+      <title>Slices of Presheaf Categories</title>
 		<link>https://jcreedcmu.github.io/posts/2018-05-13/index.html</link>
-		<pubDate>Sun, 13 May 2018 04:00:00 GMT</pubDate>
-	 </item>
-  </channel>
+      <pubDate>Sun, 13 May 2018 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Everything I've Learned About Logic in the Last Decade or So, Part 4</title>
+		<link>https://jcreedcmu.github.io/posts/2018-05-06/index.html</link>
+      <pubDate>Sun, 06 May 2018 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Everything I've Learned About Logic in the Last Decade or So, Part 3</title>
+		<link>https://jcreedcmu.github.io/posts/2018-04-29/index.html</link>
+      <pubDate>Sun, 29 Apr 2018 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Everything I've Learned About Logic in the Last Decade or So, Part 2</title>
+		<link>https://jcreedcmu.github.io/posts/2018-04-22/index.html</link>
+      <pubDate>Sun, 22 Apr 2018 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Everything I've Learned About Logic in the Last Decade or So, Part 1</title>
+		<link>https://jcreedcmu.github.io/posts/2018-04-15/index.html</link>
+      <pubDate>Sun, 15 Apr 2018 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Wellen's Synthetic Differential Geometry</title>
+		<link>https://jcreedcmu.github.io/posts/2018-04-08/index.html</link>
+      <pubDate>Sun, 08 Apr 2018 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title>Doing $k$-means with intermediate points</title>
+		<link>https://jcreedcmu.github.io/posts/2018-04-01/index.html</link>
+      <pubDate>Sun, 01 Apr 2018 00:00:00 GMT</pubDate>
+    </item>
 </rss>
