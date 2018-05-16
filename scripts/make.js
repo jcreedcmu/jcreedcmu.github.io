@@ -44,6 +44,6 @@ posts.forEach(p => {
     </item>\n`;
 });
 
-rss += '</rss>\n';
+rss += '  </channel>\n</rss>\n';
 
 fs.writeFileSync(__dirname + '/../rss.xml', rss, 'utf8');
