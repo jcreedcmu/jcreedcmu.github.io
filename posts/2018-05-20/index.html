@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>Depending on Category Variables</h1>
+	 <p>
+		There has been a bunch of great work on <I>directed</I> type
+		theory lately, where you talk about types with groupoid structure,
+		as you do in homotopy type theory, but types with <I>category</I>
+		structure.
+	 <p>
+		<a href="https://arxiv.org/abs/1705.07442">Riehl-Shulman</a> is
+		the one paper I almost understand like 75% of, after staring at it
+		for a long time.
+		Also <a href="https://distrinet.cs.kuleuven.be/people/andreasn">Nuyts's</a>
+		work also seeming very interesting although I definitely don't
+		understand the details deeply there.
+	 <p>
+		Despite both of those existing, I'm going to talk a little a bit
+		about what I've been thinking about lately on the topic, even at
+		the risk that it might be subsumed by something already in the
+		literature &mdash; because if I understand precisely how, that
+		would be progress for me understanding what's going on, anyway.
+
+		<h2>Why Is Directed Type Theory Hard, Anyway</h2>
+
+		As far as I can tell, the crux of why it isn't easy to come up
+		with a theory of types-with-categorical structure is you don't
+		get dependent type constructors for free from the structure
+		of <b>Cat</b>; because no matter how much you wish it
+		was, <b>Cat</B> just isn't locally cartesian closed.
+		<a href="https://ncatlab.org/michaelshulman/show/exponentials+in+a+2-category">An
+		  easy counterexample</a> is seeing that a particular pushout is
+		not preserved by pullback. So since the pullback functor doesn't
+		preserve all colimits, it doesn't have a right adjoint, so we don't
+		have $\Pi$ types.
+		<center><img src="pushpull.png"></center>
+
+		The pushout is taking two morphisms, thought of as going $A \to
+		B$ and $B \to C$ and joining them in the middle; the structure
+		of <B>Cat</B> forces their composite $A \to C$ to exist. But
+		then if we take the pullback of this whole pushout diagram along
+		the inclusion of $A \to C$ into the commutative triangle, we get
+		a <span style="color: red">non-</span>pushout diagram that shows
+		how $A$ and $C$ are included in the morphism $A\to C$ &mdash;
+		but there's nothing in the inputs to that pushout-attempt that
+		explains why there should be an actual <I>morphism</I> between
+		$A$ and $C$ as opposed to just two naked objects. The pullback
+		erased exactly the collateral information (the other two
+		morphisms) that induced its existence.
+	 <p>
+		How Riehl-Shulman deal with this is by simply refraining from
+		trying to make every type a category; there is some graph-like
+		structure on every set arising from the axiomatization of the
+		interval, but only some types admit composition &mdash; namely
+		the 'Segal types' described in the paper &mdash; and further
+		only some of those have a kind of univalence-like property that
+		says that isomorphism means equality. ('Rezk types')
+
+		<h2>A Less Ambitious Direction</h2>
+	 <p>
+		But what I've been thinking about lately isn't even trying to
+		equip every type in a type theory with some <I>almost</I>
+		categorical structure and then fishing out the ones that are
+		genuinely categories. To be entirely honest, I'm still a little
+		unclear what I <I>am</I> doing, but I'll describe it as best as
+		I can given what I know.
+	 <p>
+		What I do want to have is
+		<ul>
+		  <li>a reasonable syntactically presentable proof theory with
+		  <li>well-behaved dependent types, and
+		  <li>some notion of hypotheses of a 'proposition' which is a category
+		  <li>whose consistency is guaranteed by some reasonable semantics
+		</ul>
+		So I want to have some understanding of the meaning of sequents like
+		\[\alpha : \C, \beta : \D \prov A(\alpha, \beta) : \rtype \]
+		where $\C, \D$ are categories.
+
+		But also I will eventually want to be able to imagine
+		types depending on ordinary variables at ordinary types, so I'll have two zones,
+		something like
+		\[\alpha : \C, \beta : \D; x : A(\alpha, \beta) \prov B(\alpha, \beta, x) : \rtype \]
+
+		<h3>...Not really a theory of directed types in the same way</h3>
+
+		One thing that's a <I>non</I>-requirement &mdash; which I will
+		just state hand-wavingly &mdash; is that terms $M$ in
+
+		\[\alpha : \mathbf{2} \prov M : A \]
+
+		(when $A$ doesn't depend on the variable $\alpha$) look anything
+		like 'morphisms/paths/etc. in the type $A$'. This is a key
+		difference from at least Riehl-Shulman, and I think most other
+		attempts to have basically 'all the types' in the type theory
+		have some directed structure. I think am going to inevitably
+		find that $A$ depending on $\alpha$ has <I>some</I> extra
+		structure, but it's going to be of a somewhat different flavor.
+		<h3>...Not just presheaf categories</h3>
+		Another  non-goal is the notion that
+ 		\[\alpha : \C \prov A(\alpha) : \rtype \]
+		means that $A$ is merely a functor $\rset^\C$, with <I>all structure on that type
+		  coming from the structure of the category $\rset^\C$</I>. This seems like an extremely
+		tempting, natural answer to the question "how would I design a syntax for
+		variables of category type appearing in a context", because we know that $\rset^\C$
+		has a ton of useful structure;
+		presheaf categories <I>are</I> locally cartesian closed, for one thing. The reason I want
+		to do something other than that has to do with function types and substitution.
+	 <p>
+		An elementary yoneda-lemma computation tells us what the
+		exponential <I>must</I> look like in functor categories into $\rset$. If we
+		have $F, G : \rset^\C$ and we want to know what $F \imp G : \rset^\C$ looks like, well,
+		for any object $c \in \C$, we have
+		\[(F \imp G)(c) = \hom(\C[c, \dash], F \imp G) = \hom(\C[c, \dash] \x F, G)\]
+		This means if we had a function type
+		\[\alpha : \C \prov A(\alpha) \imp B(\alpha) : \rtype \]
+		and we wanted to have a syntactic notion of substitution of an object $c \in \C$
+		for the variable $\alpha$, it would be wrong to define
+		\[ [c/\alpha](A(\alpha) \imp B(\alpha)) = (A(c) \imp B(c)) \]
+		because the Kripke-esque "for all future worlds" inherent in the $\C[c, \dash] \x \cdots$
+		needs to be accounted for. Actually we would need to do something more like
+		\[ [c/\alpha](A(\alpha) \imp B(\alpha)) = \forall d : \C . \forall g : c \to d . (A(d) \imp B(d)) \]
+
+		<h2>What To Do Instead?</h2>
+
+		It struck me that this pair of quantifiers felt a lot like what
+		happened with <a href="/posts/2018-05-06/index.html">the
+		  semantics of shift operators</a>. Consequently, maybe I want to
+		have a different underlying notion of function type that
+		corresponds to "functions in the representation language", and
+		take this quantification over objects of the category seriously
+		as a propositional connective in the language being represented.
+	 <p>
+		And, thankfully, there is a reasonable categorical notion by
+		which to interpret universal (and existential) quantification
+		over objects of a category: (co)ends! But the kind of thing you
+		take a (co)end <I>over</I> is a functor taking <I>two</I>
+		arguments, one at $\C$ and one at $\C^\op$. So I'm going to make a guess that the meaning
+		of a context
+		\[\Delta = \alpha_1 : \C_1, \ldots, \alpha_n : \C_n\]
+		is actually
+		\[\ll\Delta\rr = (\C_1 \x \C_1^\op) \x  \cdots, (\C_n \x \C_n^\op)\]
+		and the meaning of $\Delta \prov A : \rtype$ is a functor from $\ll\Delta\rr$ to $\rset$.
+	 <p>
+
+		<!-- Instead I'm going to abandoing thinking about that, and remember -->
+		<!-- that if I have one covariant functor $G : \C \to \rset$ and -->
+		<!-- one <I>contravariant</I> functor $F : \C^\op \to \rset$, then I -->
+		<!-- can form a covariant functor $F \to G$ defined by -->
+		<!-- \[ (F \to G)(c) = F(c) \to G(c) \] -->
+		<!-- \[ (F \to G)(f : c \to d) = \lambda h : (F(c) \to G(c)) . Gf \o h \o Ff  \] -->
+
+		<!-- If we set aside types depending on ordinary variables, this -->
+		<!-- seems to mean that we could write down a type formation rule like -->
+		This means that I could imagine a type formation rule
+		\[ {\Delta \prov A : \rtype \qquad \Delta \prov B: \rtype
+		\over \Delta \prov A \to B : \rtype} \]
+		because if $\ll A\rr : \ll\Delta\rr \to \rset$ and $\ll B\rr : \ll\Delta\rr \to \rset$,
+		then we can define a functor by
+		\[ \ll A \to B \rr(\bar c) =
+		\ll A \rr(\tilde c) \to
+		\ll B \rr(\bar c)  \]
+		\[ \ll A \to B \rr(\bar f) :
+		(\ll A \rr(\tilde c) \to \ll B \rr(\bar c))  \to
+		(\ll A \rr(\tilde d) \to \ll B \rr(\bar d))\]
+		\[ \ll A \to B \rr (\bar f) = \lambda h .   \ll B \rr(\bar f) \o h \o  \ll A\rr(\bar f)  \]
+		where $\bar c = ((c_1, c'_1), \ldots, (c_n, c'_n))$
+		and $\tilde c = ((c_1', c_1), \ldots, (c'_n, c_n))$
+		and and $\bar f = ((f_1, f'_1), \ldots, (f_n, f'_n))$
+
+		for any $c_i \in \C_i, c'_i \in \C^\op_i$ and any $f_i : c_i \to d_i \in \C$
+		and $f'_i : d'_i \to c'_i \in \C$.
+		(note the swapped arguments being fed to $A$!)
+
+	 <p>
+		Also we could write down a type formation rule for the universal quantifier
+		\[ { \Delta, \alpha : \C \prov A(\alpha) : \rtype
+		\over \Delta \prov \forall \alpha : \C . A(\alpha) : \rtype} \]
+		where the semantics of the rule can be realized with just currying.
+	 <p>
+		I certainly don't know all of the details of how this works out, but I have
+		a bunch of ideas that seem coherent so far.  At least in the simply-typed case,
+		the semantics of a term judgment
+		\[ \Delta ; \Gamma \prov M : A \]
+		is that $\ll M \rr$ should be an inhabitant of the end
+		\[\int_{\bar c \in \ll\Delta\rr} \ll\Gamma\rr(\tilde c) \to \ll A \rr(\bar c)\]
+		and you can write down existential quantifiers over category variables as well,
+		and all their semantics works out and all the terms get interpreted at the right types
+		because ends and coends satisfy all kinds of nice laws.
+	 <p>
+		Of course, where things get tricky is dependent types! But I've seen some very promising
+		things happen if you decorate term variables with just a little more information. Maybe
+		by next week I'll have something worked out well enough to talk about...
+  </body>
+  <script>
+	 renderMathInElement(
+    document.body,
+    {
+    delimiters: [
+    {left: "$$", right: "$$", display: true},
+    {left: "\\[", right: "\\]", display: true},
+    {left: "$", right: "$", display: false},
+    {left: "\\(", right: "\\)", display: false}
+    ],
+    macros: {
+    "\\R": "\\mathbb{R}",
+    "\\rset": "\\mathbf{Set}",
+    "\\x": "\\times",
+    "\\prov": "\\vdash",
+    "\\tensor": "\\otimes",
+    "\\lol": "\\multimap",
+	 "\\rtype": "\\mathsf{type}",
+	 "\\dns": "{\\downarrow}",
+	 "\\ups": "{\\uparrow}",
+	 "\\celse": "{\\ |\\ }",
+	 "\\tri": "\\triangleright",
+	 "\\imp": "\\Rightarrow",
+	 "\\C": "\\mathbf{C}",
+	 "\\D": "\\mathbf{D}",
+	 "\\op": "\\mathrm{op}",
+	 "\\dash": "-",
+	 "\\o": "\\circ",
+	 "\\ll": "[\\![",
+	 "\\rr": "]\\!]",
+    }
+    }
+    );
+  </script>
+</html>
