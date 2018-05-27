@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>Depending on Category Variables, Dependently</h1>
+	 <p>
+		I'm still grinding through a lot of details, but I wanted to
+		talk a little bit about a small idea that popped out at me,
+		which seems to be important to making things work nicely with both
+		variables whose 'type' is a category, and types depending on ordinary term variables.
+	 </p>
+	 <h2>Starting from the Non-dependent Case</h2>
+
+	 How I arrived at the
+	 idea was first saying to myself, suppose you write down
+	 something syntactic like
+	 \[ \alpha + \C ; \cdot \prov B : \rtype \]
+	 where $\alpha + \C$ means $\alpha$ is a variable 'varying over' the category $\C$,
+	 and the $+$ in place of the $:$ emphasizes that you're depending on it <I>covariantly</I>.
+	 Something this simple, where $B$ doesn't depend on any other variables, surely it should
+	 carry the interpretation that $B$ is a functor from $\C$ to $\rset$. Maybe we write $B_c$ for the
+	 type that you get from applying that functor to an object $c\in \C$, and $B_f : B_c \to B_d$
+	 for the functorial action on a morphism $f : c \to d$.
+	 <h2>Depending on One Term Variable </h2>
+
+		What next? Let's try to add a term variable that the type depends on.
+	 \[ \alpha + \C ; x : A \prov B(x) : \rtype \]
+		Now presumably there's some condition on the context that $x : A$
+		lives in that ensures $A$ is a well-formed type given $\alpha + \C$.
+		So the semantics of $A$ is again a functor $\C \to \rset$,
+		and we have types $A_c$ and functions $A_f : A_c \to A_d$.
+	 <p>
+		But what's the interpretation of $B$? For every object $c \in \C$, it should have an object
+		part. Let's say...
+		\[B_c : A_c \to \rtype\]
+		Sure, that seems right. For every $c \in \C$, and every choice
+		of an indexing element from $A_c$, there's a type $B_c$. What's the morphism part?
+		It should roughly feel like
+		\[B_f : B_c \to B_d \]
+		but $B_c$ and $B_d$ aren't types any more, they're types indexed over $A$. We have to fill in something in
+		\[B_f : B_c(?) \to B_d(?) \]
+		Hm, ok... so maybe we want to quantify over all $a \in A$, like
+		\[B_f : (a : A_?) \to B_c(a) \to B_d(a) \]
+		Oh, but we have to pick an object to interpret $A$ at. Maybe the 'earlier' one, $c$, is more canonical?
+		\[B_f : (a : A_c) \to B_c(a) \to B_d(\textcolor{red}{a}) \]
+		But that red $a$ doesn't typecheck; it needs to be $A_d$ instead of $A_c$. But hey, we have a way
+		of transporting from $A_c$ to $A_d$! That's exactly what $A_f$ does! So
+		\[B_f : (a : A_c) \to B_c(a) \to B_d(A_f(a)) \]
+		is a well-typed proposal for what the 'morphism part' of the meaning of $B$ should be.
+	 <h2>Trying to Interpret $\Pi$ Types</h2>
+
+	 Ok, if we can have types depending on variables in a context, we
+	 should be able to bind them. A sensible guess for the dependent
+	 function space type formation rule is
+	 \[ \Delta ;  \Gamma, x : A \prov B : \rtype
+	 \over
+	  \Delta ; \Gamma \prov  (x : A) \to B : \rtype\]
+	 Let's just think about the special case where $\Delta$ is a singleton and $\Gamma$ is empty, though:
+	 \[ \alpha + \C ;   x : A \prov B : \rtype
+	 \over
+	  \alpha + \C ; \cdot \prov  (x : A) \to B : \rtype\]
+
+	 Given everything we just said above, knowing that the premise of this rule would let us infer that semantically all of
+	 \[ A_c : \rtype \qquad A_f : A_c \to A_d \]
+	 \[B_c : A_c \to \rtype \qquad B_f : (a : A_c) \to B_c(a) \to B_d(A_f(a)) \]
+	 hold for any $c \in \C$ or $f : c \to d \in \C$. What we want to do is give a meaning to the type $(x : A) \to B$, which would
+	 be a functor $\C \to \rset$.
+	 <p/>
+	 What's the object part? There doesn't seem to be any obstacle to merely passing the object $c$ down to the component types:
+	 \[ ((x : A) \to B)_c = (x : A_c) \to B_c(x) \]
+	 How about the morphism part? We're given a $f : c \to d$, and we need to define something of type
+	 \[ ((x : A) \to B)_f : ((x : A_c) \to B_c(x)) \to ((x : A_d) \to B_d(x))\]
+	 ...and here we run into a big problem: the transport we have for the type $A$ only works covariantly, but we need to get <I>from</I> an $A_d$
+	 that we have, to the $A_c$ that we need to supply to our argument of type $((x : A_c) \to B_c(x))$!
+	 <h2>Trying to Interpret $\Pi$ Types, Take 2</h2>
+
+	 Ok, hmmm, let's think about what's going on here. It's an utterly
+	 ubiquitous repeating theme throughout category theory and
+	 programming language theory and so on that the argument position
+	 of a function types are Where Contravariance Canonically Happens.
+	 So perhaps although we were correct to say that
+
+	 \[ \alpha + \C ; \cdot \prov B : \rtype \]
+
+	 should lead to $B$ being interpreted as
+	 a covariant functor $\C \to \rset$, maybe for types appearing to
+	 the <I>left</I> of the turnstile (instead of on the right, where
+	 $B$ sits) we should interpret them as contravariant functors in $\C$?
+	 <p/>
+	 Let's go through again what happens with the meaning of a type with one term variable in it. If we have
+	 \[ \alpha + \C ; x : A \prov B(x) : \rtype \]
+	 then we can still have $B_c : A_c \to \rtype$, no problem. But what becomes of
+	 \[ B_f : (a : A_c) \to B_c(a) \to B_d(\textcolor{red}{A_f(a)}) \]
+	 ? We're now assuming that $A_f : A_d \to A_c$, so the call to transport in red is no longer well-typed.
+	 Both its input $a : A_c$ and the environment it's in (which wants an $A_d$) are wrong.
+	 <p/>
+	 But wait &mdash; if we quantify over $A_d$ instead of $A_c$ in the first place,
+	 \[ B_f : (a : A_d) \to B_c(\ldots) \to B_d(a) \]
+	 we don't need to do transport at all on the output side$\ldots$ and moreover we <I>can</I>
+	 now do the appropriate transport on the input side.
+	 \[ B_f : (a : A_d) \to B_c(A_f(a)) \to B_d(a) \]
+	 <p/>
+	 Ok, great, can we do the morphism part of $\Pi$ types now? Yes we can! Now the premise of the rule
+	 \[ \alpha + \C ;   x : A \prov B : \rtype
+	 \over
+	  \alpha + \C ; \cdot \prov  (x : A) \to B : \rtype\]
+	 tells us that
+	 \[ A_c : \rtype \qquad A_f : A_d \to A_c \]
+	 \[B_c : A_c \to \rtype \qquad B_f : (a : A_d) \to B_c(A_f(a)) \to B_d(a) \]
+	 and we can define
+	 \[((x : A) \to B)_c = (x : A_c) \to B_c(x)\]
+	 as we did before, and moreover
+	 \[((x : A) \to B)_f : ((x : A_c) \to B_c(x)) \to (x : A_d) \to B_d(x)\]
+	 \[((x : A) \to B)_f(k )(a) = B_f(A_f(a))(k(A_f(a))) \]
+	 Check for yourself that this is really well-typed! The
+	 substitutions arising from the dependent function types in our ambient
+	 metalogic work out just the way they need to.
+	 <h2>Trying to Interpret $\Sigma$ Types</h2>
+	 Wonderful, $\Pi$ types work fine, let's do $\Sigma$ types. They should be even easier, right?
+	 Let's look at the special-case rule
+	 \[ \alpha + \C ;   x : A \prov B : \rtype
+	 \over
+	  \alpha + \C ; \cdot \prov  (x : A) \x B : \rtype\]
+	 whose premise as before gives us all of
+	 \[ A_c : \rtype \qquad A_f : A_d \to A_c \]
+	 \[B_c : A_c \to \rtype \qquad B_f : (a : A_d) \to B_c(A_f(a)) \to B_d(a) \]
+	 For the object part, surely we again want to just behave homomorphically and say
+	 \[ ((x : A) \x B)_c = (x : A_c) \x B_c(x) \]
+	 And for the morphism part, we can probably just do things componentwise, right?
+	 We'll need to build something of type
+	 \[ ((x : A) \x B)_f : ((x : A_c) \x B_c(x)) \to ((x : A_d) \x B_d(x)) \]
+	 And then we... oh no. For this we do need to build an $A_d$ out of
+	 an $A_c$. That's <I>covariant</I> transport, not contravariant.
+	 <p/>
+	 What's the deal with this? How are we supposed to interpret
+	 variables $x : A$ in the context $\Gamma$ if $\Pi$ types want them
+	 to do one thing and $\Sigma$ types want them to do something else?
+	 <h2>The Solution: Variance-Polarized Term Variables</h2>
+	 I think the right thing to do is just have two types of variables in $\Gamma$, one $x + A$ that undergoes transport
+	 covariantly, and one $x - A$ that does it contravariantly. Context formation could reflect the fact that $x - A$ variables
+	 actually need to access $\Delta$ differently:
+	 \[ \Delta^\op \prov A : \rtype \over \Delta \prov x - A \rctx \]
+	 or more generally I think
+	 \[ \over \Delta \prov \cdot \rctx\]
+	 \[ \Delta \prov \Gamma \rctx \qquad \Delta^\op ; \Gamma^\op \prov A : \rtype \over \Delta \prov x - A \rctx \]
+	 \[ \Delta \prov \Gamma \rctx \qquad \Delta ; \Gamma \prov A : \rtype \over \Delta \prov x + A \rctx \]
+	 and then the $\Pi$ and $\Sigma$ rules would each bind a certain kind of variable:
+	 \[ \Delta ;  \Gamma, x - A \prov B : \rtype
+	 \over
+	  \Delta ; \Gamma \prov  (x : A) \to B : \rtype\]
+	 \[ \Delta ;  \Gamma, x + A \prov B : \rtype
+	 \over
+	  \Delta ; \Gamma \prov  (x : A) \x B : \rtype\]
+	 where $\Gamma^\op$ is defined by
+	 \[ (\Gamma, x + A)^\op = \Gamma^\op, x - A \]
+	 \[ (\Gamma, x - A)^\op = \Gamma^\op, x + A \]
+
+	 There's a lot more to this story that I need to make sure is coherent,
+	 but it seems interesting so far.
+  </body>
+  <script>
+	 renderMathInElement(
+    document.body,
+    {
+    delimiters: [
+    {left: "$$", right: "$$", display: true},
+    {left: "\\[", right: "\\]", display: true},
+    {left: "$", right: "$", display: false},
+    {left: "\\(", right: "\\)", display: false}
+    ],
+    macros: {
+    "\\R": "\\mathbb{R}",
+    "\\rset": "\\mathbf{Set}",
+    "\\rctx": "\\mathop\\mathsf{ctx}",
+    "\\x": "\\times",
+    "\\prov": "\\vdash",
+    "\\tensor": "\\otimes",
+    "\\lol": "\\multimap",
+	 "\\rtype": "\\mathsf{type}",
+	 "\\dns": "{\\downarrow}",
+	 "\\ups": "{\\uparrow}",
+	 "\\celse": "{\\ |\\ }",
+	 "\\tri": "\\triangleright",
+	 "\\imp": "\\Rightarrow",
+	 "\\C": "\\mathbf{C}",
+	 "\\D": "\\mathbf{D}",
+	 "\\op": "\\mathrm{op}",
+	 "\\dash": "-",
+	 "\\o": "\\circ",
+	 "\\ll": "[\\![",
+	 "\\rr": "]\\!]",
+    }
+    }
+    );
+  </script>
+</html>

@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 const posts = [
+  {"dir": "2018-05-27", "title": "Depending on Category Variables, Dependently"},
   {"dir": "2018-05-20", "title": "Depending on Category Variables"},
   {"dir": "2018-05-13", "title": "Slices of Presheaf Categories"},
   {"dir":"2018-05-06", "title": "Everything I've Learned About Logic in the Last Decade or So, Part 4"},
