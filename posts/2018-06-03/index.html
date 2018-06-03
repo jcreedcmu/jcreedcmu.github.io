@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>Focusing Dissection of Exponentials In Presheaf Categories</h1>
+
+    I want to return specifically now to
+    the <a href="../2018-05-20/index.html">idea I mentioned
+    earlier</a> about representing the Kripke-ish "for all future
+    worlds" in the exponential structure of presheaf
+    categories in terms of a focusing polarity shift.
+    <p/>
+    I want the story to go like this: our goal is to somehow end up at
+    something that resembles the expression for the exponential in
+    presheaf-category semantics, which is
+
+    \[ (A \imp B)(C) = \rset^\C[yC \x A, B] \]
+    for $A$ and $B$ being functors in $\rset^{\C}$, and $C$ some object in $\C$.
+    And we want to get there starting from
+    an implication
+
+    \[ A \imp B \]
+
+    in an unpolarized, unfocused, totally ordinary intuitionistic
+    logic or type theory or whatever.
+    <p/>
+    The first step is to polarize the proposition. There are lots of choices, but
+    one way of translating an polarized system into a polarized one
+    is to have a translation that always outputs a <I>positive</I>
+    proposition, and inserts just enough polarity shifts to make
+    this the case. So we'd say things like
+    \[ (A \land B)^+ = A^+ \tensor  B^+ \]
+    \[ (A \lor B)^+ = A^+ \oplus  B^+ \]
+    \[ (A \imp B)^+ = \dns (A^+ \lol \ups B^+) \]
+    which means that if we're just concerned with the single implication above, the
+    result is simply
+    \[ \dns (A^+ \lol \ups B^+) \]
+    <p/>
+    Now let's turn the crank on the resource semantics of this proposition.
+    The proposition we have is positive, so it needs to be interpreted at
+    a positive resource, call it $\gamma$.
+    The shifts will turn into quantified 'negations'. We calculate
+    \[ \dns (A^+ \lol \ups B^+) \wat \gamma  \]
+    \[ = \forall \phi . (A^+ \lol \ups B^+) \wat \phi \to \gamma \tri \phi \]
+    \[ = \forall \phi . (\exists \alpha\psi . A^+ \wat \alpha \x \ups B^+ \wat \psi \x R_\lol(\alpha\psi\phi) \to \gamma \tri \phi \]
+    \[ = \forall \phi  \alpha\psi . A^+ \wat \alpha \to \ups B^+ \wat \psi \to R_\lol(\alpha\psi\phi) \to \gamma \tri \phi \]
+
+    Now that $ R_\lol(\alpha\psi\phi)$ that appears is
+    the <I>relation</I> that gives the semantics of the multiplicative
+    connective $\lol$. Normally I would postulate that there is some (overloaded) operation
+    $\lol$ that takes a positive resource $\alpha$ and a negative resource $\psi$
+    and yields a negative resource $\alpha \lol \psi$, and the relation would be defined
+    as
+    \[R_\lol(\alpha\psi\phi) \equiv (\alpha \lol \psi = \phi)\]
+    Or in a situation where I'm taking the categorical structure of resources seriously,
+    something that uses a homset instead of an equality, like
+    \[R_\lol(\alpha\psi\phi) \equiv \NN[\alpha \lol \psi, \phi]\]
+    But in this case I'm going to actually need to use the full
+    generality of the <I>relational</I> nature of the semantics to
+    make a clever choice of $R_\lol$ to get what I want.
+    <p/>
+    Let's first step up the syntax to really talk about ends carefully.
+    What I mean by $\forall$ in the categorified case is an end:
+    $\phi, \psi$ range over some category $\NN$ and $\alpha$ ranges
+    over some category $\PP$, and $A^+$ and $B+$ are functors $\PP \to \rset$,
+    and $\tri : \PP \to \NN \to \rset$. Our logical expression becomes
+    \[ \int_{\phi,\psi \in \NN,  \alpha\in\PP} A^+(\alpha) \to \ups B^+(\psi) \to R_\lol(\alpha\psi\phi) \to \gamma \tri \phi \]
+
+    At this point we have an expression that is 'the' semantics of $A \imp B$,
+    but which is parameterized by choices of $\PP, \NN, \tri, R_\lol$. We can
+    now make specific choices for all of those, in terms of a smaller set of
+    parameters: a category $\C$, a set $Z$, and a unary predicate $\# : Z \to \rset$. We set
+    <table>
+      <tr><td>$ \PP $</td><td> $\quad=\quad$</td><td>$ \C $</td></tr>
+      <tr><td>$ \NN $</td><td> $\quad=\quad$</td><td>$ \C^\op \x Z $</td></tr>
+      <tr><td>$ C \tri (C', z) $</td><td> $\quad=\quad$</td><td>$ \C[C, C'] \to \#(z) $</td></tr>
+      <tr><td>$R_\lol(C_0,(C_1, z_1), (C_2, z_2)) $</td><td> $\quad=\quad$ </td><td>$ (z_1 = z_2) \x \C[C_0, C_1] \x \C[C_2, C_0]$</td></tr>
+    </table>
+    and immediately notice that this <span style="color:red">doesn't type-check</span>! $R_\lol$ is supposed
+    to be a functor $\PP^\op \x \NN^\op \x \NN \to \rset$, isn't it?
+    But $C_0$ is used both covariantly <I>and</I> contravariantly!
+    <p/>
+    We solve this by generalizing and allowing $R_\lol$ to instead be of type
+    \[R_\lol : (\PP \x \PP^\op) \x (\NN \x \NN^\op) \x \NN \to \rset\]
+    because, after all, the coend formula for interpreting the multiplicative
+    connective $\lol$, which we can modify to
+    \[ (P \lol N)(\phi : \NN) = \int^{\alpha\in \PP,\psi \in \NN} P(\alpha) \x N(\psi) \x R_\lol(\alpha,\alpha,\psi,\psi,\phi)\]
+    supports mixed variance in the arguments to the relation just fine, because that's
+    what coends do.
+    <p/>
+    Given all these choices, we can complete the calculation of the semantics
+    of $A \imp B$:
+    \[ \dns (A^+ \lol \ups B^+) \wat \gamma  \]
+    \[ = \forall \phi . (A^+ \lol \ups B^+) \wat \phi \to \gamma \tri \phi \]
+    \[ = \forall \phi . (\exists \alpha\psi . A^+ \wat \alpha \x \ups B^+ \wat \psi \x R_\lol(\alpha\psi\phi) \to \gamma \tri \phi \]
+    \[ = \forall \phi  \alpha\psi . A^+ \wat \alpha \to \ups B^+ \wat \psi \to R_\lol(\alpha\psi\phi) \to \gamma \tri \phi \]
+    \[ = \forall \phi  \alpha\psi . A^+ \wat \alpha \to \ups B^+ \wat \psi \to R_\lol(\alpha\psi\phi) \to \gamma \tri \phi \]
+    \[= \int_{\phi,\psi \in \NN,  \alpha\in\PP} A^+(\alpha) \to \ups B^+(\psi) \to R_\lol(\alpha\psi\phi) \to \gamma \tri \phi \]
+    \[=  \int_{\Phi,\Psi \in \C^\op,  D\in\C} \forall z \in Z . A^+(D) \to \ups B^+(\Psi,z) \to (\C[D, \Psi] \x \C[\Phi, D]) \to \C[\gamma, \Phi] \to \#(z) \]
+    \[=  \int_{\Psi, D} \forall z \in Z . A^+(D) \to \ups B^+(\Psi,z) \to \C[D, \Psi] \to (\int^{\Phi} \C[\gamma, \Phi] \x \C[\Phi, D]) \to \#(z) \]
+    \[=  \int_{\Psi, D} \forall z \in Z . A^+(D) \to \ups B^+(\Psi,z) \to \C[D, \Psi] \to
+ \C[\gamma, D] \to \#(z) \]
+    \[=  \int_{D} \C[\gamma, D]\to A^+(D) \to \int_\Psi \forall z \in Z . \ups B^+(\Psi,z)
+ \to \C[D, \Psi]  \to \#(z) \]
+    \[=  \int_{D} \C[\gamma, D]\to A^+(D) \to \int_\Psi \forall z \in Z . \ups B^+(\Psi,z)
+ \to D \tri (\Psi, z) \]
+    \[=  \int_{D} \C[\gamma, D]\to A^+(D) \to \dns\ups B^+(D) \]
+    In other words,
+    \[ \dns (A^+ \lol \ups B^+) \wat C  \]
+    \[=  \int_{D} \C[C, D]\to A^+(D) \to \dns\ups B^+(D) \]
+    \[=  \rset^\C[ \C[C, \dash] \x A^+ ,  \dns\ups B^+ ]\]
+    \[=  \rset^\C[ yC \x A^+ ,  \dns\ups B^+ ]\]
+    and modulo the focusing double-shift, which shouldn't essentially matter, this
+    is exactly what we wanted to obtain!
+  </body>
+  <script>
+	 renderMathInElement(
+    document.body,
+    {
+    delimiters: [
+    {left: "$$", right: "$$", display: true},
+    {left: "\\[", right: "\\]", display: true},
+    {left: "$", right: "$", display: false},
+    {left: "\\(", right: "\\)", display: false}
+    ],
+    macros: {
+    "\\R": "\\mathbb{R}",
+    "\\rset": "\\mathbf{Set}",
+    "\\rctx": "\\mathop\\mathsf{ctx}",
+    "\\x": "\\times",
+    "\\prov": "\\vdash",
+    "\\tensor": "\\otimes",
+    "\\lol": "\\multimap",
+	 "\\rtype": "\\mathsf{type}",
+	 "\\dns": "{\\downarrow}",
+	 "\\ups": "{\\uparrow}",
+	 "\\celse": "{\\ |\\ }",
+	 "\\tri": "\\triangleright",
+	 "\\imp": "\\Rightarrow",
+	 "\\C": "\\mathbf{C}",
+	 "\\D": "\\mathbf{D}",
+	 "\\PP": "\\mathbf{P}",
+	 "\\NN": "\\mathbf{N}",
+	 "\\op": "\\mathrm{op}",
+	 "\\dash": "-",
+	 "\\o": "\\circ",
+	 "\\ll": "[\\![",
+	 "\\rr": "]\\!]",
+    "\\wat": "{@}",
+    }
+    }
+    );
+  </script>
+</html>
