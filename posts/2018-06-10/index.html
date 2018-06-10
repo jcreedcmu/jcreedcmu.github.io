@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>Creative Annealing</h1>
+	 <blockquote>
+		<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Sometimes doing mathematics is like building an arch top-down. Look, I&#39;m really sure this rock goes right here<br><br>[puts rock in mid-air, falls with a crash]<br><br>I just... there need to be other rocks elsewhere, I think. Maybe. But I&#39;m really sure about the shape of this rock.</p>&mdash; jason reed (@jcreed) <a href="https://twitter.com/jcreed/status/1005090501836656641?ref_src=twsrc%5Etfw">June 8, 2018</a></blockquote>
+		<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+	 </blockquote>
+
+	 This is a feeling I've been having a lot lately. The kernel of it
+	 is something that is, I think, wholly <I>un</I>remarkable in
+	 almost every creative field, but it's something that I've had to
+	 learn and relearn in my guts several times. I'm going to try to
+	 state the thing I'm talking about, and it's going to sound very
+	 bland and obvious, but I'll say it anyway:
+	 <blockquote>
+		You probably have to make lots of wrong things before you're able to make the right thing.
+	 </blockquote>
+	 An artist makes sketches. A writer makes rough drafts. A musician rehearses. An
+	 architect makes models
+	 (<a href="https://www.youtube.com/watch?v=7ffj8SHrbk0">which, as
+	 such, are completely ineffective at achieving the goals of the actual building</a>)
+	 Ok, sure, why is this interesting?
+
+	 <h2>Is Mathematics Special</h2>
+	 <p/> Because the notion of 'wrong' &mdash; or, maybe it's better to
+	 say, our <I>expectations</I> of the notion of wrongness &mdash; in art,
+	 and writing, and music, and architecture, and so on, are typically
+	 somewhat different than what <I>wrongness</I> entails in math. The
+	 'wrongness' that gets remediated through refinement, practice,
+	 etc. is, more or less, a subjective wrongness, that is never
+	 absolutely present or absolutely eliminated. The 'wrongness' of a
+	 center-for-ants architectural model is a kind of
+	 wrongness-of-symbolic-representation that isn't even really a
+	 fault. A thing is made which <I>says things about</I> the real
+	 object's structure, but it needn't be (and its usefulness is
+	 predicated on not being) as fully developed as the real object.
+
+	 <p/>But mathematics &mdash; good, old-fashioned formal mathematics
+	 with Axioms and Definitions and Proofs &mdash; has a very clear notion of wrongness,
+	 and on the face of it, it doesn't seem to have much <I>use</I> for wrong proofs.
+
+	 <p/>And yet, here I am, with a pile of definitions and assertions
+	 of consequences that I've been tinkering with for the last month
+	 or so, and they're just <I>wrong</I>, and I know it. Some of the
+	 asserted consequences do not follow from the definitions. Really
+	 big, red-flag things, things that 100% need to be true for the
+	 system to be taken at all seriously as a proof theory, things like
+	 being able to implement <I>identity functions</I>, for crying out
+	 loud, just flat out don't work yet. And yet I don't feel very
+	 bothered about it!
+
+	 <p/>I mean, don't get me wrong, I'm <I>somewhat</I> bothered. Some
+	 of the section titles in my LaTeX notes are things like <b>Slight
+	 Sense of Panic</b>. But it's not <I>surprising</I>; it's normal. This
+	 is what research looks like.The conclusion that I'm drawn to is that math
+	 actually <b>isn't</b> very special, and depends on drafts and
+	 naive models and broken-assed garbage as much as any other field.
+
+	 <p/>Certainly I should mention physics, in which QFT is the
+	 shining example of how wrongness &mdash; by which I mean in this
+	 case "lack of secure mathematical foundations" &mdash; has
+	 provided apparently no impediment whatsoever to making just
+	 stupidly accurate predictions about the physical world. On the
+	 other hand, I still <I>am</I> a mathematician, and I find this
+	 state of affairs unsatisfying as an <I>endpoint</I> &mdash; but it
+	 does corroborate, I think, the notion that the human endeavor
+	 of <I>doing</I> mathematics can survive and make progress even for
+	 decades on the basis of merely some partially understood
+	 principles with some partial formal probes into their
+	 sensibleness.
+
+	 <h2>How Can This Possibly Work</h2>
+	 I think some things that make it possible to work on "wrong proofs" for so long
+	 without becoming discouraged (at least for me) are
+	 <ul>
+		<li>
+		  The mere fact that it's worked out before  &mdash; that I've spent
+		  a long time massaging a gradually decreasingly incoherent pile
+		  of intuitions and conjectures into a formally functioning piece
+		  of mathematics.
+		<li>
+		  Being able to 'smell' signals of near-rightness among the
+		  general cloud of wrongness. Things being more symmetric than
+		  you'd expect. Theorems being aaaalmost satisfied. Things going
+		  "the way they usually go" 90% of the way, leaving you with the
+		  knowledge that <I>what you need to think about</I> is that
+		  last 10%.
+		<li>
+		  Having notation that's compact enough that you can do small
+		  calculations reliably enough to be confident in which parts of
+		  the whole are wrong or right. I am absolutely <b>the worst</b>
+		  at making frequent random algebra mistakes, and the rate at
+		  which I make them seems to be simply proportional to how many
+		  symbols I have to write down. Figuring how to present a
+		  small-as-possible cross-section to the bit-flipping cosmic
+		  rays of human stupidity is essential.
+		<li>
+		  Being able to use software in various ways that are in
+		  principle unnecessary but in practice incredibly helpful for
+		  guiding one's intuition through the swamp: certainly proof assistants, and
+		  even the humble ability to copy-and-paste-and-modify text in an emacs buffer.
+	 </ul>
+  </body>
+  <script>
+	 renderMathInElement(
+    document.body,
+    {
+    delimiters: [
+    {left: "$$", right: "$$", display: true},
+    {left: "\\[", right: "\\]", display: true},
+    {left: "$", right: "$", display: false},
+    {left: "\\(", right: "\\)", display: false}
+    ],
+    macros: {
+    "\\R": "\\mathbb{R}",
+    "\\rset": "\\mathbf{Set}",
+    "\\rctx": "\\mathop\\mathsf{ctx}",
+    "\\x": "\\times",
+    "\\prov": "\\vdash",
+    "\\tensor": "\\otimes",
+    "\\lol": "\\multimap",
+	 "\\rtype": "\\mathsf{type}",
+	 "\\dns": "{\\downarrow}",
+	 "\\ups": "{\\uparrow}",
+	 "\\celse": "{\\ |\\ }",
+	 "\\tri": "\\triangleright",
+	 "\\imp": "\\Rightarrow",
+	 "\\C": "\\mathbf{C}",
+	 "\\D": "\\mathbf{D}",
+	 "\\PP": "\\mathbf{P}",
+	 "\\NN": "\\mathbf{N}",
+	 "\\op": "\\mathrm{op}",
+	 "\\dash": "-",
+	 "\\o": "\\circ",
+	 "\\ll": "[\\![",
+	 "\\rr": "]\\!]",
+    "\\wat": "{@}",
+    }
+    }
+    );
+  </script>
+</html>
