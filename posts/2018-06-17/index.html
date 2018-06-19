@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>Feeling The Yoneda Lemma in my Guts</h1> Category theory
+	 confession time: I've known about the Yoneda lemma for a long
+	 time, and never really felt like I <I>got</I> it. Went through the
+	 proof I don't know how many times, never found anything mysterious
+	 about it, but never really had any intuition for what
+	 it <I>meant</I> beyond some mumbling about Cayley groups and stuff.
+
+	 <p/>
+
+	 But something finally clicked into place for me some months ago
+	 after seeing Fosco Loregian's
+	 awesome <a href="https://arxiv.org/abs/1501.02503">This is the
+	 (co)end, my only (co)friend</a>, right where he talks about the
+	 end/coend Yoneda-lemma corollaries he calls the "Ninja Yoneda
+	 Lemma", Proposition 2.1. In his notation, it's the statement
+	 of four natural isomorphisms of functors,
+	 <table>
+		<tr>
+		  <td>\[(i)\ K \cong \int^c Kc \x \C(\_, c)\]</td>
+		  <td>\[(ii)\ K \cong \int_c Kc^{ \C(c, \_)}\]</td>
+		</tr>
+		<tr>
+		  <td>\[(iii)\ H \cong \int^c Hc \x \C(c, \_)\]</td>
+		  <td>\[(iv)\ H \cong \int_c Hc^{ \C(\_, c)}\]</td>
+		</tr>
+	 </table>
+	 for any $K : \rset^{\C^\op}$ and any $H : \rset^{\C}$,
+	 where $\int^c$ stands for the coend over every object $c \in \C$,
+	 and $\int_c$ stands for the end over every object $c\in \C$.
+
+	 <p/>
+
+	 The thing that clicked for me was first seeing these as <I>logical</I>
+	 equivalences, as if they were saying
+	 <table>
+		<tr>
+		  <td>\[(i)\ K \prequiv \exists c  . Kc \land \C(\_, c)\]</td>
+		  <td>\[(ii)\ K \prequiv \forall c . \C(c, \_) \imp Kc\]</td>
+		</tr>
+		<tr>
+		  <td>\[(iii)\ H \prequiv \exists c . Hc \land \C(c, \_)\]</td>
+		  <td>\[(iv)\ H \prequiv \forall c. \C(\_, c) \imp Hc\]</td>
+		</tr>
+	 </table>
+	 and realizing that the role the homset $\C(\_, \_)$ is
+	 playing <I>is in fact one of directed equality</I>.
+	 For the following equivalences are absolutely provable in first-order logic:
+	 <table>
+		<tr>
+		  <td>\[(i)\ K(x) \prequiv \exists c  . K(c) \land (x = c)\]</td>
+		  <td>\[(ii)\ K(x) \prequiv \forall c . (c = x) \imp K(c)\]</td>
+		</tr>
+		<tr>
+		  <td>\[(iii)\ H(x) \prequiv \exists c . H(c) \land (c = x)\]</td>
+		  <td>\[(iv)\ H(x) \prequiv \forall c. (x = c) \imp H(c)\]</td>
+		</tr>
+	 </table>
+	 And indeed $(i)$ and $(iii)$ are the same, and $(ii)$ and $(iv)$
+	 are the same, up to the symmetry of equality.
+	 <p/>
+
+
+	 All of $(i)/(ii)/(iii)/(iv)$ contain the essential information
+	 of both the introduction
+	 and elimination rules of equality.
+
+	 The elim rule in plain english is the fact that
+	 <blockquote>
+		The <I>only</I> thing that is equal to $x$ is $x$ itself.
+	 </blockquote>
+	 and the intro rule is the fact that
+	 <blockquote>
+		There is a thing that equal to $x$, namely $x$ itself.
+	 </blockquote>
+
+	 To prove any of these logical equivalences, we use the intro rule
+	 for equality when proving the direction that decomposes the
+	 quantifier synchronously (i.e. $K(x) \prov \exists c . K(c) \land
+	 (x = c)$ or $ \forall c . (c = x) \imp K(c) \prov K(x)$)
+	 by <I>choosing</I> $c$ to be $x$ and establishing the resulting
+	 reflexive equality. And we use the elim rule when proving the direction
+	 that decomposes the quantifer asynchronously
+	 (i.e $\exists c . K(c) \land
+	 (x = c) \prov K(x)$ or $ K(x) \prov  \forall c . (c = x) \imp K(c)$)
+	 by using the equality to collapse the two free term variables into one,
+	 and then trivially proving $K(c) \prov K(c)$.
+
+	 <p/>
+
+	 Anyway the punchline for me is that the Yoneda lemma is really telling us
+	 a certain formal way in which
+	 <blockquote>
+		<font size="+2">the hom-type is a directed generalization of equality</font>
+	 </blockquote>
+	 and this is true for <I>categories</I>, not just groupoids.
+  </body>
+  <script>
+	 renderMathInElement(
+    document.body,
+    {
+    delimiters: [
+    {left: "$$", right: "$$", display: true},
+    {left: "\\[", right: "\\]", display: true},
+    {left: "$", right: "$", display: false},
+    {left: "\\(", right: "\\)", display: false}
+    ],
+    macros: {
+    "\\R": "\\mathbb{R}",
+    "\\rset": "\\mathbf{Set}",
+    "\\rctx": "\\mathop\\mathsf{ctx}",
+    "\\x": "\\times",
+    "\\prov": "\\vdash",
+    "\\tensor": "\\otimes",
+    "\\lol": "\\multimap",
+	 "\\rtype": "\\mathsf{type}",
+	 "\\dns": "{\\downarrow}",
+	 "\\ups": "{\\uparrow}",
+	 "\\celse": "{\\ |\\ }",
+	 "\\tri": "\\triangleright",
+	 "\\imp": "\\Rightarrow",
+	 "\\C": "\\mathbf{C}",
+	 "\\D": "\\mathbf{D}",
+	 "\\PP": "\\mathbf{P}",
+	 "\\NN": "\\mathbf{N}",
+	 "\\op": "\\mathrm{op}",
+	 "\\dash": "-",
+	 "\\o": "\\circ",
+	 "\\ll": "[\\![",
+	 "\\rr": "]\\!]",
+    "\\wat": "{@}",
+    "\\prequiv": "\\dashv\\vdash",
+    }
+    }
+    );
+  </script>
+</html>
