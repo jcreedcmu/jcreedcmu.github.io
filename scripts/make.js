@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 const posts = [
+  {"dir": "2018-06-24", "title": "Cache Types"},
   {"dir": "2018-06-17", "title": "Feeling the Yoneda Lemma in my Guts"},
   {"dir": "2018-06-10", "title": "Creative Annealing"},
   {"dir": "2018-06-03", "title": "Focusing Dissection of Exponentials In Presheaf Categories"},

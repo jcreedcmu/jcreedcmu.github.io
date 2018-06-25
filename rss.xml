@@ -4,7 +4,12 @@
 	 <title>jcreedcmu.github.io</title>
 	 <description>Occasional blogging about math</description>
 	 <link>https://jcreedcmu.github.io/index.html</link>
-	 <pubDate>Sun, 17 Jun 2018 00:00:00 GMT</pubDate>
+	 <pubDate>Sun, 24 Jun 2018 00:00:00 GMT</pubDate>
+    <item>
+      <title>Cache Types</title>
+		<link>https://jcreedcmu.github.io/posts/2018-06-24/index.html</link>
+      <pubDate>Sun, 24 Jun 2018 00:00:00 GMT</pubDate>
+    </item>
     <item>
       <title>Feeling the Yoneda Lemma in my Guts</title>
 		<link>https://jcreedcmu.github.io/posts/2018-06-17/index.html</link>

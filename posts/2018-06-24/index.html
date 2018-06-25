@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>Cache Types</h1>
+
+	 Say a <I>cache type</I> is a triple of types $G, C, B$, with some
+	 morphisms and equations to follow.
+
+	 <p/>
+	 But I want to start by describing
+	 rough shape of the example I have in mind is. The type $B$ is
+	 the type of the <I>base state</I>. Think of it as the type that
+	 describes cells in a spreadsheet that have actual, concrete
+	 numbers in them. The type $C$ is the <I>cache state</I>, for example
+	 maybe $B \x (D + 1)$. It represents the whole spreadsheet &mdash; or, well, a funny kind of lazy
+	 spreadsheet &mdash; where the base state is there, and also a "cell with a formula", a computation
+	 that computes something <I>derived from the base state</I>, of type $D$. Suppose $f : B \to D$ is
+	 the name of that computation. We say $D + 1$ because
+	 we want to talk about times when the cache is empty, or otherwise invalidated. Finally,
+	 $G$ is the type of <I>good cache states</I>. For example, $G$ can be set to $B \x 2$. It represents
+	 the fact that the cache can be empty or full, but records the fact that <I>if</I> the cache is
+	 full, there's only <I>one</I> correct value for it to have. The type $C = B \x (D + 1)$ includes
+	 lots of inconsistent cache states like $( b, \mathsf{Just}\ d)$, when
+	  $d \ne f(b)$.
+
+	 <p/>
+	 So the morphisms and equations we require are the following:
+	 <center><img src="diagram1.png"></center>
+	 We require two retraction pairs, whose composite is also an retraction.
+	 In our example, the injection $\iota : B \to B \x 2$ by always choosing the element $\mathsf{false}$ of 2;
+	 the initial state of the cache is empty. The injection $\eta : B \x 2 \to B \x (D + 1)$ is defined by
+	 \[ \eta(b, \mathsf{true}) = ( b, \mathsf{Just}(f(b)) ) \]
+	 \[ \eta(b, \mathsf{false}) = ( b, \mathsf{None} ) \]
+	 It describes what a good cache state is, concretely. Either a full cache, whose contents are consistent with the base
+	 state, or an empty cache. The projection $\epsilon : B \x (D + 1) \to B \x 2$ simply throws away the <I>data</I>
+	 in $D$ and just returns the bit of whether the cache is full. The projection $\pi : B \x 2 \to B$ throws away even
+	 that bit of information.
+	 <h2>Morphisms</h2>
+
+	 The point of setting up these definitions is to be able to talk about the <I>morphisms</I> in a category whose
+	 objects are cache types. I'll say a morphism from $(G, C, B)$ to $(G', C', B')$ is a triple
+	 of morphisms that make the following diagram commute:
+	 <center><img src="diagram2.png"></center>
+	 The important one is $h$; because of the other arrows being mono/epi, the morphisms
+	 $\hat h$ and $\check h$ are uniquely determined, if any such arrows exist and fit into
+	 their place in the commutative diagram.
+	 <p/>
+	 Let's first talk about why these commutative squares are being required, and then
+	 why the squares that <I>aren't</I> required, aren't required.
+	 <p/>
+
+	 The top square essentially says: If we have a good cache state,
+	 and we inject that into $C$, and do some consistent computation to
+	 it, it should also result in a good state. This is a sensible abstract "preserves a property"
+	 kind of requirement when we think of $C$ as the <I>implementation type</I> of the caching
+	 discipline. The morphism $h$ is the <I>actual concrete program</I> we run, and the
+	 potential existence of $\hat h$ is a mathematical abstraction guaranteeing (part of) its correctness.
+	 <p/>
+
+	 The bottom square is saying: if we do some computation and lose the cache, we should
+	 still have the same underlying data as if we had lost the cache earlier, and done
+	 the underlying comptuation on the base state.
+	 <p/>
+
+	 Now for the squares we <I>didn't</I> require:
+	 <center><img src="diagram3.png"></center>
+	 The top square of this would require that our main computation $h$ does <I>not</I> depend
+	 on the <I>value</I> in of the cache, that it can be represented as merely a function $G \to G'$. But this
+	 deprives us from expressing computations whose intention is to <I>use a cached value</I>, as opposed to
+	 <I>recomputing</I> it from the base state. And that's point of this whole exercise!
+	 <p/>
+
+	 The bottom square is telling us that if we <I>initialize</I> the
+	 cache from some base state, and do some computation with it, that
+	 has to be the same as doing the "raw" computation, and then
+	 initializing the cache. This would undesirably prevent us from
+	 doing computations that, e.g. do nothing but simply transition the
+	 cache from empty to full by performing the expensive operation
+	 whose output we want cached.
+
+	 <h2>Expressing Morphisms Another Way</h2>
+	 Instead of demanding triples, we can express the existence of
+	 $\hat h$ and $\check h$ equationally in terms of $h$. We can require
+	 <ul>
+		<li>$h \eta = \eta' \epsilon' h \eta $
+		<li>$\pi' \epsilon' h = \pi' \epsilon' h \eta \iota \pi \epsilon$
+	 </ul>
+	 because when this happens we can set
+	 <ul>
+		<li>$\hat h =  \epsilon' h \eta $
+		<li>$\check h = \pi' \epsilon' h \eta \iota $
+	 </ul>
+	 Conversely, whenever we have $\hat h$ and $\check h$ satisfying the diagram above
+	 <ul>
+		<li>$\eta' \hat h =   h \eta $
+		<li>$\check h \pi \epsilon = \pi' \epsilon' h  $
+	 </ul>
+	 it's just a matter of composing on
+	 <ul>
+		<li>$\epsilon' \eta' \hat h =  \epsilon'  h \eta $
+		<li>$\check h \pi \epsilon \eta \iota= \pi' \epsilon' h  \eta \iota$
+	 </ul>
+	 and then using the retraction equations to get back the requirements above.
+	 <h2>Resummary</h2>
+	 The category of cache-types has for objects triples of sets $(G, C, B)$ such that
+	 <center><img src="diagram1.png"></center>
+	 and whose morphisms  $(G, C, B) \to  (G', C', B')$ are morphisms $h : C \to C'$ such that
+	 <ul>
+		<li>$h \eta = \eta' \epsilon' h \eta $
+		<li>$\pi' \epsilon' h = \pi' \epsilon' h \eta \iota \pi \epsilon$
+	 </ul>
+	 <h2>Example</h2>
+	 If we have a morphism $u : B \to B$, then a slightly nontrivial
+	 example of a morphism from $((B \x 2), (B \x (D + 1)), B)$ to itself
+	 is
+	 \[ v(b, d) = \mathop\mathbf{if}  b = u(b) \mathop\mathbf{then} (b, d) \mathop\mathbf{then} (u(b), \mathsf{Just}(f(u(b)))\]
+	 The fact that the equations are satisfied can be checked without any cleverness.
+  </body>
+  <script>
+	 renderMathInElement(
+    document.body,
+    {
+    delimiters: [
+    {left: "$$", right: "$$", display: true},
+    {left: "\\[", right: "\\]", display: true},
+    {left: "$", right: "$", display: false},
+    {left: "\\(", right: "\\)", display: false}
+    ],
+    macros: {
+    "\\R": "\\mathbb{R}",
+    "\\rset": "\\mathbf{Set}",
+    "\\rctx": "\\mathop\\mathsf{ctx}",
+    "\\x": "\\times",
+    "\\prov": "\\vdash",
+    "\\tensor": "\\otimes",
+    "\\lol": "\\multimap",
+	 "\\rtype": "\\mathsf{type}",
+	 "\\dns": "{\\downarrow}",
+	 "\\ups": "{\\uparrow}",
+	 "\\celse": "{\\ |\\ }",
+	 "\\tri": "\\triangleright",
+	 "\\imp": "\\Rightarrow",
+	 "\\C": "\\mathbf{C}",
+	 "\\D": "\\mathbf{D}",
+	 "\\PP": "\\mathbf{P}",
+	 "\\NN": "\\mathbf{N}",
+	 "\\op": "\\mathrm{op}",
+	 "\\dash": "-",
+	 "\\o": "\\circ",
+	 "\\ll": "[\\![",
+	 "\\rr": "]\\!]",
+    "\\wat": "{@}",
+    "\\prequiv": "\\dashv\\vdash",
+    }
+    }
+    );
+  </script>
+</html>
