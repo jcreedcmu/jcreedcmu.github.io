@@ -144,19 +144,18 @@
 	 \forall w_1\cdots w_n. R_{\alpha_1}(u, w_1) \imp \cdots \land R_{\alpha_n}(w_{n-1}, w_n) \imp \phi \wat w_n\]
 	 This means that when we have a proposition like $[\alpha_1 \cdot \alpha_2 \cdots \alpha_n]\phi$ on the
 	 right of a sequent, we will need to asynchronously unpack it into a whole sequence of information
-	 about possible worlds and actions that transition between them. We therefore might guess
+	 about possible worlds and actions that transition between them. We therefore guess
 	 that the general form of the sequent of the source language is
 	 \[\Gamma; \Omega \prov \phi \]
 	 for $\Gamma$ being as usual a context of hypothesized propositions, and $\Omega$ being an ordered list of actions.
-	 Semantically, we would say that the meaning of such a judgment is given by
+	 Semantically, we say that the meaning of such a judgment is given by
 	 \[(\Gamma; \alpha_1, \ldots, \alpha_n \prov \phi)= \]
 \[\forall u . \forall w_1\cdots w_n. R_{\alpha_1}(u, w_1) \imp \cdots \land R_{\alpha_n}(w_{n-1}, w_n) \imp \Gamma \wat u \imp \phi \wat w_n \]
 	 Since $\Gamma$ consists of hypotheses of the form $\phi\ \mathsf{true}$,
-	 then $\Gamma \wat u$ would be the conjunction of $\phi \wat u$.
+	 then $\Gamma \wat u$ is just the conjunction of $\phi \wat u$.
 	 <h2>Inference Rules</h2>
-	 We can make some progress by trying to start writing down inference rules
-	 that decompose non-atomic actions in the context
-	 $\Omega$. If we say
+	 The easiest inference rules to start writing down are those that decompose non-atomic actions in the context
+	 $\Omega$. We can say
 	 \[
 	 \Gamma; \Omega, \alpha, \beta, \Omega' \prov \phi
 	 \over
@@ -186,61 +185,48 @@
 	 \Gamma; \Omega, \alpha \cup \beta, \Omega' \prov \phi
 	 \]
 
-	 then we observe that the interpretation of all these rules are
-	 justified by left-inversion rules in the metalanguage. Indeed, by
-	 focusing discipline, we can require that these rules are applied
-	 eagerly in the source language, until the entire context $\Omega$
-	 consists of nothing but atomic actions and tests.
-
+	 and observe that these are justified by left-inversion rules in the
+	 metalanguage. Indeed, by focusing discipline, we can require that
+	 these rules are applied eagerly in the source language, until the
+	 entire context $\Omega$ consists of nothing but atomic actions and
+	 tests.
 	 <p/>
 	 But now we think about how to write rules for a test $? \phi$ and it seems
 	 somewhat unclear with this syntax! Since $?\phi = \phi \land (u = v)$ is a
 	 positive proposition, it should invert in this position, but our judgmental
 	 apparatus so far isn't general enough to talk about hypothesizing the truth of propositions
-	 in the <I>middle</I> of a sequence of world-transitions.
+	 in the middle of a sequence of world-transitions.
 
-	 <h2>Introducing Mixed Contexts</h2>
+	 <h2>Starting Over With More Generality</h2>
 
-	 We want to allow for a mixture of truth-assumptions and
-	 action-transitions, so the left side of our sequents should look
-	 like \[\Delta ::= \cdot \celse \Delta, \phi\rtrue \celse \Delta,
-	 \alpha \ract\] We mean to impose the following structural-rule
-	 discipline on such contexts: assumptions $\phi \rtrue$ satisfy
-	 weakening and contraction, can be permuted amongst themselves, but
-	 cannot be permuted with an $\alpha \ract$, nor can $\alpha \ract$
-	 be permuted amongst themselves, or weakened, or contracted. We can
-	 get away with eliding the judgment tag (the $\rtrue$ or $\ract$)
-	 in almost every case because it can be inferred from the type of
-	 the syntactic object.
+	 We now suppose that we want the left side of our sequents contexts
+	 look like \[\Delta ::= \cdot \celse \Delta, \phi\rtrue \celse
+	 \Delta, \alpha \ract\] We mean to impose the following
+	 structural-rule discipline on such contexts: assumptions $\phi
+	 \rtrue$ satisfy weakening and contraction, can be permuted amongst
+	 themselves, but cannot be permuted with an $\alpha \ract$, nor can
+	 $\alpha \ract$ be permuted amongst themselves, or weakened, or contracted.
 
-	 <p/>
 	 We can think of such a context as if it were an ordered list of
 	 (internally unordered) contexts of ordinary assumptions, linked by
 	 actions. \[\Gamma_0 \mapsto_{\alpha_1}\cdots \mapsto_{\alpha_n}
 	 \Gamma_n\]
 	 \[\approx \Gamma_0, \alpha_1 \ract, \ldots, \alpha_n \ract, \Gamma_n \]
-	 where here each $\Gamma_i$ here only containing propositions $\phi \rtrue$.
+	 where here each $\Gamma_i$ is thought of as only containing propositions $\phi \rtrue$.
 
 	 <p/>
 
-	 We could give the meaning of a context recursively by saying
+	 We give the meaning of a context recursively by saying
 	 \[\cdot \wat u = \top\]
 	 \[(\Delta, \phi \rtrue) \wat u = \Delta \wat u \land \phi \wat u\]
 	 \[(\Delta, \alpha \ract) \wat v = \exists u . R_\alpha(u, v) \land  \Delta \wat u\]
-	 and that the intended meaning of $\Delta \prov \phi$ is
+
+	 and we can say that the intended meaning of $\Delta \prov \phi$ is
 	 \[\forall u . \Delta \wat u \imp \phi \wat u\]
-	 but we will actually want a slightly more general notion.
-	 For any worlds $u, v$, we define
-	 $\Delta(u, v)$ to be a metalanguage proposition, defined recursively by
-	 \[\cdot(u, v)  = (u = v) \]
-	 \[(\Delta, \phi \rtrue)(u, v)  = \Delta(u, v) \land \phi\wat v \]
-	 \[(\Delta, \alpha \ract)(u, v)  = \exists w .  \Delta(u, w) \land R_\alpha(w, v)  \]
-	 and observe that the previous definition falls out as a special case of this, since
-	 \[\Delta \wat u \equiv \exists v . \Delta(v, u)\]
-	 This means another way of expressing the semantics of a sequent $\Delta \prov \phi$ is
-	 \[\forall u v . \Delta(v, u) \imp \phi \wat u\]
-	 <h2> Action Left Rules</h2>
-	 Now we can say
+
+	 <h2>Another Stab at Action Left Rules</h2>
+	 Now we can say (eliding the noise of the $\ract$ judgment because it can be inferred
+	 from the type of the syntactic object)
 	 \[
 	  \Delta, \alpha, \beta, \Delta' \prov \phi
 	 \over
@@ -275,7 +261,8 @@ and what's new is that we can say
 	 \over
 	  \Delta, ?\phi, \Delta' \prov \psi
 	 \]
-
+	 It seems worth noting that $1$ and $0$ are at this stage clearly unnecessary as first-class actions,
+	 since they can be implemented as $?\top$ and $?\bot$
 	 <h2>Rules for the modality</h2>
 	 We've set things up so that the right rule for $[\alpha]\phi$ is easy:
 	 \[
@@ -297,23 +284,29 @@ and what's new is that we can say
 (\Gamma \wat v) \land ([\beta]\phi \wat v) \land (\Gamma' \wat v) \land R_{\alpha'}(v, w) \land \cdots) \imp \psi \wat u_\infty \]
 	 so when we left-focus  on $[\beta]\phi \wat v$, that is, focus on $\forall v' . R_\beta(v, v') \imp \phi \wat v'$.
 	 This means we have to make a choice of future world $v'$, and also prove that $v'$ really is $\beta$-accessible
-	 from $v$. Let's make up some notation for this by saying that the left rule for $[\alpha]\phi$ is
+	 from $v$. Let's make up some notation for this by saying that the left rule for $[\beta]\phi$ is
 	 \[
-	 \Delta_1/\Delta_2/\Delta_3\prov \alpha \qquad \Delta_1, \Delta_2 ,\phi, \Delta_3 \prov \psi
+	 \Delta_1/\Delta_2/\Delta_3\prov \beta \qquad \Delta_1, \Delta_2 ,\phi, \Delta_3 \prov \psi
 	 \over
-	 \Delta_1, [\alpha]\phi, \Delta_2, \Delta_3 \prov \psi
+	 \Delta_1, [\beta]\phi, \Delta_2, \Delta_3 \prov \psi
 	 \]
 	 Now we have to define the judgment
-	 \[\Delta_1/\Delta_2/\Delta_3 \prov \alpha\]
+	 \[\Delta_1/\Delta_2/\Delta_3 \prov \beta\]
 	 whose informal meaning is that we can transition from the current world of the first slash,
-	 to the current world of the second slash, via action $\alpha$.
-
-	 We define the meaning of $\Delta_1/\Delta_2/\Delta_3 \prov \alpha$
-	 to be
-	 \[\forall u,v,w,z . \Delta_1(u, v) \land \Delta_2(v, w) \land \Delta_3(w, z) \imp R_\alpha(v, w)\]
-
+	 to the current world of the second slash, via action $\beta$.
+	 To give it a formal meaning, we need to define a slightly richer semantics of contexts
+	 $\Delta$ that captures the transition effect of the actions in them. For worlds $u, v$, we'll define
+	 $\Delta(u, v)$ to be a metalanguage proposition, defined recursively by
+	 \[\cdot(u, v)  = (u = v) \]
+	 \[(\Delta, \phi \rtrue)(u, v)  = \Delta(u, v) \land \phi\wat v \]
+	 \[(\Delta, \alpha \ract)(u, v)  = \exists w .  \Delta(u, w) \land R_\alpha(w, v)  \]
 	 <h2>An Exchange Law for this Judgment</h2>
-	 Armed with that definition, we can tell that we can allow exchange across slashes for propositional
+	 Note that our previous definition of the semantics of contexts falls out as a special case of this,
+	 \[\Delta \wat u = \exists v . \Delta(v, u)\]
+	 Armed with that, we can define the meaning of $\Delta_1/\Delta_2/\Delta_3 \prov \beta$
+	 to be
+	 \[\forall u,v,w,z . \Delta_1(u, v) \land \Delta_2(v, w) \land \Delta_3(w, z) \imp R_\beta(v, w)\]
+	 With this definition, we can tell that we can allow exchange across slashes for propositional
 	 hypotheses (although not actions), i.e.
 	 the structural rules
 	 \[
@@ -341,12 +334,12 @@ and what's new is that we can say
 	 because we can prove as a lemma that
 	 \[(\phi \rtrue, \Delta)(u, v) = \phi \wat u \land \Delta(u, v)\] and therefore the semantics
 	 of both the premise and conclusion of these four rules are respectively equivalent to one of
-	 \[\forall u,v,w,z .\Delta_1(u, v) \land \phi(v) \land \Delta_2(v, w) \land \Delta_3(w, z) \imp R_\alpha(v, w)
+	 \[\forall u,v,w,z .\Delta_1(u, v) \land \phi(v) \land \Delta_2(v, w) \land \Delta_3(w, z) \imp R_\beta(v, w)
 	 \]
 	 \[
-	 \forall u,v,w,z . \Delta_1(u, v) \land \Delta_2(v, w) \land \phi(w) \land \Delta_3(w, z) \imp R_\alpha(v, w)\]
-	 <h2>Action Right Rules</h2>
-	 Let's now try to write down some rules that decompose $\alpha$.
+	 \forall u,v,w,z . \Delta_1(u, v) \land \Delta_2(v, w) \land \phi(w) \land \Delta_3(w, z) \imp R_\beta(v, w)\]
+	 <h2>An Attempt at Action Right Rules</h2>
+	 Let's now try to write down some rules that decompose $\beta$.
 	 \[
 	 {\over
 	 \Delta_1/\cdot /\Delta_3 \prov 1}
@@ -375,53 +368,7 @@ and what's new is that we can say
 	 {	 \Delta_1 \prov \phi
 	 \over
 	 \Delta_1/\cdot /\Delta_3 \prov ?\phi
-	 }
-	 \qquad
-	 {
-	 \over
-	 \Delta_1/ \pi  /\Delta_3 \prov \pi
 	 }	 \]
-	 All of these are admissible with respect to the semantics.
-	 <h2>Rules For Ordinary Connectives</h2>
-	 We need to settle how regular connectives interact with this judgmental machinery.
-	 An easy one to start with is the init rule, which requires that no actions appear to the right of the hypothesis
-	 being concluded:
-	 \[ \over \Gamma, \phi \prov \phi \]
-	 Rules for $\land$ and $\lor$ don't do anything surprising:
-	 \[{\Delta \prov \phi  \qquad \Delta \prov \psi \over \Delta \prov \phi \land \psi}
-	 \qquad
-	 {\Delta, \phi, \Delta' \prov \theta \over \Delta, \phi \land \psi, \Delta' \prov \theta}
-	 \qquad
-	 {\Delta, \psi, \Delta' \prov \theta \over \Delta, \phi \land \psi, \Delta' \prov \theta}
-	 \]
-	 \[{ \Delta, \phi, \Delta' \prov \theta
-	 \qquad	\Delta,  \psi, \Delta' \prov \theta
-	 \over \Delta, \phi \lor \psi, \Delta' \prov \theta}
-	 \qquad
-	 {\Delta \prov \phi \over \Delta \prov \phi \lor \psi}
-	 \qquad
-	 {\Delta \prov \psi \over \Delta \prov \phi \lor \psi}
-	 \]
-	 but for $\imp$ we have to truncate the context to the current world in the left rule:
-	 \[{\Delta \prov \phi \qquad \Delta, \psi, \Delta' \prov \theta \over \Delta, \phi \imp \psi, \Delta' \prov \theta }
-	 \qquad
-	 {\Delta, \phi \prov  \psi \over \Delta \prov \phi \imp \psi }\]
-	 In the semantics, the left rule becomes
-
-	 \[\forall uv.\Delta(u, v) \imp \phi \wat v
-	 \qquad \forall uvw . \Delta(u, v), \psi \wat v, \Delta'(v, w) \prov \theta \wat w
-	 \over \forall uvw. \Delta(u, v), (\phi \wat v) \imp (\psi \wat v), \Delta'(v, w) \prov \theta \wat w
-	 \]
-	 <h2>What's Missing</h2>
-	 What this handles is actions that
-	 can <I>test</I> the truth of propositions at various worlds, but
-	 it can't <I>change</I> the truth of them, either actually really
-	 changing the value of atomic propositions as in the
-	 $\mathsf{flip}$
-	 operation <a href="http://www.vub.ac.be/CLWF/SS/BER.pdf">as Baltag
-	 has</a>, or changing them in the minds of epistemic agents. It
-	 would be very interesting to see how those (or appropriate weakenings of them) might be added in a constructive/judgmental setting, but I
-	 don't have any clear ideas right now.
   </body>
   <script>
 	 renderMathInElement(
