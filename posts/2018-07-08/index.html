@@ -208,10 +208,13 @@
 	 discipline on such contexts: assumptions $\phi \rtrue$ satisfy
 	 weakening and contraction, can be permuted amongst themselves, but
 	 cannot be permuted with an $\alpha \ract$, nor can $\alpha \ract$
-	 be permuted amongst themselves, or weakened, or contracted. We can
-	 get away with eliding the judgment tag (the $\rtrue$ or $\ract$)
-	 in almost every case because it can be inferred from the type of
-	 the syntactic object.
+	 be permuted amongst themselves, or weakened in general, or
+	 contracted. (I believe it's sound to do weakening for actions,
+	 only on the <I>left</I> end of the context, but it's not
+	 particularly obvious that this should be the case at this point in
+	 the narrative) We can get away with eliding the judgment tag (the
+	 $\rtrue$ or $\ract$) in almost every case because it can be
+	 inferred from the type of the syntactic object.
 
 	 <p/>
 	 We can think of such a context as if it were an ordered list of
@@ -386,7 +389,7 @@ and what's new is that we can say
 	 We need to settle how regular connectives interact with this judgmental machinery.
 	 An easy one to start with is the init rule, which requires that no actions appear to the right of the hypothesis
 	 being concluded:
-	 \[ \over \Gamma, \phi \prov \phi \]
+	 \[ \over \Delta, \phi \prov \phi \]
 	 Rules for $\land$ and $\lor$ don't do anything surprising:
 	 \[{\Delta \prov \phi  \qquad \Delta \prov \psi \over \Delta \prov \phi \land \psi}
 	 \qquad
