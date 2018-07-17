@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>Action/Proposition Logic</h1>
+
+    As I was noodling around with the ideas in <a href="">the previous
+      post</a>, it really seems like
+    fact <a href="http://www.cs.cmu.edu/~fp/papers/mfps99.pdf">the
+      sequent calculus for ordered logic as described by Pfenning and
+      Polakow</a> and dynamic logic ought to be overlapping subsets of a
+    single logic that is a common generalization of both. But I can't
+    quite figure out how! Here's a point where I regrettably really
+    don't know the literature enough, and it seems very possible that
+    someone has already written this down. I
+    asked <a href="http://lpcs.math.msu.su/~sk/">Stepan</a> about it
+    while at FLoC, and he referred me at least
+    to <a href="http://buszko.home.amu.edu.pl/actlog2.pdf">Buszkowski's
+      work</a> and
+    some <a href="http://boole.stanford.edu/pub/jelia.pdf">old stuff
+      by Vaughan Pratt</a> from the early 90s.
+
+    <p/> Nonetheless I'm just going to forge ahead, as I usually do,
+    seeing if I can work it out for myself from scratch!
+
+	 <h2>Propositions and Actions</h2> As before, the underlying nature
+    of the subjects of judgments in the system is such that
+    propositions are <I>unary</I> properties of kripke-esque worlds,
+    and actions are <I>binary</I> propositions. (The questions of what
+    happens with $n$-ary relations, or what happens with
+    higher-dimensional relation-like structures, are extremely
+    interesting, but I reluctantly postpone them for now)
+    Since additives don't care about, and merely preserve arity, I'm
+    going to overload $\top, 0, \&, \oplus$ across the two
+    syntactic categories..
+
+	 The complete syntax of propositions $A$ and actions $\alpha$ is
+	 \[A ::= 0 \celse \top \celse A \oplus A \celse A \& A \celse A \imp A \celse [\alpha]A \celse p \]
+	 \[\alpha ::= 0 \celse \top \celse \alpha \oplus \alpha \celse \alpha \& \alpha \celse 1
+    \celse \alpha \cdot \alpha \celse \alpha \rrto \alpha \celse \alpha \llto \alpha \celse ? A \celse \pi \]
+    And the inference rules go like so, ignoring the additives $0,\top,\oplus,\&$,
+    which contain no surprises.
+    <h3> Action Atom</h3>
+	 \[
+	 \over
+	 \Gamma, \pi, \Gamma' \prov \pi
+	 \]
+    <h3>Action Left</h3>
+	 \[
+    {	  \Delta, \Delta' \prov C
+	 \over
+	 \Delta, 1, \Delta' \prov C}
+    \qquad
+    {
+	 \Delta, \alpha, \beta, \Delta' \prov C
+	 \over
+	 \Delta, \alpha \cdot \beta, \Delta' \prov C
+    }
+    \qquad
+    {
+	 \Delta,  A, \Delta' \prov C
+	 \over
+	 \Delta, ?A, \Delta' \prov C
+    }
+	 \]
+
+	 \[
+	 {\Delta_2 \prov \alpha \qquad \Delta_1, \beta, \Delta_3 \prov C
+	 \over
+	 \Delta_1, \alpha \rrto \beta, \Delta_2, \Delta_3 \prov C}
+    \qquad
+	 {\Delta_2 \prov \alpha \qquad \Delta_1, \beta, \Delta_3 \prov C
+	 \over
+	 \Delta_1, \Delta_2, \alpha \llto \beta, \Delta_3 \prov C}
+	 \]
+
+    <h3>Action Right</h3>
+	 \[
+    {
+	 \over
+	 \Gamma \prov 1}
+    \qquad
+    {
+	 \Delta \prov  \alpha\qquad \Delta'\prov \beta
+	 \over
+	 \Delta, \Delta' \prov \alpha \cdot \beta
+    }
+    \qquad
+    {
+    \Gamma \prov A
+	 \over
+	 \Gamma \prov {?}A
+    }
+	 \]
+
+	 \[
+	 {\Delta, \alpha \prov \beta
+	 \over
+	 \Delta \prov \alpha \rrto \beta}
+    \qquad
+	 {\alpha, \Delta \prov \beta
+	 \over
+	 \Delta \prov \alpha \llto \beta}
+	 \]
+
+    <h3>Proposition Atom</h3>
+    \[
+    \over
+    \Delta, p\prov p
+    \]
+    <h3>Proposition Left</h3>
+	 \[
+    {
+    \Delta \prov A \qquad \Delta, B, \Delta' \prov C
+	 \over
+	 \Delta, A \imp B, \Delta' \prov C
+    }
+    \qquad
+    {
+	 \Delta_2\prov \alpha \qquad \Delta_1, \Delta_2 ,A, \Delta_3 \prov C
+	 \over
+	 \Delta_1, [\alpha]A, \Delta_2, \Delta_3 \prov C
+    }
+	 \]
+
+
+    <h3>Proposition Right</h3>
+	 \[
+    {
+    \Delta, A \prov B
+	 \over
+	 \Delta \prov A \imp B
+    }
+    \qquad
+    {
+	 \Delta, \alpha \prov A
+	 \over
+	 \Delta \prov [\alpha]A
+    }
+	 \]
+
+    The cut principle for actions is
+    <blockquote>
+      If $\Delta_2\prov \alpha$ and $\Delta_1, \alpha, \Delta_3 \prov J$,
+      then $\Delta_1, \Delta_2, \Delta_3 \prov J$.
+    </blockquote>
+    Let $\Delta_0 \ge \Delta$ mean that $\Delta_0$ arises from
+    extending $\Delta$ by adding only propositions (not actions) to
+    it, in perhaps various places in the middle.
+
+    The cut principle for propositions is
+    <blockquote>
+      If $\Delta_0 \prov A$ and $\Delta, A, \Delta' \prov J$,
+      and $\Delta_0 \ge \Delta$, then $\Delta_0, \Delta' \prov J$.
+    </blockquote>
+
+    <h2>Untethered Semantics</h2>
+    The style of semantics I was giving before
+    isn't quite the right thing to match up with this syntax, because it is <I>untethered</I>
+    (see <a href="https://www.cs.cmu.edu/~fp/courses/15816-s10/lectures/17-tethered.html">
+      frank's notes</a>
+    and <a href="https://www.doc.ic.ac.uk/~bparente/jlc12.pdf">a paper
+      by rob simmons</a> for more occurrences of this concept).
+    But I'm going to describe it anyway, since it's a simpler version to get started with.
+    One <I>could</I> give a sequent calculus for it, and it would involve thinking more in terms
+    of never deleting things from the context, and instead merely manipulating cursors in it.
+
+    Or one could of course go full simpson-style and just expose the
+    worlds and relations directly in the syntax, while keeping it
+    constructive. <p/>
+
+    Recall that a proposition is interpreted as a function taking in a
+    kripke world and spitting out a metalanguage proposition, and and
+    an action is a function taking two kripke worlds, and spitting out
+    a metalanguage proposition.
+
+    The semantics of propositions would be
+	 \[  0(u)  = \bot \]
+	 \[(A \oplus B)(u) = A(u) \lor B(u)\]
+    \[ \top(u) = \top \]
+	 \[(A \& B)(u) = A(u) \land B(u)\]
+	 \[(A \imp B)(u) = A(u) \imp B(u)\]
+    \[ ([\alpha]A)(u) = \forall v . \alpha(u, v) \imp A(v) \]
+
+    and of actions
+	 \[1(u, v) = (u = v)\]
+	 \[(\alpha \cdot \beta)(u, v) = \exists x . \alpha(u, x) \land \beta(x, v)\]
+	 \[(\alpha \llto \beta)(u, v) = \forall x . \alpha(x, u) \imp \beta(x, v)\]
+	 \[(\alpha \rrto \beta)(u, v) = \forall x . \alpha(v, x) \imp \beta(u, x)\]
+	 \[0(u, v) = \bot\]
+	 \[(\alpha \oplus \beta)(u, v) = \alpha(u, v) \lor \beta(u, v)\]
+	 \[\top(u, v) = \top\]
+	 \[(\alpha \& \beta)(u, v) = \alpha(u, v) \land \beta(u, v)\]
+	 \[(? A)(u, v) = A \land (u = v)\]
+
+    <h3>Incompleteness</h3>
+    A counterexample to the completeness of this semantics relative to even
+    the inference rules of pure ordered logic (i.e. not even requiring any use of $[\alpha]A$)
+    is
+    \[\alpha \llto \beta \rrto 0 , \beta \prov (\alpha \llto 0)\cdot \beta\]
+    <p/>
+
+    Clearly this isn't provable in ordered logic. If we assume
+    $\alpha$ and $\beta$ are positive atoms, then we can't left focus
+    on $\alpha \llto \beta \rrto 0$ for lack of $\alpha$, so we must
+    focus on the right, spending the only $\beta$ we have.
+    <p/>
+
+    However, in the semantics, we suppose that we have some worlds $u, v, w$ and
+    $(\alpha \llto \beta \rrto 0)(u, v)$ and
+    $\beta(v, w)$, and we are to show $((\alpha \llto 0)\cdot \beta)(u, w)$.
+    Expanding out definitions, what we have is
+    \[\forall x . \alpha(x, u) \to  \forall y . \beta(v, y) \to 0(x, y)\]
+    \[\beta(v, w)\]
+    and we are to show
+    \[\exists s . (\forall t . \alpha(t, u) \to 0(t, s)) \land \beta(s, w)\]
+    so we pick $s := v$, let $t$ be given, choose $x := t$, choose $y := w$,
+    and we're left with the obligation to prove
+    \[ 0(t, w) \prov 0(t, v)\]
+    and even though $w \ne v$, this is still provable, since $0$ at any interval
+    on the left lets us finish the proof.
+
+    <h2>Tethered Semantics</h2>
+    What goes wrong with the immediately above example is that we are
+    picking worlds to instantiate quantifiers that violate the
+    assumption that when we do $\cdot R$, the context is
+    actually <I>divided</I> and the two branches don't have access to
+    the other half of the context. However, the semantics only adjusts
+    some notion of where the endpoints of the context are from the
+    point of view of the proposition on the right of the sequent: the
+    universal quantifiers appearing on the left don't know what this
+    interval is, and so can't restrict their choices to be inside it.
+
+    <p/> To do a 'tethered semantics' in this case means that we want
+    to be able to somehow propagate exactly that interval information
+    from the right to the left. We will proceed much like
+    like <a href="http://jcreed.org/papers/linear-modal.pdf">the
+      tethered semantics of modal logic</a>, and polarize the syntax
+    of propositions and actions, and use a linear token to keep track
+    of the 'current context interval'.
+
+    There are now four syntactic categories:
+
+    <table>
+      <tr>
+        <td>$\textrm{Positive Props}$</td>
+        <td>$A ::= \dns B \celse 0 \celse A \oplus A \celse p^+$</td>
+      </tr>
+      <tr>
+        <td>$\textrm{Negative Props}$</td>
+        <td>$B ::= \ups A \celse \top \celse B \& B \celse A \imp B \celse [\alpha]B \celse p^-$</td>
+      </tr>
+      <tr>
+        <td>$\textrm{Positive Actions}$</td>
+        <td>$\alpha ::= \dns \beta \celse 0 \celse \alpha \oplus \alpha \celse 1 \celse \alpha \cdot \alpha \celse ?A \celse \pi^+$</td>
+      </tr>
+      <tr>
+        <td>$\textrm{Negative Actions}$</td>
+        <td>$\beta ::= \ups \alpha \celse \top \celse \beta \& \beta \celse \alpha \llto \beta \celse \alpha \rrto \beta  \celse \pi^-$</td>
+      </tr>
+    </table>
+    And there are four interpretation functions, with varying numbers of arguments,
+    but all of them are kripke worlds:
+
+    \[A_v \qquad B^t_{wv}\qquad \alpha^u_v \qquad \beta^{tu}_{wv} \]
+
+    And we postulate some linear token $\#$ and define:
+    \[ (\ups \alpha)^{tu}_{wv} = \ups (\# \otimes \alpha^u_v) \]
+    \[ (\dns \beta)^{u}_{v} = \dns \forall tw.\ups (\# \lol \beta^{tu}_{wv}) \]
+    Ah... No, I'm kind of confused at this point. My selection of which syntactic categories get which arguments doesn't seem coherent enough. Oh well!
+
+  </body>
+  <script>
+	 renderMathInElement(
+		document.body,
+		{
+		  delimiters: [
+			 {left: "$$", right: "$$", display: true},
+			 {left: "\\[", right: "\\]", display: true},
+			 {left: "$", right: "$", display: false},
+			 {left: "\\(", right: "\\)", display: false}
+		  ],
+		  macros: {
+			 "\\R": "\\mathbb{R}",
+			 "\\rset": "\\mathbf{Set}",
+			 "\\rctx": "\\mathop\\mathsf{ctx}",
+			 "\\x": "\\times",
+			 "\\prov": "\\vdash",
+			 "\\tensor": "\\otimes",
+			 "\\lol": "\\multimap",
+			 "\\rtype": "\\mathsf{type}",
+			 "\\rtrue": "\\mathop\\mathsf{true}",
+			 "\\ract": "\\mathop\\mathsf{act}",
+			 "\\dns": "{\\downarrow}",
+			 "\\ups": "{\\uparrow}",
+			 "\\celse": "{\\ |\\ }",
+			 "\\tri": "\\triangleright",
+			 "\\imp": "\\Rightarrow",
+			 "\\C": "\\mathbf{C}",
+			 "\\D": "\\mathbf{D}",
+			 "\\PP": "\\mathbf{P}",
+			 "\\NN": "\\mathbf{N}",
+			 "\\op": "\\mathrm{op}",
+			 "\\dash": "-",
+			 "\\o": "\\circ",
+			 "\\ll": "[\\![",
+			 "\\rr": "]\\!]",
+			 "\\wat": "\\mathop{@}",
+			 "\\prequiv": "\\dashv\\vdash",
+          "\\llto": "\\rightarrowtail",
+          "\\rrto": "\\twoheadrightarrow",
+		  }
+		}
+    );
+  </script>
+</html>
