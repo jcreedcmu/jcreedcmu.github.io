@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>Two Warping Operations</h1> A couple of interesting papers
+	 showed up at <a href="https://lics.siglog.org/lics18/">LICS</a> a
+	 couple of weeks ago, which used almost exactly the same technical
+	 device to solve rather different problems. I don't have much
+	 intelligent to say about them, but I think it's worth giving at
+	 least a passing thought to whether the coincidence is significant
+	 in some deeper way. <p/>
+	 <h2>Warping Time</h2>
+
+	 The first one is "<a href="https://arxiv.org/abs/1805.11021">A
+    Generalized Modality for Recursion</a>"
+    by <a href="http://ludics.eu/~guatto/">Adrien Guatto</a>. The
+    topic is the modal type theory appropriate for reasoning about,
+    specifically guaranteeing productivity of, guarded recursion. The
+    standard thing to do
+    (see <a href="https://www.irif.fr/~mellies/papers/modalmodel-popl2007.pdf">here</a>
+    or <a href="http://www.cse.chalmers.se/~vezzosi/vezzosi-lic.pdf">here</a>)
+    is to have a "later" modality called $\next$, so that you can say
+    that the only way to make fixpoints is something like \[ \Gamma, x
+    : \next \tau \prov e : \tau \over \Gamma \prov \mathbf{fix}\ x.e :
+    \tau \] instead of the unrestricted fixpoint that has the same
+    rule without the $\next$.
+
+	 <p/>The other things we can do with $\next$ include injecting unmodalized types into it:
+	 \[
+	 \Gamma \prov e : A
+	 \over
+	 \Gamma \prov \mathrm{next}\ e : \next A
+	 \]
+	 and we can lift functions:
+	 \[
+	 \Gamma \prov e : \next (A \to B)
+	 \qquad
+	 \Gamma \prov e' : \next A
+	 \over
+	 \Gamma \prov e * e' : \next B
+	 \]
+	 That is, $\next$ is an <a href="https://en.wikipedia.org/wiki/Applicative_functor">applicative functor</a>!
+
+	 <p/> We can start to see the intended interpretation of $\next \tau$ if we define a type
+	 of streams:
+		\[\mathbf{data}\ \mathrm{Stream}_\tau = \tau \x \next \mathrm{Stream}_\tau \]
+	 and then $\mathrm{Stream}_\tau$ is a
+	 a stream of $\tau$s which arrives one per time step. For by definition,
+	 a $\mathrm{Stream}_\tau$ is a $\tau$ right now, and also a stream one time step later.
+	 <p/>
+	 Furthermore the type $\next \mathrm{Stream}_\tau$ is a stream of
+	 $\tau$s that arrives at same rate at which plain old
+	 $\mathrm{Stream}_\tau$ would arrive &mdash; but it <I>starts one
+	 time step later</I>. Thus on the first time step, $e$ has to cough
+	 up a $\tau$ somehow even though its `input stream' hasn't produced
+	 anything yet. On the second time step, the old value from the
+	 fixpoint shows up, and $e$ can use it, but no more data is
+	 available, etc. etc. So this type system forces the stream
+	 computation to be productive.
+	 <p/>
+	 With these tools we can generate streams by taking a fixpoint at
+	 $\N \to \mathrm{Stream}_\N$:
+	 \[
+	 x : \next(\N \to \mathrm{Stream}_\N) \prov \lambda k . \langle k, x * \mathrm{next}(k+1) \rangle : \N \to \mathrm{Stream}_\N
+	 \over
+	  \prov \mathbf{fix}\ x. \lambda k . \langle k, x * \mathrm{next}(k+1) \rangle : \N \to \mathrm{Stream}_\N
+	 \]
+	 This function takes $k$ and produces the stream $k, k+1, k+2, k+3, \cdots$.
+	 <p/>
+	 We can also write stream combinators:
+	 \[
+	 x : \next(\mathrm{Stream}_\N \to \mathrm{Stream}_\N) \prov
+	 \lambda \langle hd, tl \rangle . \langle hd + 1, x * tl \rangle :
+	 \mathrm{Stream}_\N \to \mathrm{Stream}_\N
+	 \over
+	  \prov \mathbf{fix}\ x.\lambda \langle hd, tl \rangle . \langle hd + 1, x * tl \rangle  :
+	 \mathrm{Stream}_\N\to \mathrm{Stream}_\N
+	 \]
+	 This function takes a stream of numbers and adds one to every element of it.
+	 <p/>
+
+	 However, Guatto observes that this particular modality has limited expressive power
+	 for capturing various <I>reasons</I> a computation might be productive. It works
+	 fine as long as you only need to consume one element of your input stream for each
+	 element you output, but doesn't have much to say about other sorts of stuttering
+	 and time-varying (but nonetheless bounded) patterns of stream consumption.
+	 <p/>
+	 Guatto's solution is to introduce a whole family $\next_f$ of applicative functors,
+	 one for each 'time warp' function $f$, which is required to be a monotone continuous
+	 function from the ordinal $\omega + 1$ to itself. The $\next$ that we know is just
+	 one particular special function in this family, the time warp, the function that
+	 takes every finite element $x \in \omega$ to $x + 1$. By using other functions,
+	 Guatto can account for computations that can produce data at time $f(t)$ depending
+	 on data existing at time $t$.
+
+	 <h2>Warping Relations</h2>
+	 The other example I understand even
+	 less, but on a formal level it's clear that the same thing is
+	 going on.
+	 <p/>
+
+	 Andreas Nuyts and Dominique Devriese had a paper about
+	 "<a href="https://people.cs.kuleuven.be/~andreas.nuyts/paper-reldtt.pdf">Degrees of Relatedness</a>"
+	 (<a href="https://people.cs.kuleuven.be/~andreas.nuyts/reldtt-lics.pdf">slides</a>)
+	 that aims to organize and generalize a whole bunch of modalities
+	 having not to do with time, but with parametricity and
+	 irrelevance.
+
+	 <p/> Every type is equipped with an infinite family of binary
+	 relations, and all functions are required to preserve them.
+	 Modalities are allowed to take in a type, monotonically reindex
+	 the family of relations belonging to it, and spit out the result
+	 as another type; somehow when you consider functions from the
+	 universe, and choose the right modality, this results in "takes a
+	 type parametrically", "takes a type only with ad-hoc
+	 polymorphism", "takes in some data proof-irrelevantly", and other
+	 previously unrelated concepts!
+
+	 <p/>I wonder if there is a meaningful/useful sense in which we can think of
+	 the series of relations as occurring "in time", so that these two warping notions
+	 sort of coincide?
+  </body>
+  <script>
+	 renderMathInElement(
+		document.body,
+		{
+		  delimiters: [
+			 {left: "$$", right: "$$", display: true},
+			 {left: "\\[", right: "\\]", display: true},
+			 {left: "$", right: "$", display: false},
+			 {left: "\\(", right: "\\)", display: false}
+		  ],
+		  macros: {
+			 "\\R": "\\mathbb{R}",
+			 "\\N": "\\mathbb{N}",
+			 "\\rset": "\\mathbf{Set}",
+			 "\\rctx": "\\mathop\\mathsf{ctx}",
+			 "\\x": "\\times",
+			 "\\prov": "\\vdash",
+			 "\\tensor": "\\otimes",
+			 "\\lol": "\\multimap",
+			 "\\rtype": "\\mathsf{type}",
+			 "\\rtrue": "\\mathop\\mathsf{true}",
+			 "\\ract": "\\mathop\\mathsf{act}",
+			 "\\dns": "{\\downarrow}",
+			 "\\ups": "{\\uparrow}",
+			 "\\celse": "{\\ |\\ }",
+			 "\\tri": "\\triangleright",
+			 "\\imp": "\\Rightarrow",
+			 "\\C": "\\mathbf{C}",
+			 "\\D": "\\mathbf{D}",
+			 "\\PP": "\\mathbf{P}",
+			 "\\NN": "\\mathbf{N}",
+			 "\\op": "\\mathrm{op}",
+			 "\\dash": "-",
+			 "\\o": "\\circ",
+			 "\\ll": "[\\![",
+			 "\\rr": "]\\!]",
+			 "\\wat": "\\mathop{@}",
+			 "\\prequiv": "\\dashv\\vdash",
+          "\\llto": "\\rightarrowtail",
+          "\\rrto": "\\twoheadrightarrow",
+			 "\\next": "{\\blacktriangleright}",
+		  }
+		}
+    );
+  </script>
+</html>
