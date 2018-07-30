@@ -52,32 +52,32 @@
 	 we should also have an inhabitant of
 	 \[\int_{a\in \A} \int^{b\in \A} F(a, b, a, b) \]
 	 And, in fact, this <b>isn't</b> true! A counterexample is when $\A$
-	 is the arrow category $0 \to 1$, and
+	 is the arrow category $d \to e$, and
 	 <div class="tables">
 		<table class="ib">
 		  <tr>
-			 <td>$F^{11}_{00}$</td>
-			 <td>$F^{11}_{01}$</td>
-			 <td>$F^{11}_{10}$</td>
-			 <td>$F^{11}_{11}$</td>
-		  </tr>
-		  <tr>
-			 <td>$F^{10}_{00}$</td>
-			 <td>$F^{10}_{01}$</td>
-			 <td>$F^{10}_{10}$</td>
-			 <td>$F^{10}_{11}$</td>
-		  </tr>
-		  <tr>
-			 <td>$F^{01}_{00}$</td>
-			 <td>$F^{01}_{01}$</td>
-			 <td>$F^{01}_{10}$</td>
-			 <td>$F^{01}_{11}$</td>
-		  </tr>
-		  <tr>
-			 <td>$F^{00}_{00}$</td>
-			 <td>$F^{00}_{01}$</td>
-			 <td>$F^{00}_{10}$</td>
-			 <td>$F^{00}_{11}$</td>
+			 <ed>$F^{ee}_{dd}$</ed>
+			 <ed>$F^{ee}_{de}$</ed>
+			 <ed>$F^{ee}_{ed}$</ed>
+			 <ed>$F^{ee}_{ee}$</ed>
+		  </er>
+		  <er>
+			 <ed>$F^{ed}_{dd}$</ed>
+			 <ed>$F^{ed}_{de}$</ed>
+			 <ed>$F^{ed}_{ed}$</ed>
+			 <ed>$F^{ed}_{ee}$</ed>
+		  </er>
+		  <er>
+			 <ed>$F^{de}_{dd}$</ed>
+			 <ed>$F^{de}_{de}$</ed>
+			 <ed>$F^{de}_{ed}$</ed>
+			 <ed>$F^{de}_{ee}$</ed>
+		  </er>
+		  <er>
+			 <ed>$F^{dd}_{dd}$</ed>
+			 <ed>$F^{dd}_{de}$</ed>
+			 <ed>$F^{dd}_{ed}$</ed>
+			 <ed>$F^{dd}_{ee}$</ed>
 		  </tr>
 		</table>
 		<div style="display: inline-block; margin: 0px 50px 0 70px;">=</div>
@@ -116,12 +116,12 @@
 	 <div class="tables">
 		<table class="ib">
 		  <tr>
-			 <td>$\exists b . F^{1b}_{0b}$</td>
-			 <td>$\exists b .F^{1b}_{1b}$</td>
+			 <td>$\exists b . F^{eb}_{db}$</td>
+			 <td>$\exists b .F^{eb}_{eb}$</td>
 		  </tr>
 		  <tr>
-			 <td>$\exists b .F^{0b}_{0b}$</td>
-			 <td>$\exists b .F^{0b}_{1b}$</td>
+			 <td>$\exists b .F^{db}_{db}$</td>
+			 <td>$\exists b .F^{eb}_{eb}$</td>
 		  </tr>
 		</table>
 		<div style="display: inline-block; margin: 0px 50px 0 70px;">=</div>
@@ -137,29 +137,29 @@
 		</table>
 	 </div>
 
-	 with the morphisms $\exists b .F^{0b}_{0b} \to \exists b .F^{0b}_{1b}$
-	 and $\exists b .F^{1b}_{1b} \to \exists b .F^{0b}_{1b}$ being the
-	 two <I>distinct</I> injections $1 \to 2$. This means
+	 with the morphisms $\exists b .F^{db}_{db} \to \exists b .F^{db}_{eb}$
+	 and $\exists b .F^{eb}_{eb} \to \exists b .F^{db}_{eb}$ being the
+	 two <I>distinct</I> injections $e \to 2$. This means
 	 that $\forall a . \exists b .F^{ab}_{ab}$ is <I>uninhabited</I> since
 
 	 there's no 'consistent' way of choosing an inhabitant of $\exists
-	 b .F^{0b}_{0b}$ (of which there is only one) and an inhabitant of
-	 $\exists b .F^{1b}_{1b}$ (of which there is also only one) which
-	 transport to the same element in $\exists b . F^{0b}_{1b}$, which
+	 b .F^{db}_{db}$ (of which there is only one) and an inhabitant of
+	 $\exists b .F^{eb}_{eb}$ (of which there is also only one) which
+	 transport to the same element in $\exists b . F^{db}_{eb}$, which
 	 is what the end-property requires.
 
 	 <p/>
 	 Similarly, we can find a counterexample for the other unsound rule above.
-	 We take $\A = 0 \to 1$ again, and set
+	 We take $\A = d \to e$ again, and set
 	 <div class="tables">
 		<table class="ib">
 		  <tr>
-			 <td>$F^{1}_{0}$</td>
-			 <td>$F^{1}_{1}$</td>
+			 <td>$F^{e}_{d}$</td>
+			 <td>$F^{e}_{e}$</td>
 		  </tr>
 		  <tr>
-			 <td>$F^{0}_{0}$</td>
-			 <td>$F^{0}_{1}$</td>
+			 <td>$F^{d}_{d}$</td>
+			 <td>$F^{d}_{e}$</td>
 		  </tr>
 		</table>
 		<div style="display: inline-block; margin: 0px 50px 0 70px;">=</div>
@@ -178,12 +178,12 @@
 	 <div class="tables">
 		<table class="ib">
 		  <tr>
-			 <td>$G^{1}_{0}$</td>
-			 <td>$G^{1}_{1}$</td>
+			 <td>$G^{e}_{d}$</td>
+			 <td>$G^{e}_{e}$</td>
 		  </tr>
 		  <tr>
-			 <td>$G^{0}_{0}$</td>
-			 <td>$G^{0}_{1}$</td>
+			 <td>$G^{d}_{d}$</td>
+			 <td>$G^{d}_{e}$</td>
 		  </tr>
 		</table>
 		<div style="display: inline-block; margin: 0px 50px 0 70px;">=</div>
