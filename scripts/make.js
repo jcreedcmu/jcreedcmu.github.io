@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 const posts = [
+  {"dir": "2018-07-29", "title": "Focusing and Ends"},
   {"dir": "2018-07-22", "title": "Two Warping Operations"},
   {"dir": "2018-07-15", "title": "Action/Proposition Logic"},
   {"dir": "2018-07-08", "title": "Towards a Judgmental Reconstruction of Dynamic Logic"},

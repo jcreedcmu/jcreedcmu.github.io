@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		.ib { display: inline-block; }
+		center { vertical-align: middle; }
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+		.tables { display: flex; align-items: center; }
+
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>Focusing and Ends</h1>
+	 At this point I have a hunch that there is a nice theorem
+	 saying <I>something</I> interesting about focusing and the
+	 well-known-for-decades end/coend calculus, but I'm still
+	 struggling pretty hard trying to figure out what precisely it is.
+	 <p/>
+	 Somehow the usual diagrams you draw about composing
+	 extranatural transformations in a cycle-free way don't feel like
+	 they're telling the entire story I want to understand.
+	 Pairwise composability is one thing, but I want to know which
+	 'big-step connectives' (in the sense familiar from when you talk about
+	 focusing) are legitimate.
+	 <h2>Some Things You Can't Do</h2>
+	 The observations in this subsection aren't anything that isn't covered
+	 by the "no cycles" rule, but I found it interesting to go over the details
+	 of them.
+	 <p/>
+	 Some things that <I>aren't</I> sound, written as inference rules,
+	 include
+	 \[{F^{aa}_{aa} \over \exists b . F^{ab}_{ab}}\textcolor{red}{\times}
+	 \qquad
+	 {F^a_a \to G^a_a \over (\forall b . F^b_b) \to G^a_a}\textcolor{red}{\times}\]
+
+	 Some conventions for how to read these: $a$ is a free variable in
+	 every rule, an object of some category $\A$. There's an
+	 implicit end taken, over this variable, over the top and bottom of
+	 each rule. I'm writing ends as $\forall$ and coends as $\exists$.
+	 Arguments to functors $F, G, H$, etc. are written as superscripts
+	 if they're contravariant, and subscripts if they're covariant.
+	 So, for example, in more usual notation, the first rule is saying
+	 that if we have an inhabitant of
+	 \[\int_{a\in \A} F(a, a, a, a) \]
+	 for some functor $F : \A^\op \x \A^\op \x \A \x \A \to \rset$, then
+	 we should also have an inhabitant of
+	 \[\int_{a\in \A} \int^{b\in \A} F(a, b, a, b) \]
+	 And, in fact, this <b>isn't</b> true! A counterexample is when $\A$
+	 is the arrow category $0 \to 1$, and
+	 <div class="tables">
+		<table class="ib">
+		  <tr>
+			 <td>$F^{11}_{00}$</td>
+			 <td>$F^{11}_{01}$</td>
+			 <td>$F^{11}_{10}$</td>
+			 <td>$F^{11}_{11}$</td>
+		  </tr>
+		  <tr>
+			 <td>$F^{10}_{00}$</td>
+			 <td>$F^{10}_{01}$</td>
+			 <td>$F^{10}_{10}$</td>
+			 <td>$F^{10}_{11}$</td>
+		  </tr>
+		  <tr>
+			 <td>$F^{01}_{00}$</td>
+			 <td>$F^{01}_{01}$</td>
+			 <td>$F^{01}_{10}$</td>
+			 <td>$F^{01}_{11}$</td>
+		  </tr>
+		  <tr>
+			 <td>$F^{00}_{00}$</td>
+			 <td>$F^{00}_{01}$</td>
+			 <td>$F^{00}_{10}$</td>
+			 <td>$F^{00}_{11}$</td>
+		  </tr>
+		</table>
+		<div style="display: inline-block; margin: 0px 50px 0 70px;">=</div>
+		<table class="ib">
+		  <tr>
+			 <td>0</td>
+			 <td>0</td>
+			 <td>0</td>
+			 <td>1</td>
+		  </tr>
+		  <tr>
+			 <td>0</td>
+			 <td>0</td>
+			 <td>0</td>
+			 <td>1</td>
+		  </tr>
+		  <tr>
+			 <td>0</td>
+			 <td>0</td>
+			 <td>0</td>
+			 <td>1</td>
+		  </tr>
+		  <tr>
+			 <td>1</td>
+			 <td>1</td>
+			 <td>1</td>
+			 <td>1</td>
+		  </tr>
+		</table>
+	 </div>
+	 Writing here $0$ and $1$ for the empty set and the singleton set,
+	 with all the morphisms being uniquely determined.
+	 <p/>
+	 If you do the calculation, you find that the coend along the rightmost
+	 two arguments (one covariant and one contravariant) gives you that
+	 <div class="tables">
+		<table class="ib">
+		  <tr>
+			 <td>$\exists b . F^{1b}_{0b}$</td>
+			 <td>$\exists b .F^{1b}_{1b}$</td>
+		  </tr>
+		  <tr>
+			 <td>$\exists b .F^{0b}_{0b}$</td>
+			 <td>$\exists b .F^{0b}_{1b}$</td>
+		  </tr>
+		</table>
+		<div style="display: inline-block; margin: 0px 50px 0 70px;">=</div>
+		<table class="ib">
+		  <tr>
+			 <td>0</td>
+			 <td>1</td>
+		  </tr>
+		  <tr>
+			 <td>1</td>
+			 <td>2</td>
+		  </tr>
+		</table>
+	 </div>
+
+	 with the morphisms $\exists b .F^{0b}_{0b} \to \exists b .F^{0b}_{1b}$
+	 and $\exists b .F^{1b}_{1b} \to \exists b .F^{0b}_{1b}$ being the
+	 two <I>distinct</I> injections $1 \to 2$. This means
+	 that $\forall a . \exists b .F^{ab}_{ab}$ is <I>uninhabited</I> since
+
+	 there's no 'consistent' way of choosing an inhabitant of $\exists
+	 b .F^{0b}_{0b}$ (of which there is only one) and an inhabitant of
+	 $\exists b .F^{1b}_{1b}$ (of which there is also only one) which
+	 transport to the same element in $\exists b . F^{0b}_{1b}$, which
+	 is what the end-property requires.
+
+	 <p/>
+	 Similarly, we can find a counterexample for the other unsound rule above.
+	 We take $\A = 0 \to 1$ again, and set
+	 <div class="tables">
+		<table class="ib">
+		  <tr>
+			 <td>$F^{1}_{0}$</td>
+			 <td>$F^{1}_{1}$</td>
+		  </tr>
+		  <tr>
+			 <td>$F^{0}_{0}$</td>
+			 <td>$F^{0}_{1}$</td>
+		  </tr>
+		</table>
+		<div style="display: inline-block; margin: 0px 50px 0 70px;">=</div>
+		<table class="ib">
+		  <tr>
+			 <td>0</td>
+			 <td>1</td>
+		  </tr>
+		  <tr>
+			 <td>1</td>
+			 <td>1</td>
+		  </tr>
+		</table>
+	 </div>
+	 and
+	 <div class="tables">
+		<table class="ib">
+		  <tr>
+			 <td>$G^{1}_{0}$</td>
+			 <td>$G^{1}_{1}$</td>
+		  </tr>
+		  <tr>
+			 <td>$G^{0}_{0}$</td>
+			 <td>$G^{0}_{1}$</td>
+		  </tr>
+		</table>
+		<div style="display: inline-block; margin: 0px 50px 0 70px;">=</div>
+		<table class="ib">
+		  <tr>
+			 <td>0</td>
+			 <td>1</td>
+		  </tr>
+		  <tr>
+			 <td>1</td>
+			 <td>2</td>
+		  </tr>
+		</table>
+	 </div>
+	 <h2>Some Things You Can Do</h2>
+	 Here are some rules that are sound:
+
+	 You can use $\forall L$ rule at multiple variances,
+	 as long as they're separated
+	 by a product:
+	 \[
+	 F^{a}_{at^a_a} \x H^{at^a_a}_a \to G^{a}_{a}
+	 \over
+	 (\forall b . F^{a}_{a b} \x H^{a b}_a) \to G^{a}_{a}
+	 \]
+	 (where $t$ is understood to be some functor $\A^\op \x \A \to \C$,
+	 and $F : \A^\op \x \A \x \C \to \rset$ and
+	 $H : \A^\op \x \A \x \C^\op \to \rset$ and $G : \A^\op \x \A \to \rset$)
+	 <p/>
+	 You can use the $\exists R$ rule at multiple variances,
+	 if the term you're substituting for the variable is itself
+	 covariant or contravariant in its arguments, but not both at once:
+	 \[
+	 {F^{a}_{au_a} \x H^{au_a}_a
+	 \over
+	 \exists b . F^{a}_{ab} \x H^{ab}_a}
+	 \qquad
+	 {F^{a}_{av^a} \x H^{av^a}_a
+	 \over
+	 \exists b . F^{a}_{ab} \x H^{ab}_a}
+	 \]
+	 (where $u$ is a functor $\A \to \C$, and $v : \A^\op \to \C$)
+
+	 <p/>
+	 You can use the $\exists R$ rule for a term that is both variances at once,
+	 as long as you only use it with one variance:
+	 \[
+	 {H^{a}_{at^a_a}
+	 \over
+	 \exists b . H^{a}_{ab}} \textcolor{red}{\star}
+	 \qquad
+	 {H^{a^a_a}_{at}
+	 \over
+	 \exists b . H^{ab}_{a}}
+	 \]
+	 You can do synchronous quantifier rules followed immediately by the
+	 init rule, with arbitrary variances:
+	 \[
+	 {	 \over
+	 (\forall b . F^{ab}_{ab}) \to F^{at^a_a}_{at^a_a}}
+	 \qquad
+	 {	 \over
+	 F^{at^a_a}_{at^a_a} \to \exists b . F^{ab}_{ab} }
+	 \textcolor{blue}{\star}
+	 \]
+	 <h2>A Thing You Can Do That Smells Strongly of Focusing</h2>
+	 Finally, let me point out a rule that's sound that feels exactly
+	 like a requirement that a positive atom "is already in the context".
+	 It subsumes the rules marked $\textcolor{red}{\star}$ and
+	 $\textcolor{blue}{\star}$ above.
+	 \[
+	 {
+	  G^a_a \to H^a_{at^a_a}
+\over
+	 F^{at^a_a}_{at^a_a} \x G^a_a \to \exists b . F^{ab}_{ab} \x H^a_{ab} }
+	 \textcolor{green}{\checkmark}
+	 \]
+	 It is worth comparing this to a similar, <span style="color:red">unsound</span>, rule with a cut baked in:
+	 \[
+	 {
+	  G^a_a \to H^a_{at^a_a} \qquad G^a_a \to F^{at^a_a}_{at^a_a}
+\over
+	   G^a_a \to \exists b . F^{ab}_{ab} \x H^a_{ab} }\textcolor{red}{\times}
+	 \]
+
+	 Why is this unsound? Because if we replace $G$ and $H$ both with
+	 the constantly-singleton set-valued functor, and choose the functor
+	 $t^x_y = y$,
+	 this becomes
+	 \[
+	 {
+	  1 \to 1 \qquad 1 \to F^{aa}_{aa}
+\over
+	   1 \to \exists b . F^{ab}_{ab} \x 1 }\textcolor{red}{\times}
+	 \]
+	 which is just the
+	 \[
+	 {
+	   F^{aa}_{aa}
+\over
+	    \exists b . F^{ab}_{ab}  }\textcolor{red}{\times}
+	 \]
+	 that we saw was unsound earlier.
+	 <p/>
+	 But critically, the difference between the
+	 $\textcolor{green}{\checkmark}$ rule and its unsound partner is
+	 the sound version resembles the focusing "big connective" rule
+	 \[
+	 \Gamma \prov [ H(a, a, t(a, a))]
+\over
+	 \Gamma, F^+(a, a, t(a, a), t(a, a)) \prov \exists b . [F^+(a, a, b, b) \tensor H(a, a, b)]
+	 \]
+	 that requires us to choose the instantiation for the existential quantifier
+	 <I>and then immediately have the positive atomic proposition $F$
+	 in the context already</I> in a way that's compatible with that
+	 instantiation choice.
+  </body>
+  <script>
+	 renderMathInElement(
+		document.body,
+		{
+		  delimiters: [
+			 {left: "$$", right: "$$", display: true},
+			 {left: "\\[", right: "\\]", display: true},
+			 {left: "$", right: "$", display: false},
+			 {left: "\\(", right: "\\)", display: false}
+		  ],
+		  macros: {
+			 "\\R": "\\mathbb{R}",
+			 "\\N": "\\mathbb{N}",
+			 "\\rset": "\\mathbf{Set}",
+			 "\\rctx": "\\mathop\\mathsf{ctx}",
+			 "\\x": "\\times",
+			 "\\prov": "\\vdash",
+			 "\\tensor": "\\otimes",
+			 "\\lol": "\\multimap",
+			 "\\rtype": "\\mathsf{type}",
+			 "\\rtrue": "\\mathop\\mathsf{true}",
+			 "\\ract": "\\mathop\\mathsf{act}",
+			 "\\dns": "{\\downarrow}",
+			 "\\ups": "{\\uparrow}",
+			 "\\celse": "{\\ |\\ }",
+			 "\\tri": "\\triangleright",
+			 "\\imp": "\\Rightarrow",
+			 "\\A": "\\mathbf{A}",
+			 "\\C": "\\mathbf{C}",
+			 "\\D": "\\mathbf{D}",
+			 "\\PP": "\\mathbf{P}",
+			 "\\NN": "\\mathbf{N}",
+			 "\\op": "\\mathrm{op}",
+			 "\\dash": "-",
+			 "\\o": "\\circ",
+			 "\\ll": "[\\![",
+			 "\\rr": "]\\!]",
+			 "\\wat": "\\mathop{@}",
+			 "\\prequiv": "\\dashv\\vdash",
+          "\\llto": "\\rightarrowtail",
+          "\\rrto": "\\twoheadrightarrow",
+			 "\\next": "{\\blacktriangleright}",
+		  }
+		}
+    );
+  </script>
+</html>
