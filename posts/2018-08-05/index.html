@@ -108,7 +108,22 @@
     \[0 =  8p_0 + 4p_1  \]
     This seems impossible to satisfy with probabilities in $[0,1]$. What's going on? I must
     have made an algebra mistake somewhere.
-
+    <h2>Maybe I've Totally Forgotten How Game Theory Works</h2>
+    Tried using the solver here:
+    <a href="http://cgi.csc.liv.ac.uk/~rahul/bimatrix_solver/">http://cgi.csc.liv.ac.uk/~rahul/bimatrix_solver/</a>
+    And it seems to be saying that (2/5,2/5,1/5) is the best strategy
+    even for arbitrarily large numbers of moves! I guess the penalty
+    of big plays just dwarfs the chance of one-upping your opponent's
+    play. What if you're only penalized according to the size of their play?
+    <ul>
+      <li>If $n_A = n_B$, then it is a tie, and no payout is awarded.
+      <li>If $n_A = n_B + 1$, then $A$ wins $n_A$ dollars from $B$.
+      <li>Symmetrically, if $n_B = n_A + 1$, then $B$ wins $n_B$ dollars from $A$.
+      <li>Otherwise, the player who named the smaller number wins $\min(n_A, n_B)$ dollars
+        from the player who named the larger number.
+    </ul>
+    This appears to stabilize at
+    $(0,  1/37,  12/37,  10/37,  11/37,  3/37)$ which to me is also a big surprise.
   </body>
   <script>
 	 renderMathInElement(
