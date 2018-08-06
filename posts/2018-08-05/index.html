@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		.ib { display: inline-block; }
+		center { vertical-align: middle; }
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+		.tables { display: flex; align-items: center; }
+
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>A Simple Matrix Game</h1>
+    The following game popped into my head and I wondered if it had a Nash equilibrium.
+    <p/>
+    Two players $A$ and $B$ simultaneously choose a number. Call these $n_A$ and $n_B$.
+    <ul>
+      <li>If $n_A = n_B$, then it is a tie, and no payout is awarded.
+      <li>If $n_A = n_B + 1$, then $A$ wins $n_A$ dollars from $B$.
+      <li>Symmetrically, if $n_B = n_A + 1$, then $B$ wins $n_B$ dollars from $A$.
+      <li>Otherwise, the player who named the smaller number wins $\max(n_A, n_B)$ dollars
+        from the player who named the larger number.
+    </ul>
+    Suppose the players are only allowed to play $0, 1, 2$.
+    Then the payoff matrix for $A$ looks like
+    <table>
+      <tr>
+        <td></td><td></td><td colspan=3 style="text-align: center">$A$</td>
+      </tr>
+
+      <tr>
+        <td></td><td></td><td><b>0</b></td><td><b>1</b></td><td><b>2</b></td>
+      </tr>
+      <tr>
+        <td></td><td><b>0</b></td><td>0</td><td>1</td><td>-2</td>
+      </tr>
+      <tr>
+        <td>$B$</td><td><b>1</b></td><td>-1</td><td>0</td><td>2</td>
+      </tr>
+      <tr>
+        <td></td><td><b>2</b></td><td>2</td><td>-2</td><td>0</td>
+      </tr>
+    </table>
+    Suppose $A$'s strategy is mixed $p_0, p_1, p_2$ with $\sum_i p_i = 1$.
+    At equilibrium $B$'s choice doesn't matter, so
+    \[p_1 - 2p_2 = -p_0 + 2p_2 = 2p_0 - 2p_1 \]
+    hence substituting $p_2 = 1 - p_0 - p_1$,
+    \[2p_0 + 3p_1 - 2 = -2p_1 -3p_0 + 2 = 2p_0 - 2p_1 \]
+    Looking at the last equation, we see $p_0 = 2/5$, so
+    \[4/5 + 3p_1 - 2   = 4/5 - 2p_1 \]
+    \[ 5p_1   = 2 \]
+    \[  p_1  = 2/5  \]
+    \[  p_2  = 1/5  \]
+    <p/>
+    Right, since the payoffs are symmetric, we should additionally expect that the expected payoff is zero.
+    <p/>
+    What about with $0,1,2,3$? We have
+    <table>
+      <tr>
+        <td></td><td></td><td colspan=3 style="text-align: center">$A$</td>
+      </tr>
+
+      <tr>
+        <td></td><td></td><td><b>0</b></td><td><b>1</b></td><td><b>2</b></td><td><b>3</b></td>
+      </tr>
+      <tr>
+        <td></td><td><b>0</b></td><td>0</td><td>1</td><td>-2</td><td>-3</td>
+      </tr>
+      <tr>
+        <td>$B$</td><td><b>1</b></td><td>-1</td><td>0</td><td>2</td><td>-3</td>
+      </tr>
+      <tr>
+        <td></td><td><b>2</b></td><td>2</td><td>-2</td><td>0</td><td>3</td>
+      </tr>
+      <tr>
+        <td></td><td><b>3</b></td><td>3</td><td>3</td><td>-3</td><td>0</td>
+      </tr>
+    </table>
+    giving us the equations
+    \[0 = p_1 - 2p_2 -3p_3 \]
+    \[0 = -p_0 + 2p_2 -3p_3  \]
+    \[0 =  2p_0 - 2p_1 + 3p_3 \]
+    \[0 =  3p_0 + 3p_1 - 3p_2 \]
+    so $p_0 = p_1$ so $p_3 = 0$ and $p_2 = p_0 / 2$. Again we get $(2/5, 2/5, 1/5)$, which
+    is a little surprising.
+
+    <p/>
+    What about $0,1,2,3,4$? We have
+    \[0 = p_1 - 2p_2 -3p_3 - 4p_4\]
+    \[0 = -p_0 + 2p_2 -3p_3  -4p_4\]
+    \[0 =  2p_0 - 2p_1 + 3p_3 -4p_4\]
+    \[0 =  3p_0 + 3p_1 - 3p_2 + 4p_4\]
+    \[0 =  4p_0 + 4p_1 + 4p_2 - 4p_3\]
+    Right away we know $p_3 = p_0 + p_1 + p_2$, so
+    \[0 = -3p_0 -2 p_1 - 5p_2  - 4p_4\]
+    \[0 = -4p_0 -3p_1 - p_2   -4p_4\]
+    \[0 =  5p_0 + 1p_1 + 3p_2 -4p_4\]
+    \[0 =  3p_0 + 3p_1 - 3p_2 + 4p_4\]
+    To eliminate $p_4$, we can subtract or add neighboring equations.
+    \[0 = p_0 +  p_1 - 4p_2  \]
+    \[0 = -9p_0 -4p_1 - 4p_2   \]
+    \[0 =  8p_0 + 4p_1  \]
+    This seems impossible to satisfy with probabilities in $[0,1]$. What's going on? I must
+    have made an algebra mistake somewhere.
+
+  </body>
+  <script>
+	 renderMathInElement(
+		document.body,
+		{
+		  delimiters: [
+			 {left: "$$", right: "$$", display: true},
+			 {left: "\\[", right: "\\]", display: true},
+			 {left: "$", right: "$", display: false},
+			 {left: "\\(", right: "\\)", display: false}
+		  ],
+		  macros: {
+			 "\\R": "\\mathbb{R}",
+			 "\\N": "\\mathbb{N}",
+			 "\\rset": "\\mathbf{Set}",
+			 "\\rctx": "\\mathop\\mathsf{ctx}",
+			 "\\x": "\\times",
+			 "\\prov": "\\vdash",
+			 "\\tensor": "\\otimes",
+			 "\\lol": "\\multimap",
+			 "\\rtype": "\\mathsf{type}",
+			 "\\rtrue": "\\mathop\\mathsf{true}",
+			 "\\ract": "\\mathop\\mathsf{act}",
+			 "\\dns": "{\\downarrow}",
+			 "\\ups": "{\\uparrow}",
+			 "\\celse": "{\\ |\\ }",
+			 "\\tri": "\\triangleright",
+			 "\\imp": "\\Rightarrow",
+			 "\\A": "\\mathbf{A}",
+			 "\\C": "\\mathbf{C}",
+			 "\\D": "\\mathbf{D}",
+			 "\\PP": "\\mathbf{P}",
+			 "\\NN": "\\mathbf{N}",
+			 "\\op": "\\mathrm{op}",
+			 "\\dash": "-",
+			 "\\o": "\\circ",
+			 "\\ll": "[\\![",
+			 "\\rr": "]\\!]",
+			 "\\wat": "\\mathop{@}",
+			 "\\prequiv": "\\dashv\\vdash",
+          "\\llto": "\\rightarrowtail",
+          "\\rrto": "\\twoheadrightarrow",
+			 "\\next": "{\\blacktriangleright}",
+		  }
+		}
+    );
+  </script>
+</html>
