@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const posts = [
-  {"dir": "2018-08-05", "title": "A Graph Polynomial, Sort of"},
+  {"dir": "2018-08-13", "title": "A Graph Polynomial, Sort of"},
   {"dir": "2018-08-05", "title": "A Simple Matrix Game"},
   {"dir": "2018-07-29", "title": "Focusing and Ends"},
   {"dir": "2018-07-22", "title": "Two Warping Operations"},
