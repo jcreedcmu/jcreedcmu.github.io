@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		.ib { display: inline-block; }
+		center { vertical-align: middle; }
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+		.tables { display: flex; align-items: center; }
+
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>A Graph Polynomial, Sort of</h1>
+
+	 Sridhar posted on twitter about how he preferred understanding the
+	 underlying idea of the chromatic polynomial of a graph as a "all
+	 at once" phenomenon, rather than focusing on the (nonetheless
+	 true, and useful for concrete computations) incremental
+	 deletion-contraction property.
+	 <p/>
+	 On top of me generally agreeing with the sentiment, it got me wondering
+	  whether one particular generalization of the definition was useful for
+	 anything.
+	 <p/>
+	 Suppose you have a ring $R$, a set $M$ with an associative commutative
+	 operation $\cdot$ (written as juxtaposition) and some function
+	 $v : M \to R$, not necessarily a homomorphism.
+	 <p/>
+	 Let $G$ be a graph equipped with functions $m : V \to M$
+	 and $r : E \to R$. That is, vertices are decorated with $M$-elements
+	 (in the diagram example $\{a, b, c, \ldots\}$)
+	 and edges are decorated ith $R$-elements
+	 (in the example $\{x, y, \ldots\}$).
+	 <center><img src="diagram.png"></center>
+	 The decoration on each edge is the coefficient to be
+	 used when the edge is contracted.
+	 <p/>
+	 Given a subset $S \subseteq E$ of the edges of the graph,
+	 we can define $C(S)$ to be the set of sets of vertices
+	 that are the connected components when we consider only the edges in $S$.
+	 We define the "value" of $G$ to be
+	 \[ \sum_{S \subseteq V} \left(\prod_{e \in S} r(e) \right) \left(\prod_{K \in C(S)} v\left(\prod_{x \in K} m(x)\right)\right)\]
+	 <p/>
+	 The associativity and commutativity of the operation in $M$
+	 is crucial for the rightmost $\Pi$ to be meaningful
+	 <p/>
+	 To get the chromatic polynomial of a graph, take $R$ to be the
+	 polynomial ring $\Z[\lambda]$, let $M$ be a singleton $\{\star\}$,
+	 and let $v(\star) = \lambda$. Decorate every vertex of $G$ with
+	 $\star$, and every edge with $-1$; the above formula becomes the
+	 familiar
+	 \[ \sum_{S \subseteq V} (-1)^{|S|}  \lambda^{|C(S)|}\]
+  </body>
+  <script>
+	 renderMathInElement(
+		document.body,
+		{
+		  delimiters: [
+			 {left: "$$", right: "$$", display: true},
+			 {left: "\\[", right: "\\]", display: true},
+			 {left: "$", right: "$", display: false},
+			 {left: "\\(", right: "\\)", display: false}
+		  ],
+		  macros: {
+			 "\\R": "\\mathbb{R}",
+			 "\\N": "\\mathbb{N}",
+			 "\\Z": "\\mathbb{Z}",
+			 "\\rset": "\\mathbf{Set}",
+			 "\\rctx": "\\mathop\\mathsf{ctx}",
+			 "\\x": "\\times",
+			 "\\prov": "\\vdash",
+			 "\\tensor": "\\otimes",
+			 "\\lol": "\\multimap",
+			 "\\rtype": "\\mathsf{type}",
+			 "\\rtrue": "\\mathop\\mathsf{true}",
+			 "\\ract": "\\mathop\\mathsf{act}",
+			 "\\dns": "{\\downarrow}",
+			 "\\ups": "{\\uparrow}",
+			 "\\celse": "{\\ |\\ }",
+			 "\\tri": "\\triangleright",
+			 "\\imp": "\\Rightarrow",
+			 "\\A": "\\mathbf{A}",
+			 "\\C": "\\mathbf{C}",
+			 "\\D": "\\mathbf{D}",
+			 "\\PP": "\\mathbf{P}",
+			 "\\NN": "\\mathbf{N}",
+			 "\\op": "\\mathrm{op}",
+			 "\\dash": "-",
+			 "\\o": "\\circ",
+			 "\\ll": "[\\![",
+			 "\\rr": "]\\!]",
+			 "\\wat": "\\mathop{@}",
+			 "\\prequiv": "\\dashv\\vdash",
+          "\\llto": "\\rightarrowtail",
+          "\\rrto": "\\twoheadrightarrow",
+			 "\\next": "{\\blacktriangleright}",
+		  }
+		}
+    );
+  </script>
+</html>
