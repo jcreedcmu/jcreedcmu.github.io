@@ -179,26 +179,38 @@
   	 \[=\sum_{n,m,i,j} c_nd_m n^i \pi^n  \nu^j \left( m \atop j\right)    h^{i + j-m} \bigg|_{h^0} \]
   	 \[=\sum_{n,m,j} c_nd_m n^{m-j} \pi^n  \nu^j \left( m \atop j\right)     \]
   	 \[=\sum_{n,m} c_nd_m  \pi^n  (\nu + n)^m     \]
+	 <p/>
+
+	 Oh,
+	 but <a href="https://math.stackexchange.com/questions/185354/exponential-of-the-differential-operator?newreg=96d7610bd7de474eb6f0d8d6b7662033">the
+	 internet tells me</a> that this operator accomplishes nothing more
+	 than shifting the function it's applied to by $\nu$. So I should be able to calculate just as easily that
+	 \[\left({1\over 1 - h\pi D_\pi}  F\right)  G(\nu + 1/h)\bigg|_{h^0} \]
+  	 \[=\sum_{n,i} c_n n^i h^i \pi^n  \sum_m d_m (\nu + 1/h)^m  \bigg|_{h^0} \]
+  	 \[=\sum_{n,m,i,j} c_nd_m n^i \pi^n  \nu^j \left( m \atop j\right)    h^{i + j-m} \bigg|_{h^0} \]
+  	 \[=\sum_{n,m,j} c_nd_m n^{m-j} \pi^n  \nu^j \left( m \atop j\right)     \]
+  	 \[=\sum_{n,m} c_nd_m  \pi^n  (\nu + n)^m     \]
+	 Nice!
 	 <h3>Defining $\lhd$ analytically</h3>
-	 Let's say we have the general case of
+	 Now that I don't have to differentiate with respect to $\rho$, I can abandon inventing a separate variable $\nu$ to keep track
+	 of what's going on.
+	 So let's say we have the general case of
 	 \[F(\pi, \rho) = \sum_{n,m} c_{n,m} \pi^n \rho^m \]
 	 \[G(\pi, \rho) = \sum_{n',m'} d_{n',m'} \pi^{n'} \rho^{m'} \]
 	 then we claim
-	 \[(F \lhd G)(\pi, \nu) = \sum_{n,n',m,m'} c_{n,m} d_{n',m'} \pi^{n + n'} \nu^{m}(\nu + n)^{m'} \]
+	 \[(F \lhd G)(\pi, \rho) = \sum_{n,n',m,m'} c_{n,m} d_{n',m'} \pi^{n + n'} \rho^{m}(\rho + n)^{m'} \]
 	 can be given by
 <div style="background-color: #def; margin: 20px 0px; padding: 1px 0px;">
-	 \[(F \lhd G) =
-	 \left({1\over 1 - h\pi D_\pi}  F (\pi, \nu)\right) \left( e^{\nu D_\rho} G(\pi, 1/h)\right)\bigg|_{h^0} \]
+	 \[(F \lhd G)(\pi, \rho) =
+	 \left({1\over 1 - h\pi D_\pi}  F (\pi, \rho)\right) \left(  G(\pi, \rho + h^{-1})\right)\bigg|_{h^0} \]
 </div>
 	 for we can compute
-\[	 \left({1\over 1 - h\pi D_\pi}  F (\pi, \nu)\right) \left( e^{\nu D_\rho} G(\pi, 1/h)\right)\bigg|_{h^0} \]
-\[	=  \left({1\over 1 - h\pi D_\pi}  \sum_{n,m} c_{n,m} \pi^n \nu^m\right) \left( e^{\nu D_\rho} \sum_{n',m'} d_{n',m'} \pi^{n'} \rho^{m'}\right)\bigg|_{\rho = 1/h}\bigg|_{h^0} \]
-\[	=  \left( \sum_{n,m,i} c_{n,m} n^i h^i \pi^n \nu^m\right) \left(  \sum_{n',m',j} {\nu^j D_\rho^j \over j!}d_{n',m'} \pi^{n'} \rho^{m'  }\right)\bigg|_{\rho = 1/h}\bigg|_{h^0} \]
-\[	=  \left( \sum_{n,m,i} c_{n,m} n^i h^i \pi^n \nu^m\right) \left(  \sum_{n',m',j} {\nu^j (m')^j\over j!(m'-j)}d_{n',m'} \pi^{n'} \rho^{m'-j  }\right)\bigg|_{\rho = 1/h}\bigg|_{h^0} \]
-\[	=  \left( \sum_{n,m,i} c_{n,m} n^i h^i \pi^n \nu^m\right) \left(  \sum_{n',m',j} {\nu^j (m')^j\over j!(m'-j)}d_{n',m'} \pi^{n'} h^{j-m'  }\right)\bigg|_{h^0} \]
-\[	=  \sum_{n,m,i,n',m',j} c_{n,m}d_{n',m'} n^i \pi^{n+n'} \nu^m {\nu^j (m')^j\over j!(m'-j)} h^{i + j-m'  }\bigg|_{h^0} \]
-\[	=  \sum_{n,m,n',m',j} c_{n,m}d_{n',m'} n^{m'-j} \pi^{n+n'} \nu^m {\nu^j (m')^j\over j!(m'-j)} \]
-\[	=  \sum_{n,m,n',m'} c_{n,m}d_{n',m'}  \pi^{n+n'} \nu^m (\nu + n)^{m'} \]
+\[	 \left({1\over 1 - h\pi D_\pi}  F (\pi, \rho)\right) \left(  G(\pi, \rho + h^{-1})\right)\bigg|_{h^0} \]
+\[=	 \left( \sum_{n,m,i} c_{n,m} \pi^n \rho^m h^i n^i \right) \left(  \sum_{n',m'} d_{n',m'} \pi^{n'} (\rho + h^{-1})^{m'}\right)\bigg|_{h^0} \]
+\[	=  \sum_{n,m,i,n',m',j} c_{n,m}\pi^n \rho^m h^i n^i   d_{n',m'} \pi^{n'} \left( m' \atop j \right) \rho^j  h^{j-m'}\bigg|_{h^0} \]
+\[	=  \sum_{n,m,n',m',j} c_{n,m}\pi^n \rho^m  n^{m'-j}   d_{n',m'} \pi^{n'} \left( m' \atop j \right) \rho^j   \]
+\[	=  \sum_{n,m,n',m',j} c_{n,m}\pi^n \rho^m    d_{n',m'} \pi^{n'} (\rho + n)^{m'}   \]
+
 as required.
   </body>
   <script>
