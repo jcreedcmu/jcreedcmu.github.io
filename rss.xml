@@ -4,7 +4,12 @@
 	 <title>jcreedcmu.github.io</title>
 	 <description>Occasional blogging about math</description>
 	 <link>https://jcreedcmu.github.io/index.html</link>
-	 <pubDate>Sun, 19 Aug 2018 00:00:00 GMT</pubDate>
+	 <pubDate>Thu, 23 Aug 2018 00:00:00 GMT</pubDate>
+    <item>
+      <title>Some More Thoughts About Types with Internal References</title>
+		<link>https://jcreedcmu.github.io/posts/2018-08-23/index.html</link>
+      <pubDate>Thu, 23 Aug 2018 00:00:00 GMT</pubDate>
+    </item>
     <item>
       <title>Types of DAG-like structures</title>
 		<link>https://jcreedcmu.github.io/posts/2018-08-19/index.html</link>
