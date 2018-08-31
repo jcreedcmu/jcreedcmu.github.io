@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 const posts = [
+  {"dir": "2018-08-31", "title": "Orienting Simplices"},
   {"dir": "2018-08-23", "title": "Some More Thoughts About Types with Internal References"},
   {"dir": "2018-08-19", "title": "Types of DAG-like structures"},
   {"dir": "2018-08-12", "title": "A Graph Polynomial, Sort of"},
