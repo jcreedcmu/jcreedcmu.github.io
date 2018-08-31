@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+	 <script
+		src="https://code.jquery.com/jquery-3.3.1.min.js"
+		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		crossorigin="anonymous"></script>
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		.ib { display: inline-block; }
+		center { vertical-align: middle; }
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+		.tables { display: flex; align-items: center; }
+
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>Orienting Simplices</h1>
+
+	 Suppose I have $n$ points in $\R^{n-1}$. For example, 3 points in $\R^2$.
+	 <p/>
+	 If I think of these as objects in a 2-category, and I think
+	 of the $x$-direction of $\R^2$ as representing 'the flow of time as far
+	 as the 1-cells are concerned', and the $y$-direction as 'the flow
+	 of time as far as the 2-cells are concerned', then there's two possible sorts
+	 of 2-cell that these points (together with the lines and triangle that lie between them) can represent. One where two morphisms 'compose'
+	 across the 2-cell to yield a third, and one where one 'decomposes' into two morphisms.
+	 <center><img src="diagram.png"></center>
+	 More precisely, I want to observe the following things:
+	 There is a <I>categorical</I> sense in which every cell lies
+	 either in the domain or codomain of the higher-dimensional cells
+	 it's part of. For example, $a$ is in the domain of $h$, $b$ is in the codomain of $g$, $h$ is in the codomain of $\alpha$,
+	 $f$ and $g$ are both in the domain of $\alpha$, $k$ is in the codomain of $\beta$, etc.
+	 <p/>
+	 But there is also  a <I>geometric</I> sense in which we can take any cell
+	 and ask whether it looks like it's in the domain or codomain of a higher dimensional cell.
+	 For example, to ask whether $h$ is in the codomain of $\alpha$, we ask
+	 whether
+	 \[\det\left(\begin{matrix}a_x & a_y & 1 \\ c_x & c_y & 1 \\ b_x & b_y & 1
+	 \end{matrix}\right) &lt; 0
+	 \]
+	 at least assuming the points are laid out as depicted, with $c_x - a_x$.
+	 <p/>
+	 In general, if we have  points $q, p^1, \ldots, p^n$ in $\R^{n}$ then
+	 \[\det\left(\begin{matrix}
+	 p^1_1 & p^1_2 & \cdots & p^1_{n} & 1\\
+	 p^2_1 & p^2_2 & \cdots & p^2_{n} & 1\\
+	 \vdots & \vdots & \ddots & \vdots & \vdots \\
+	 p^n_1 & p^n_2 & \cdots & p^n_{n} & 1\\
+	 q_1 & q_2 & \cdots & q_{n} & 1
+	 \end{matrix}\right)
+	 \over
+	 \det\left(\begin{matrix}
+	 p^1_1 & p^1_2 & \cdots & p^1_{n-1} & 1\\
+	 p^2_1 & p^2_2 & \cdots & p^2_{n-1} & 1\\
+	 \vdots & \vdots & \ddots & \vdots & \vdots \\
+	 p^n_1 & p^n_2 & \cdots & p^n_{n-1} & 1
+	 \end{matrix}\right)
+	 \]
+	 is how far $q$ is &mdash; in the $n$-coordinate &mdash; from the hyperplane determined by $p^1, \ldots, p^n$.
+	 Thus, this will be positive if it's on the `positive $n$-coordinate side' of the hyperplane,
+	 and negative for the other.
+	 <p/>
+	 So if we have a large sequence of points $S = (S^1, \ldots, S^m) \in (\R^\infty)^m$, then
+	 we can extract some coarse information about how they are shaped, as some data
+	 of type
+	 \[\Pi n &lt; m. \Pi K : \mathcal P_n(S). \Pi q \in (S \setminus K) . \{\dom, \cod\} \]
+	 That is, for any $n &lt; m$ and any $n$-sized subset $p^1, \ldots p^n \subseteq S$ and some
+	 $q \in S \setminus  p^1, \ldots, p^n $ not already in that subset,
+	 we can project each of the $p^1, \ldots, p^n, q$ from $\R^\infty$ down to just $\R^n$ by
+	 taking their first $n$ coordinates, and ask
+	 whether the sign of the expression is above is positive or negative. We interpret this
+	 as telling us whether the $(n-1)$-cell determined by $p^1, \ldots p^n$ is in the domain
+	 or codomain of the $n$-cell determined by $q, p^1, \ldots p^n$.
+	 <p/>
+	 <h2>Question</h2>
+	 For each $m$, how many distinct such functions can actually be attained by a suitable
+	 choice of $m$ points $S$? Call this $\phi(m)$.
+	 <p/>
+	 I know $\phi(1) = 1$ and $\phi(2) = 2$ and $\phi(3) = 12$, (because of the two triangle diagrams
+	 above, plus a factor of $3!$ for permutations of merely in which order the three vertices appear in $S$)
+	 and I think $\phi(4) = 576 = 4! \cdot 2 \cdot 2 \cdot 6$, because of a choice of permutation
+	 of the 4 vertices, a  choice of how to flip all the 2-cells, a  choice
+	 of how to flip the 3-cell, and the fact that 6 of the following 8 diagrams
+	 <center><img src="diagram2.png"></center>
+	 seem 'consistent' with a
+	 downward-pointing 2-cell going 'out of the page' from the top 1-cell of each little
+	 diagram to the bottom 1-cell. Where 'consistency' means that there is a 'least' and 'greatest'
+	 1-path.
+
+	 But I'm less confident about that.
+
+  </body>
+  <script>
+
+	 renderMathInElement(
+		document.body,
+		{
+		  delimiters: [
+			 {left: "$$", right: "$$", display: true},
+			 {left: "\\[", right: "\\]", display: true},
+			 {left: "$", right: "$", display: false},
+			 {left: "\\(", right: "\\)", display: false}
+		  ],
+		  macros: {
+      	 "\\st": "\\mathop|",
+			 "\\R": "\\mathbb{R}",
+			 "\\N": "\\mathbb{N}",
+			 "\\Z": "\\mathbb{Z}",
+			 "\\rset": "\\mathbf{Set}",
+			 "\\rctx": "\\mathop\\mathsf{ctx}",
+			 "\\x": "\\times",
+			 "\\prov": "\\vdash",
+			 "\\tensor": "\\otimes",
+			 "\\lol": "\\multimap",
+			 "\\rtype": "\\mathsf{type}",
+			 "\\dom": "\\mathop\\mathsf{dom}",
+			 "\\cod": "\\mathop\\mathsf{cod}",
+			 "\\med": "\\mathop\\mathsf{med}",
+			 "\\sc": "\\mathop\\mathsf{sc}",
+			 "\\rtrue": "\\mathop\\mathsf{true}",
+			 "\\ract": "\\mathop\\mathsf{act}",
+			 "\\dns": "{\\downarrow}",
+			 "\\ups": "{\\uparrow}",
+			 "\\celse": "{\\ |\\ }",
+			 "\\tri": "\\triangleright",
+			 "\\imp": "\\Rightarrow",
+			 "\\A": "\\mathbf{A}",
+			 "\\C": "\\mathbf{C}",
+			 "\\D": "\\mathbf{D}",
+			 "\\PP": "\\mathbf{P}",
+			 "\\NN": "\\mathbf{N}",
+			 "\\op": "\\mathrm{op}",
+			 "\\dash": "-",
+			 "\\o": "\\circ",
+			 "\\ll": "[\\![",
+			 "\\rr": "]\\!]",
+			 "\\wat": "\\mathop{@}",
+			 "\\prequiv": "\\dashv\\vdash",
+          "\\llto": "\\rightarrowtail",
+          "\\rrto": "\\twoheadrightarrow",
+			 "\\next": "{\\blacktriangleright}",
+		  }
+		}
+    );
+  </script>
+</html>
