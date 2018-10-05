@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+	 <script
+		src="https://code.jquery.com/jquery-3.3.1.min.js"
+		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		crossorigin="anonymous"></script>
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		.ib { display: inline-block; }
+		center { vertical-align: middle; }
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+		.tables { display: flex; align-items: center; }
+
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+	 <h1>Homoiconicity</h1>
+
+	 The term "homoiconic", often used to describe lisps, was the target of some
+	 interesting critique on twitter lately.
+	 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">That term doesn&#39;t seem to mean anything, though.</p>&mdash; ShriramKrishnamurthi (@ShriramKMurthi) <a href="https://twitter.com/ShriramKMurthi/status/1046904794466660355?ref_src=twsrc%5Etfw">October 1, 2018</a></blockquote>
+
+	 (Click through for a long and interesting thread of discussion)
+	 <p/>
+
+	 I think it's great that the term is getting some scrutiny, though not
+	 because I agree that it's <I>meaningless</I>... But I do think its
+	 meaning --- or maybe I should even say, the potential different
+	 meanings, plural, it could plausibly have --- are kind of muddled
+	 and confusing, and deserve clarification.
+
+	 <p/>
+	 I'm going to try to answer a different question from "what is
+	 homoiconicity?" because "what is X?" questions are always inherently a little
+	 sketchy. Instead I'm going to think about the question:
+	 <blockquote>
+		Why does the experience of writing program-manipulating-programs
+		(including but not limited to macros) in lisp feel special?
+	 </blockquote>
+	 I think there's two separable groups of reasons why:
+	 <ol>
+		<li>the type structure (!) of a typical lisp
+		<li>the concrete syntax of a typical lisp
+	 </ol>
+
+	 Crucially, I'm not going to argue that lisps <I>are</I> special in
+	 any distinct, black-and-white, all-or-nothing way. I think the
+	 sense in which they feel special is a rather squishy matter of
+	 pragmatics and convenience. Bringing back the h-word for just a
+	 moment, I'd tend to think of "homoiconic" as a property more like
+	 "elegant" or "user-friendly", rather than "type-sound" or
+	 "turing-complete". But I think this way as a consequence of the
+	 arguments below, so let me set up some context so that I can
+	 argue them.
+
+	 <h1>Type Structure: Junk, Noise</h1>
+
+	 Free algebras on theories
+	 are <a href="https://www.andrew.cmu.edu/course/80-413-713/notes/chap01.pdf">sometimes
+	 characterized informally</a> by saying they have "no junk" and "no
+	 noise". For example, the free monoid on the list $[a,b,c]$ has as
+	 elements <I>only the things</I> that can be built from $a, b, c$
+	 and the monoid operations ("no junk") and <I>the only equations
+	 that hold</I> between them are those mandated by the monoid laws
+	 ("no noise"). For example, $ab$ and $ba$ are distinct elements of
+	 the free monoid, because we didn't postulate commutativity.
+
+	 <p/> What's the type of 'programs'? Can the type of programs be
+	 represented in your favorite blub language?
+	 <blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">s = &quot;int main(){return 0;}&quot;<br>s[0]<br>I just quoted a &quot;term&quot; and then used ordinary vector accessors to inspect it. That code is in C/Java/… whatever you want to translate it into. Seems to meet your definition. »</p>&mdash; ShriramKrishnamurthi (@ShriramKMurthi) <a href="https://twitter.com/ShriramKMurthi/status/1047189566669635585?ref_src=twsrc%5Etfw">October 2, 2018</a></blockquote>
+
+	 Krishnamurthi correctly points out that there's no obstacle to
+	 representing C programs in C. And just as surely we could represent lisp
+	 programs in lisp strings also:
+	 <blockquote>
+		<tt>(setq f "(lambda (x y) (+ y (* y x)))")</tt>
+	 </blockquote>
+	 Why do we think of
+	 <blockquote>
+		<tt>(setq f '(lambda (x y) (+ y (* y x))))</tt>
+	 </blockquote>
+	 as a <I>better</I> representation?
+	 <p/>
+
+	 I claim it's because
+	 <blockquote>
+	 it has <I>less</I> junk and <I>less</I> noise
+	 </blockquote> with respect to some ideal
+	 notion of program.
+	 <p/>
+
+	 Let me back up and articulate more clearly what I need from the two
+	 representations in play. The 'ideal programs' I'm talking about
+	 can be thought of perhaps
+	 as lambda-calculus terms
+	 or something, up to $\alpha\beta\eta$-equality &mdash; or
+	 JIT-compiled versions of the functions &mdash; the precise choice
+	 here I don't think matters for my argument, but I could be wrong)
+	 <p/>
+	 Now both the representations are going to be <I>partial functions</I>
+	 from some type to the type of ideal programs.
+
+	 The domain type of this function is either
+	 strings (in the case of the string representation)
+	 or arbitrary data values in some imaginary lisp implementation (in the
+	 case of the 'sexp representation').
+
+	 <p/>
+	 Having said that, we can observe
+
+	 <ul><li>
+		  The sexp rep'n
+			 has <b>less junk</b> than the string rep'n,<br> in the sense that
+		  there are lots of strings that aren't even valid sexps,
+		  for example,
+		  <blockquote><tt>")((( lambda + + [ /"</tt></blockquote>
+		  However, every lisp value does have a way of writing it as a string,
+		  at least, mumble mumble footnote mumble, if what I mean
+		  by "lisp value" is limited to "atom or cons cell of two lisp values".
+		<li>The sexp rep'n
+		  has <b>less noise</b> than the string rep'n,<br> in the sense that
+		  there are lots of strings that denote the same lisp value, for example
+		  <blockquote><pre>(      lambda
+
+   (x        y) (   + y x))</pre></blockquote>
+		  and
+		  <blockquote><tt>(lambda(x y)(+ y x))</tt></blockquote>
+	 </ul>
+	 However, it's still true of the sexp representation that
+	 <ul>
+		<li> It has <b>some junk</b> in the form of programs like
+		  <blockquote><tt> (lambda (x) y)</tt></blockquote>
+		  that use variables that haven't been bound
+		  (and you could maybe also argue that permitting intuitively obviously
+		  type-incorrect expressions like <tt>(+ "string" 42)</tt> is a form of "junk",
+		  but to say that would be poking a much larger hornet's nest ;)
+		<li> It has <b>some noise</b> in the sense that it doesn't equate
+		  $\alpha$-equivalent programs, like
+		  <blockquote><tt> (lambda (x) x)</tt></blockquote>
+		  and
+		  <blockquote><tt> (lambda (y) y)</tt></blockquote>
+		  (and you could maybe also argue that failure to equate up to $\beta$
+		  and $\eta$ is also a form of "noise")
+	 </ul>
+	 <h2>So what do lisps give you, in terms of type structure?</h2>
+	 <center><img src="diagram.png"></center>
+A typical lisp gives you
+	 <ul>
+		<li> a choice of a type,
+		  what I've been calling 'lisp values' but which differs in its
+		  precise details from language to language, but which is <b>somewhat
+			 nearer to</b> the ideal type of programs in the programmer's mind,
+		  in the sense of having somewhat less junk and less noise.
+		<li> (partial) functions which convert this type to and from strings,
+		  and which convert it to executable functions, in such a way
+		  that they're <b>ergonomically rather
+	 easy</b> to invoke &mdash; they either have really basic names like
+	 <tt>read</tt> and probably don't require any module-import boilerplate
+	 to use,
+	 or are baked into the quoting-unquoting-evaluation mechanisms of the language.
+
+	 </ul>
+	 Note how squishy and nonabsolute these claims are! There's lots of
+	 ways you could pick types to be a bit closer to Actual Programs. Has
+	 anyone ever made something that feels like a lisp variant, except
+	 there's designated syntax for variable binding sites, and and alpha-conversion
+	 is quotiented out somehow? I've thought about that quite a few times over
+	 the years... Indeed, let me call out as another advantage that
+
+	 <ul>
+
+		<li> The type of 'lisp values' is <b>fairly simple</b>, in terms
+		  of gut-level kolmogorov-ish complexity. To say just $\mu \alpha.
+		  \mathsf{atom} + \alpha * \alpha$ is a blatant
+		  oversimplification for any real-world lisp &mdash; you probably also
+		  want to include strings, characters, numbers, vectors, who knows what else &mdash;
+		  but it's probably a lot more simple and uniform than the type that <I>more precisely</I>
+		  (read: "with even less junk") describes the algebraic data type of, for example,
+		  ocaml programs.
+	 </ul>
+
+	 This is to emphasize even further that I think what's going on here is a <b>trade-off</b>,
+	 not an on-off switch of homoiconic-or-not.
+
+	 <h2>What do lisps give you, in terms of concrete syntax?</h2>
+
+	 The remaining part of the picture I know less about, because I'm
+	 not that serious of a lisp macro hacker, but I think there's another
+	  bullet point or two to add about macros, or at least about the
+	 choice of concrete syntax, i.e. the choice of the particular
+	 functions that go between 'values' and the type <tt>string</tt>.
+	 Otherwise, the advantages I've claimed above would also be satisfied
+	 by any language that comes with a good standard (un)parsing library,
+	 with a lisp-esque type for the AST.
+
+	 <p/> So let me add that what a lisp gives you is
+	 <ul>
+		<li> The mapping between the type of 'lisp values' and strings is also
+		  <b>fairly simple</b>, yadda yadda gut-level kolmogorov complexity, footnote mumble
+		  subjective
+		  de gustibus non disputandum etc.
+		  The strength of this advantage also decreases gradually in proportion to the number
+		  of exotic features (read: 'branches in the recursive sum type that is lisp values')
+		  you cram into your lisp. But I think all the hallmarks of lisp syntax
+		  &mdash; the reuse of parentheses for block structure
+		  and for expression grouping, and making absolutely every operation prefix &mdash;
+		  has some advantages in terms of actual human brains having a couple fewer things to learn.
+		  (but also disadvantages, at times,
+		  in terms of actual human brains having less redundant information
+		  to discriminate on. Though I came here to, er, praise caesar, not bury him...)
+		<li> The concrete syntax of the language lets you easily <b>pass back and forth</b>
+		  between building expressions
+		  and invoking macro computations on expressions. I.e., quote, backtick/antiquote syntax,
+		  and macros themselves.
+	 </ul>
+	 This latter point is again something that's not a Totally Unique Incomparable Advantage
+	 of lisp, but worth thinking about by comparison to macros in C, and string interpolation syntax
+	 in lots of languages.
+  </body>
+  <script>
+
+	 renderMathInElement(
+		document.body,
+		{
+		  delimiters: [
+			 {left: "$$", right: "$$", display: true},
+			 {left: "\\[", right: "\\]", display: true},
+			 {left: "$", right: "$", display: false},
+			 {left: "\\(", right: "\\)", display: false}
+		  ],
+		  macros: {
+      	 "\\st": "\\mathop|",
+			 "\\R": "\\mathbb{R}",
+			 "\\N": "\\mathbb{N}",
+			 "\\Z": "\\mathbb{Z}",
+			 "\\rset": "\\mathbf{Set}",
+			 "\\rctx": "\\mathop\\mathsf{ctx}",
+			 "\\x": "\\times",
+			 "\\prov": "\\vdash",
+			 "\\tensor": "\\otimes",
+			 "\\lol": "\\multimap",
+			 "\\rtype": "\\mathsf{type}",
+			 "\\dom": "\\mathop\\mathsf{dom}",
+			 "\\cod": "\\mathop\\mathsf{cod}",
+			 "\\med": "\\mathop\\mathsf{med}",
+			 "\\sc": "\\mathop\\mathsf{sc}",
+			 "\\rtrue": "\\mathop\\mathsf{true}",
+			 "\\ract": "\\mathop\\mathsf{act}",
+			 "\\dns": "{\\downarrow}",
+			 "\\ups": "{\\uparrow}",
+			 "\\celse": "{\\ |\\ }",
+			 "\\tri": "\\triangleright",
+			 "\\imp": "\\Rightarrow",
+			 "\\A": "\\mathbf{A}",
+			 "\\C": "\\mathbf{C}",
+			 "\\D": "\\mathbf{D}",
+			 "\\PP": "\\mathbf{P}",
+			 "\\NN": "\\mathbf{N}",
+			 "\\op": "\\mathrm{op}",
+			 "\\dash": "-",
+			 "\\o": "\\circ",
+			 "\\ll": "[\\![",
+			 "\\rr": "]\\!]",
+			 "\\wat": "\\mathop{@}",
+			 "\\prequiv": "\\dashv\\vdash",
+          "\\llto": "\\rightarrowtail",
+          "\\rrto": "\\twoheadrightarrow",
+			 "\\next": "{\\blacktriangleright}",
+		  }
+		}
+    );
+  </script>
+</html>
