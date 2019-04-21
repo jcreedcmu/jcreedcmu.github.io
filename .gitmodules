@@ -1,3 +1,6 @@
 [submodule "demo/cubetest"]
 	path = demo/cubetest
 	url = https://github.com/jcreedcmu/cubetest.git
+[submodule "demo/lambda-map-drawer"]
+	path = demo/lambda-map-drawer
+	url = https://github.com/jcreedcmu/lambda-map-drawer.git
