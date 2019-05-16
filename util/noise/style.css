@@ -1,0 +1,7 @@
+.vrange {
+  -webkit-appearance: slider-vertical;
+  width: 25px; height: 200px;
+}
+
+td { text-align: center; }
+.num { width: 60px; overflow: hidden; }

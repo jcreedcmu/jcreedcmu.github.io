@@ -1,3 +1,34 @@
-<button onclick="go()">go</button>
-<button onclick="stop()">stop</button>
-<script src="noise.js"></script>
+<html>
+  <head>
+	 <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+	 <button onclick="go()">go</button>
+	 <button onclick="stop()">stop</button>
+	 <br>
+	 <table>
+		<tr>
+		  <td>f</td>
+		  <td>Q</td>
+		  <td>gain</td>
+		</tr>
+		<tr>
+		  <td>
+			 <input type="range" orient="vertical" class="vrange" id="frange"></input>
+		  </td>
+		  <td>
+			 <input type="range" orient="vertical" class="vrange" id="Qrange"></input>
+		  </td>
+		  <td>
+			 <input type="range" orient="vertical" class="vrange" id="gainrange"></input>
+		  </td>
+		</tr>
+		<tr>
+		  <td><div class="num" id="f"></div></td>
+		  <td><div class="num" id="Q"></div></td>
+		  <td><div class="num" id="gain"></div></td>
+		</tr>
+	 </table>
+	 <script src="noise.js"></script>
+  </body>
+</html>
