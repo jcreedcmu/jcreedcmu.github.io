@@ -95,13 +95,16 @@ function toggle() {
   if (src == null) go(); else stop();
 }
 
+window.onmousedown = toggle;
+
+document.getElementById("controls").onmousedown = (e) => { e.stopPropagation(); }
+
 window.onkeydown = (e) => {
   if (e.keyCode == 32) {
 	 e.preventDefault();
 	 e.stopPropagation();
 	 toggle();
   }
-
 };
 
 render();

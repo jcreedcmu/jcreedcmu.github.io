@@ -2,6 +2,14 @@
   -webkit-appearance: slider-vertical;
   width: 25px; height: 200px;
 }
-
+.controls { background-color: #f0f7ff; padding: 2em; border: 1px solid #bdf; }
 td { text-align: center; }
 .num { width: 60px; overflow: hidden; }
+* {  font-family: sans; }
+body { display: grid; height: 100vh; place-items: center center; }
+table { margin: 0 auto; }
+#toggleButton {
+  width: 500;
+  height: 100;
+  margin-bottom: 2em;
+}
