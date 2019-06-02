@@ -6,7 +6,14 @@
 td { text-align: center; }
 .num { width: 60px; overflow: hidden; }
 * {  font-family: sans; }
-body { display: grid; height: 100vh; place-items: center center; }
+
+body {
+  height: 100vh;
+  margin: 0px;
+  display: grid;
+  place-items: center center;
+ }
+
 table { margin: 0 auto; }
 #toggleButton {
   width: 500;
