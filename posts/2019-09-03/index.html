@@ -1,0 +1,705 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+	 <script
+		src="https://code.jquery.com/jquery-3.3.1.min.js"
+		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		crossorigin="anonymous"></script>
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <title>Some Thoughts on Story Games</title>
+	 <style>
+		.ib { display: inline-block; }
+		center { vertical-align: middle; }
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+		.tables { display: flex; align-items: center; }
+
+	 </style>
+  </head>
+  <body style="width: 800px">
+	 <h1>Some Thoughts on Story Games</h1>
+
+	 I started reading a lot of
+	 the <a href="http://story-games.com/forums/">story games forum
+	 archives</a>. I'm not much of a rpg player historically, but there
+	 are some really interesting ideas in there,
+	 especially <a href="http://story-games.com/forums/profile/2097">2097</a>
+	 ("Sandra")'s ideas about "blorb". I wanted to try to summarize
+	 what I took away from it. Standard disclaimer that to whatever
+	 extent I have good ideas, I owe a debt to the forum participants
+	 for having articulated those ideas before me, and to whatever extent
+	 I have dumb ideas or have misrepresented the ideas of others,
+	 that's on me.
+	 <p/>
+	 Anyway the main goal here is to structure what I currently believe. Three bullet points,
+	 followed by more detailed commentary:
+	 <ol>
+		<li>Table-top role playing games are interesting because they substantially combine
+		  <i>formal systems</i> with <i>human judgment</i>.
+		<li>Formal systems and human judgment in turn are interesting because they enable
+		  capturing two different properties of <i>"realistic" fictional worlds</i>. Or,
+		  to put it another way, they help achieve two different criteria of realism.
+		<li>The "realism" so created still depends on using a certain
+		  fuzzily-defined <i>subset</I> of formal systems, and a
+		  constrained set of <i>human judgments</i>. Some formal systems
+		  appeal to a human sense of <i>regularity</i> of how the world
+		  works.
+	 </ol>
+
+	 <h2>What I mean by Human Judgment</h2>
+
+	 Here is an example of a question that is a matter of human judgment:
+
+	 <blockquote>
+		<span style="color:#ff0000">What color is this text?</span>
+	 </blockquote>
+
+	 Almost certainly you will answer "red". I would answer "red". Here's another question:
+
+	 <blockquote>
+		<span style="color:#ff0020">What color is this text?</span>
+	 </blockquote>
+
+	 You might still answer "red", even though it is a slightly more pinkish red. I suspect
+	 you'd be more likely to say "red" if I'd have asked this question first, and you didn't perhaps
+	 imagine that I am trying to be sneaky.
+
+	 <p/>
+
+	 Human judgment is subjective, squishy, not perfectly consistent
+	 across languages, not reliable from person to person, potentially
+	 inconsistent within one person from time to time, and prone to
+	 having a zillion special cases.
+
+	 <p/>
+
+	 With my blinkered ultraformalist mathematician hat on, it is
+	 anathema; but it runs the (legal systems of the) world. It's fine.
+	 Even though it smells incredibly unconstrained compared to math
+	 and programming, it is not totally unconstrained.
+
+	 <p/>
+	 Here's an example of a game that depends on human judgment:
+	 <blockquote>
+		Alice chooses a fruit. Bob guesses a color. If Alice's fruit is
+		the color that Bob guessed, then Bob wins. Otherwise, Alice
+		wins.
+	 </blockquote>
+	 Note that:
+	 <ul>
+		<li>The question of what is or isn't a fruit is a question of
+		  human judgment. Maybe a tomato is, maybe it isn't.
+		<li>The question of what color a fruit is is sometimes but not
+		  always determined by the choice of fruit. An apple could at
+		  least either be red or gold or yellow or pink or green. A
+		  strawberry is canonically red, even though an underripe one
+		  might not be. A lemon is canonically yellow.
+		  <li>As noted above, the question of whether one color is even
+		  the same as another color is a question of human judgment.
+	 </ul>
+
+	 <h2>What I mean by Formal Systems</h2>
+
+	 Phew, let's go back to something less scary and more comfortable.
+	 Formal systems are, for present purposes, things that
+	 can <i>mechanically</i> settle questions of what happens in a
+	 game.
+
+	 <p/>
+
+	 Chess is a formally describable game; you can easily write a
+	 program to input a list of chess moves and output whether they are
+	 valid, and what the resulting board state is. Sudoku is a formally
+	 describable one-person game.
+	 Any game mediated and adjudicated entirely by software is a formal system.
+	 <span style="color: gray">(I want to say "any video game is a formal system", but there's going
+	 to be edge cases like Pokemon Go which also depend on gps sensors. An interesting case, to be sure,
+		but a distraction from what I'm trying to get across)</span>
+
+	 <p/>
+
+	 A formal system has clean, sharp edges. A formal system operates
+	 on discrete data types. A formal system is repeatable, reliable,
+	 objective. A formal system is the same regardless of who's looking
+	 at it, when they're looking at it, whether they like it or not,
+	 whether or not they succeed or fail depending on its output.
+
+	 <p/>
+
+	 A caveat: this is an ideal. It may still require a modicum of
+	 human judgment to <i>actually play chess in the real world</i>
+	 because a player may put down a piece straddling the line between
+	 one square and the next and someone has to adjudicate which square
+	 it's <i>really</i> on. A player may fail to take a move for three
+	 days, and even though you didn't specify a time limit when you
+	 started playing, you know as a human being that this wasn't a
+	 postal game and therefore this just <i>isn't</i> reasonable.
+
+	 <p/>
+	 But there is still an abstraction remaining that is <i>The Game of Chess</i> that we can
+believe in as a fairly well-specified mathematical object, in a way that does not really hold at all for
+	 <i>Guess the Color of the Fruit</i>.
+
+	 <h2>1.</h2>
+	 <blockquote>Table-top role playing games are interesting because they substantially combine
+	 <i>formal systems</i> with <i>human judgment</i>.</blockquote>
+
+	 Here's some things that might be said playing some rpg:
+
+	 <ul>
+		<li>In 1e D&amp;D, "Roll 3d6 for each of your stats." [Formal System]
+		<li>In Lady Blackbird, "Add a die if you have a <b>trait</b> that can help you.
+		  If that trait has any <b>tags</b> that apply, add another die for each tag". [A matter
+		  of Human Judgment whether traits and tags &mdash; which are single words or short phrases &mdash;
+		  apply to the current situation]
+		<li>In Microscope, "Decide whether each description is Light or Dark,
+		  whether what happens during that Period is generally
+		  happy or tragic." [Human Judgment]
+		<li>"The contents of the chest are determined by rolling a percentage die on the following table" [Formal System]
+		<li>"If the result of the roll plus modifiers exceeds the
+		armor's defense rating, the attack hits, otherwise it misses"
+		[Formal System]
+	 </ul>
+
+	 Pretty much anything that really is, by necessity, a tabletop
+	 roleplaying game, and not merely something that could be a
+	 videogame that happens to be mechanically executed by a GM
+	 following perfectly precise formal rules, has a substantial
+	 mixture of (a) game-critical elements that depend on human
+	 judgment, and (b) perfectly precise formal rules.
+
+	 <p/>
+
+	 The extreme of having all formal system and (nearly) no human
+	 judgment still contains a tremendous, rich variety: any of
+	 Chess, or Sudoku, or Go, or Backgammon, or Candyland.
+
+	 <p/>
+	 The extreme of foregrounding human subjective intuition, with very little formal structure
+	 might be something like:
+	 <blockquote>
+		Hey, friends, let's just, like, make up a story. Anybody, whenever they think it's their turn
+		to talk, says whatever they think would make a good addition to the story.
+	 </blockquote>
+	 There's nothing wrong with this! People write novels collaboratively sometimes.
+	 <p/>
+	 But there's something very interesting about the space between these extremes,
+	 and it's something that, in particular, the story-games forum seemed to talk a lot about.
+
+	 It's something to do with the feeling that, while playing, you are
+	 interacting with something <i>real</i>.
+
+	 <h2>Realistic Dragons</h2>
+
+	 <i>Realistic dragons? What do you mean? Dragons aren't real.</i>
+	 <p/> Over here we have a masterful painting of a dragon. The
+	 dragon's scales are lovingly rendered, shining with an almost
+	 metallic irridescence. The smoke rises in whorls above its
+	 reptilian nostrils, lit by the flames rushing away from its mouth.
+	 Its muscles are carved with an anatomist's sensitivity, its eyes
+	 glisten wetly, its claws pierce the volcanic rock with palpable
+	 tension.
+
+	 <p/> &amp; over here we
+	 got <a href="https://www.youtube.com/watch?v=7gz1DIIxmEE">Trogdor!
+	 The burninator!</a> With consummate V's and a beefy arm.
+
+	 <p/> Even though we know that dragons aren't real, there's
+	 an obvious difference between a dragon illustration that <i>looks
+	 real</i> and one that doesn't.
+
+	 <p/>A "realistically depicted dragon" conforms to certain
+	 expectations (its scales would reflect light much like snake or
+	 lizard scales, it would have bones and muscles, it would appear
+	 with the same perspective vanishing-point as other objects in the
+	 scene) though not others (it might be able to magically fly despite its
+	 implied bulk and small wings, it can breathe fire, it can
+	 withstand direct contact with magma without harm) about
+	 counterfactual animals.
+
+	 <p/>The question of precisely <i>which</i> properties
+	 that <i>are</i> satisfied by real animals have to be satisfied by
+	 the dragon is not obvious, or objectively characterized. This,
+	 too, is a question of squishy subjective human judgment. However,
+	 there is some rough regularity and commonality to what people tend
+	 to ask for in a definition of "realism" for paintings: things to
+	 do with lighting, perspective, three-dimensional forms, anatomy, etc.
+
+	 <h2>Realistic Worlds</h2> <p/>
+
+	 Here are two properties of the real world as an interactive
+	 system. They seem to be important for a <i>fictional world</i> to
+	 seem like a <i>realistic depiction</i>, even though the world is
+	 known to be fictional.
+
+	 <ol>
+		<li>The world is consistent. The world follows rules independent of the whims of its occupants.
+		  Things continue to exist even when you can't immediately sense them.
+		<li>The world is complex. One may investigate a phenomenon in the world, and
+		  spend a great deal of time learning about its systems and subsystems, and still not plumb
+		  the full depth of their complexity.
+	 </ol>
+
+	 Note that my belief in the full version of (1) being true of the
+	 actual world, and my claim that most people expect this of
+	 fictional worlds, is an <i>extremely</i> culturally conditioned
+	 thing. It is specifically a very post-Newtonian thing to think.
+	 But at
+	 least <a href="https://en.wikipedia.org/wiki/Object_permanence">Object
+	 permanence</a> is a thing; it's part of the toolbox of strategies
+	 we use for coping with the world at human scales.
+
+	 <h2>2.</h2>
+	 <blockquote>Formal systems and human judgment in turn are interesting because they enable
+		  capturing two different properties of <i>"realistic" fictional worlds</i>. Or,
+		  to put it another way, they help achieve two different criteria of realism.
+	 </blockquote>
+
+	 Specifically:
+
+	 <p/>Games that substantially depend on formal systems enable the
+	 construction of fictional worlds that appear consistent, which
+	 obstinately behave in certain ways indifferent to the whims of the
+	 players, and this can be exciting to players because it makes the
+	 game world feel <i>real</i>.
+
+	 <p/>Games that substantially depend on human judgment enable the
+	 construction of fictional worlds that appear complex, which a
+	 player can interrogate, investigate, and explore, almost without
+	 limitation, and this can be exciting to players because it makes
+	 the game world feel <i>real</i>.
+
+	 <h2>Blorb &amp; Garst &amp; all that</h2>
+	 <h3>Blorb</h3>
+
+	 It's time to start citing forum threads.
+	 <p/>
+	 <a href="http://story-games.com/forums/discussion/comment/486144/#Comment_486144">Here
+		is Sandra's "Mirror Story"</a>.
+	 <p/>
+
+	 A one-sentence summary: Sandra spent a lot of time playing rather improvisational, loosely structured
+	 role-playing games, assumed without available
+	 counterexample that all rpgs were just like that, then had a
+	 notable contrary experience, and greatly enjoyed it.
+
+	 <p/>The experience that sandra had was this:
+	 <blockquote>
+		[the party is in a classic dungeon crawl, and] there's an object
+		behind a curtain. I walk up to it and put my hand under. feels
+		like glass. "it's a cursed mirror?" we all think. we take it
+		down from the wall w/o looking at it or removing the curtain.
+		attach it to our cart.
+
+		<p/> hours later, fighting against toad monsters on our way home
+		from dungeon. we pull away curtain. one toad monsters sees the
+		mirror and goes pop like a soap bubble just disappear from this
+		world. and the mirror cracks.
+	 </blockquote>
+
+	 It took me a while to understand what was remarkable about this:
+	 it's that the mirror <i>really was cursed the whole time</I>, and,
+	 more importantly,
+	 <blockquote>
+		<i>the question of whether the mirror was cursed was already
+		settled</i>, by a mechanism independent of any of the people setting
+		at the table
+	 </blockquote>
+	 Presumably the DM of this game rolled
+	 some dice on a random-dungeon-treasure table, as instructed by the
+	 rulebook, and got "cursed mirror" (instead of, say, "regular
+	 harmless mirror"). The choices the party made &mdash; to avoid
+	 directly looking at the mirror, and also to attempt to weaponize
+	 it during combat &mdash; were therefore an interesting and
+	 consequential gamble. (For example, if it was a regular mirror,
+	 they would have been wasting their valuable combat time uncovering
+	 it)
+
+	 <p/>
+	 The mirror wasn't merely an improvised made-up fact. The fact that the mirror
+	 worked as a weapon wasn't merely something the DM had thought would be cool.
+	 It was a <i>consequence</i> of the impersonal, independent, impartial operation of formal system
+	 which the players cleverly used to advance their own goals.
+	 <p/>
+	 This is, I think, roughly what Sandra means by "blorb".
+
+	 <h3>Garst</h3>
+	 <a href="http://story-games.com/forums/discussion/comment/486311/#Comment_486311">Here
+	 is Lumpley's "Mirror Story"</a>, even though it's about a wand,
+	 not a mirror.
+	 <blockquote>
+		Our wizards had come into possession of a small collection of
+		magical items. Meg, Emily and I brainstormed or otherwise
+		generated a list of them, with no more information per item than
+		"an embroidered shirt" or "a polished copper bowl." One of the
+		items was a bone wand. We'd established that they'd come from
+		the storehouse of a wizards' tower abandoned by its wizards, or
+		something like that, and that's all we knew.
+
+		<p/>
+
+		My wizard
+		undertook to figure out what the bone wand was.
+
+		<p/>
+
+		We had
+		nothing prepped, we all knew that there was nothing prepped.
+		[...]
+
+		<p/>
+
+		So here's my wizard,
+		wandering around, waving this wand at things, working through
+		the possibilities implicit in Ars Magica's in-fiction magic
+		system. Meg and Emily are answering my wizard's actions
+		whimsically at first, within those same bounds, then naturally
+		starting to build organically on their collective previous
+		answers.
+
+		<p/>
+
+		What happened in the real world was, at the same
+		moment, with no communication between us, Meg's, Emily's and my
+		imaginations converged on the same solution to the pattern
+		they'd been whimsically / intuitively / symbolically /
+		aesthetically creating.
+
+		<p/>
+
+		What it felt like was, the wand was
+		real, and we all realized at the same moment what it really was.
+	 </blockquote>
+
+	 It's hard to know for sure what was going on without further
+	 details about what the wand did, or what they concluded, which
+	 information is not provided.
+
+	 <p/>
+
+	 But it seems clear to me that there is a form of <i>deduction</i>
+	 operating here, even though it is not crystal-clear formal system
+	 deduction. It's deduction from squishy
+	 subjective-to-interpretation postulates about bones and wands and
+	 perhaps trees and penguins stated with messy human language,
+	 relying on "common sense" and shared cultural assumptions, and
+	 shared beliefs about how physics works, and how magic <i>ought</i>
+	 to work, if only magic were real.
+
+	 <p/>
+
+	 This sort of deduction, despite its unreliability in general to
+	 produce crisp answers, can still under some circumstances produce
+	 deductive consequences which are
+	 <i>virtually certain</i>. This is the same as how I'm virtually certain you
+	 <span style="color:#ff0020">won't say that this text is
+	 green</span> even though you might say that it's pink or rose or
+	 magenta or red-red-red-violet or something.
+
+	 <p/>
+
+	 The wand's nature wasn't merely an improvised made-up fact, even
+	 though a lot of facts came into being in the game via "mere"
+	 improvisation. It was something that came out of a sufficiently
+	 rich tapestry of human-generated words and ideas and notions as a
+	 <i>necessary consequence</i> of them.
+
+	 <p/>
+
+	 This is, I think, roughly what Lumpley means by "garst".
+
+	 <h2>Blorb &#x2665; Garst</h2>
+
+	 The thread
+	 titled <a href="http://www.story-games.com/forums/discussion/22159/my-preliminary-hypothesis">My
+	 Preliminary Hypothesis</a> suggests that blorb and garst are not entirely
+	 inconsistent, and both contribute to a feeling of "realism" of
+	 games. I'm presently inclined to agree.
+
+	 <p/>
+
+	 I think, however, that I also see why it's possible for a
+	 particular player to enjoy one or the other form of world-realism
+	 much more, and to find it hard to trust the other.
+
+	 <p/>
+
+	 Someone who very strongly prefers blorb over garst might think like this:
+	 <blockquote>How can I be sure that someone else's Mere Human
+	 Judgment is going to produce the same result as mine? When you
+	 talk about deduction from a bunch of facts that have already been
+	 committed to, I can't really distinguish that from just making up
+	 more facts. This breaks my sense that the fictional world is
+	 realistic because it is <i>not consistent enough</i>. </blockquote>
+
+	 Someone who very strongly prefers garst over blorb might think like this:
+	 <blockquote>Why am I reading books and rolling dice and doing
+		arithmetic if someone could just program a computer to do the
+		same? And even then, why am I bothering to play such an
+		impoverished game that is entirely mechanizable? What happens if
+		I want
+		to <a href="https://tvtropes.org/pmwiki/pmwiki.php/Main/YouCantGetYeFlask">Get
+		Ye Flask</a> and the formal system I'm engaging with lacks the
+		common sense to know that Ye Flask ought to be Gettable and just
+		says opaquely that "You can't get ye flask!" without me being
+		able to sensibly negotiate about that? This breaks my sense that
+		the fictional world is realistic because it is <i>not rich
+		enough</i>. </blockquote>
+
+	 To be clear, I think even both of these caricatured preferences
+	 are fine to have, as well as preferring various specific levels of
+	 balance in between.
+
+	 <h2>The Feeling of Modal Necessity</h2>
+
+	 A game can feel real when it feels as if there is a
+	 non-person-like &mdash; or, more specifically, a world-like &mdash; player
+	 which is playing with the players who are persons.
+
+	 <p/>
+
+	 We can draw a distinction between a thing that is character-like and
+	 a thing that is world-like. Some assertions these:
+	 <ul>
+		<li>Characters have motivations, personalities, desires, vices.
+		<li>Worlds don't have motivations. They are indifferent to characters' success or failure.
+		<li>Worlds have rules. Worlds have state.
+		<li>Worlds evolve. Characters act.
+		<li>Worlds are large. Worlds contain multitudes. Worlds contain mysteries.
+		<li>A character can be complex and subtle, but that's peanuts to a world.
+	 </ul>
+
+	 <h2>Computer Games vs. GM'ed Tabletop Games</h2>
+
+	 If an ideal-blorb game has a system whose behavior is 100%
+	 specified, then why even have a GM? Why not play a computer game?
+	 In which an actual machine adjudicates all decisions?
+
+	 <p/>
+
+	 I think the answer is something like: to avoid "I don't know how
+	 to do that" or "You can't get ye flask!".
+
+	 <h2>Blorb &amp; Garst</h2>
+
+	 Blorb is a way that a game can feel real, where there is a
+	 precommitment to a system, and that system evolves in ways that
+	 are independent of the players' (including the DM's, if any) capricious whims.
+
+	 <p/>
+
+	 Garst is a way that a game can feel real, where there is a large
+	 body of committed facts about the game world, which have consequences
+	 that are independent of the players' capricious whims.
+
+	 <p/>
+
+	 Blorb captures one bundle of qualities of "realistic worlds": their stability, consistency, indifference.
+	 <br/>
+	 Garst captures a complementary bundle of qualities of "realistic worlds": their richness, complexity, subtlety.
+
+	 <h2> More Programs for People</h2>
+	 <blockquote>
+		Alice chooses a number between 1 and 10 inclusive. Bob guesses a number similarly. If the numbers are the same, then Bob wins.
+		Otherwise, Alice wins.
+	 </blockquote>
+	 We don't specify the information hiding protocol (presumably
+	 something like: alice commits somehow unfalsifiably, perhaps to
+	 paper, bob says out loud, alice reveals) but it is inferred
+	 naturally by the reader according to some quasi-Gricean tacit
+	 rules.
+	 <p/>
+
+	 Given that, this seems like a fairly "crisp" and well-defined
+	 game. However, in practice, Alice and Bob must still judge whether
+	 a mark on paper is an 8 or a 3, and whether an audible utterance
+	 was "five" or "nine" &mdash; these real-life avatars of abstract
+	 meaning may be marginal.
+
+	 <p/>
+
+	 <blockquote>
+		Alice chooses a fruit. Bob and Carol each guess a color. Anyone
+		who guesses the fruit's color correctly scores a point.
+	 </blockquote>
+
+	 A common sense belief about a piece of fruit is that it has a
+	 single color; if Alice chooses "apple", and Bob and
+	 Carol <i>both</i> choose "red", then they are either both right or
+	 both wrong.
+
+	 <p/>
+
+	 On the other hand, the game could specify that Alice is choosing
+	 an abstract class of fruit, as opposed to imagining a single one.
+	 In that case, maybe "red" and "green" could both be correct
+	 answers.
+
+	 <p/>
+
+	 But there is something more blorby about the specific apple:
+	 worlds are made up of specific things, not out of abstractions.
+
+	 <h2>Programs for People</h2>
+	 Here is a program. You execute it by reading it:
+
+	 <blockquote>(1) Gertrude felt the back of her neck grow uncomfortably
+	 warm. Her hands shook, and her breathing quickened. The beast was
+	 near.</blockquote>
+
+	 As a consequence of you executing this program, you imagine a
+	 fictional person named Gertrude, who is afraid. This is because
+	 the program is executing on a typical human brain, which knows
+	 that shaky hands and fast breathing are symptoms of being afraid,
+	 and that Beasts are usually scary.
+
+	 Here's another program, which can be executed on the hardware of a human
+	 brain plus a peripheral six-sided die:
+	 <blockquote>(2) You feel the back of your neck grow uncomfortably
+	 warm. Your hands shake, and your breathing quickens. The beast is
+	 near. <br/> Roll a six-sided die. If you roll a 1, 2, or 3, the
+	 beast jumps out from behind the pile of rusting bicycles, and
+	 devours you. If you roll a 4, 5, or 6, you weave a network of
+	 magic lines that dispells the beast's curse and restores her
+	 original human form.</blockquote>
+
+	 Here's another program:
+	 <blockquote>(3) Roll a six-sided die. If you roll a 1, 2, or 3, you lose.
+		If you roll a 4, 5, or 6, you win.
+	 </blockquote>
+
+	 Programs (2) and (3) have some structure in common. The human
+	 executing program (2) understands that being devoured, and
+	 "losing" are bad, and that breaking curses, and "winning", are
+	 good.
+	 <p/>
+
+	 We could consider swapping "you" with "Gertrude" in these
+	 examples, and could consider making Gertrude a "bad" character to
+	 try to invert the normative valence of the outcomes.
+
+	 <p/>
+	 Here's another program, to be executed by two human brain processing units, named Alice and Bob.
+	 <blockquote>
+		In order to outrun the beast, Alice must run for 20 minutes without stopping.
+		Bob must make a judgment as to whether he thinks Alice could do such a thing.
+	 </blockquote>
+
+	 <h2>Programs and Laws</h2>
+
+	 When I was younger, I had a very unnuanced view towards all
+	 digital intellectual property laws, a view that is very easy to
+	 arrive at if you are fond of math, programming, and
+	 unnuanced views about things.
+
+	 <p/>The notion is this: since any particular piece of data is
+	 essentially the same as a number, and sitting around playing a
+	 pleasant game of "Hello This Is My Favorite Number Today What's
+	 Yours" is <I>obviously</I> legal, and since <I>obviously</I>
+	 there is no principled way to distinguish between this game
+	 and "Hello This Is The Latest Version of Some Commercial
+	 Software Have Fun", this must be legal also.
+
+	 <p/>In short, I tacitly believed that if you can't make a
+	 principled, crisp, mathematical distinction between two
+	 circumstances, then you have no business trying to make any
+	 distinction in that domain. It turns out that, in practice, the
+	 law does not obey this principle at all.
+
+	 <p/>Appealing to squishy, messy human judgment happens all the
+	 time. It's necessary. Any particular thorny issue may have corner
+	 cases where one person's judgment differs from another's
+	 unpredictably, but there also exist plenty of cases where the
+	 outcome is quite clear to any reasonable person.
+
+	 <p/>Suppose someone is born on leap year, on February 29th. People
+	 might argue whether they ought to be allowed to drink on the
+	 February 28th that occurs 21 years later, or on March 1st &mdash; but
+	 surely nobody would disagree that they shouldn't be allowed when
+	 they're 4 years old, and everyone will agree that they should be
+	 when they're 50.
+
+	 <h2>Blorb</h2>
+	 There's an interesting forum
+	 called <a href="http://story-games.com/">story-games.com</a> that
+	 I just found out about recently, sadly just after it decided to
+	 close up shop. But for now they still have their archives up and
+	 you can read them.
+
+	 <p/>
+
+	 In it there is a recurring theme, named <b>Blorb</b>, after
+	 the <a href="http://www.ifwiki.org/index.php/Spells">enchanter
+		spell</a>. The meaning attached to the term appears to have been
+	 originated by story games
+	 user <a href="http://story-games.com/forums/profile/2097">2097</a>
+	 ("Sandra") and has been discussed and elaborated across many
+	 threads.
+
+	 <p/>
+
+	 The basic flavor of it, I think, is that it's a binary property of
+	 (story, role-playing, etc.) games. Some games are, more or less, blorb
+	 &mdash; and some are unblorb. To be blorb is to succeed at conveying
+	 the feeling that there is a certain type of
+	 systematic <I>reality</I> to the game's state.
+
+	 <p/>
+
+	 But that's just a very brief summary &mdash; I think the idea has some
+	 interesting connections to other classic issues in programming,
+	 math, law, and philosophy, which I am going to try to explore
+	 below.
+
+	 <h2>The Mirror, and the history of RPGs, of which I am largely ignorant</h2>
+	 First let's look at some primary sources for what blorb is supposed about.
+
+	 <p/>The claim is that <I>this precise kind of experience couldn't
+		have happened in other (i.e unblorb) styles of play</I>.
+	 What other styles of play are we talking about?
+	 Sandra says that her previous (considerable) experience playing
+	 rpgs was either "improvised" or "railroaded".
+
+	 <p/>In a heavily <I>improvised</I> game, the players and GM invent
+	 facts about the world with comparatively little constraint. An
+	 improvised game <i>could have</i> created exactly the same in-game
+	 mirror story, as well: it could have been that Alice introduced a
+	 covered mirror in the dungeon, and Bob said that now the party is
+	 fighting the armies of frog fractions, and now Carol says the
+	 party reveals the mirror, and Dave says that, by the way, the mirror is cursed, the frog creature is
+	 teleported by the cursed mirror.
+
+	 <p/>In a <I>railroaded</I> game, the game world has some notion of
+	 state, but the GM can and does make, single-handedly, any
+	 compromise to any pre-existing system or rules to ensure that The
+	 Script is followed. The GM prepped a mammoth lurking in the
+	 forest, but the party chose to ignore the forest and explore the
+	 mountains instead? Fine, says the railroading GM, (though
+	 secretly, to herself), it's a mountain mammoth now. Roll for
+	 initiative!
+
+
+
+
+
+	 <p/>Note carefully that the <I>in-game events</I> as described
+	 could have happened precisely the same way. For sure an
+	 improvisational game
+
+	 <p/>However the <i>feeling</i> of this experience would be
+	 different, because of players' understanding of what <i>could</I>
+	 have happened, and why. Making up a story about a poker game is
+	 not the same experience as playing a hand of poker, even if the
+	 sequences of cards played coincide exactly.
+
+	 <p/>
+
+	 <h2>Programming the Mirror</h2>
+	 http://story-games.com/forums/discussion/21073/four-mirror-scenarios-and-two-groups
+
+</html>
