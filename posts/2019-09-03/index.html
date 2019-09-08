@@ -424,8 +424,8 @@ believe in as a fairly well-specified mathematical object, in a way that does no
 	 <p/>
 
 	 I think, however, that I also see why it's possible for a
-	 particular player to enjoy one or the other form of world-realism
-	 much more, and to find it hard to trust the other.
+	 particular player to enjoy one slant towards one or the other form of world-realism
+	 much more than the other &mdash; to feel a sense of distrust towards the other mechanism.
 
 	 <p/>
 
@@ -435,9 +435,17 @@ believe in as a fairly well-specified mathematical object, in a way that does no
 	 talk about deduction from a bunch of facts that have already been
 	 committed to, I can't really distinguish that from just making up
 	 more facts. This breaks my sense that the fictional world is
-	 realistic because it is <i>not consistent enough</i>. </blockquote>
+	 realistic because it is <i>not consistent enough</i>.
+
+		<p/> There had better be a definite predominance of the formally
+		regulated parts of the world, and human judgment should be
+		required only as a break-glass fallback last resort, to prevent
+		hitting a dead-end when the players want to do something in the
+		world that the rules didn't specifically
+		anticipate.</blockquote>
 
 	 Someone who very strongly prefers garst over blorb might think like this:
+
 	 <blockquote>Why am I reading books and rolling dice and doing
 		arithmetic if someone could just program a computer to do the
 		same? And even then, why am I bothering to play such an
@@ -449,12 +457,174 @@ believe in as a fairly well-specified mathematical object, in a way that does no
 		says opaquely that "You can't get ye flask!" without me being
 		able to sensibly negotiate about that? This breaks my sense that
 		the fictional world is realistic because it is <i>not rich
-		enough</i>. </blockquote>
+		enough</i>.
 
-	 To be clear, I think even both of these caricatured preferences
-	 are fine to have, as well as preferring various specific levels of
-	 balance in between.
+		<p/> The fictional world should be, within the bounds of
+	 reasonableness, as malleable as possible. Formal systems should
+	 only be required as a last resort when the natural flow of
+	 good-faith collaborative storytelling negotiation breaks
+	 down.</blockquote>
 
+	 To be clear, I think even both of these caricatured extreme preferences
+	 are totally fine to have, as well as a preference for an arbitrary specific levels of
+	 compromise in between.
+
+	 <h2>Blorb Mirrors and Unblorb Mirrors</h2>
+
+	 There's a complicating wrinkle I want add to the above line of
+	 thinking. It requires a little bit of lead-up.
+	 <p/>
+	 In <a href="http://story-games.com/forums/discussion/21073/four-mirror-scenarios-and-two-groups">Four
+	 Mirror Scenarios and Two Groups</a>, Sandra describes four ways her mirror story <i>might</i> have gone:
+	 <blockquote>
+		In common for all four scenarios: the players find a mirror,
+		they believe it's dangerous, they treat it with the utmost
+		respect, they try to use it as a weapon against bullywugs by
+		tricking them into doing to what the players believe is a
+		dangerous thing; looking in the mirror.
+
+		"Harmless": the mirror is a scrying mirror that can spy into the
+		lich's bathroom.
+
+		"Dangerous": the mirror teleports whoever looks at it into a
+		trap -- a trap that can be defeated, but can be lethal -- and
+		then crack.
+		<dl><b>H→D</b><dd>The mirror was harmless, but after seeing the players try to use it as a weapon, the DM decides it's dangerous for the bulliwugs.</dd>
+		  <b>D→D</b><dd>The mirror was dangerous all along and the DM describes it consistently.</dd>
+		  <b>H→H</b><dd>The mirror was harmless all along and the DM describes it consistently.</dd>
+		  <b>D→H</b><dd>The mirror was dangerous, but after seeing the players try to use it as a weapon, the DM decides it's harmless for the bulliwugs.</dd></dl>
+		(In our game, D→D happened. I've checked the module.)
+	 </blockquote>
+
+	 The rest of the post explains that to prefer "blorb" (or, in the
+	 terminology of that post, to belong to the "Sandbox" group) is to
+	 prefer that mirror should be <i>either</i>
+	 <b>D→D</b> "dangerous all along" or <b>H→H</b> "harmless all along". It should be <i>something</i>
+	 all along; the world should be a realistic (and therefore consistent) world, and not a world governed
+	 by the DM's whims, "playing paper after seeing rock".
+
+	 <p/>
+	 That is, we want to demand, for consistency, that the game module has a sufficiently comprehensive
+	 <i>rule</i> for how the object behaves, not leaving it up to the judgment of the DM. We might
+	 imagine the book saying:
+	 <blockquote>
+		... on a 67, the treasure chest contains a <b>cursed mirror</b>.
+		If the cover is removed, it cracks and teleports anyone facing
+		it (if they are not blinded) to the pit trap on the seventh floor of
+		the dungeon as described on p123.
+	 </blockquote>
+	 or, for a "harmless all along" mirror, it might say
+	 <blockquote>
+		... on a 67, the treasure chest contains a <b>scrying mirror</b>.
+		If the cover is removed it reveals what's going on in the lich's bathroom.
+		Roll 1d6 on the Table of Euphemisms for Going to the Toilet for what the
+		viewer sees.
+	 </blockquote>
+
+	 <h2>Exotic Mirrors: Blorb or Unblorb?</h2>
+	 However: Let's consider a third possibility:
+	 <blockquote>
+		... on a 67, the treasure chest contains a <b>adversarially semi-cursed mirror</b>.
+		If the cover is removed and a <i>player</i> looks at it, it cracks and teleports them to the
+		pit trap on the seventh floor of the dungeon as described on
+		p123. If a <i>hostile dungeon creature</i> looks at it, nothing happens to them.
+	 </blockquote>
+	 We might call this, in functional programming notation,
+	 <blockquote>
+		&lambda; x. <b>case</b> x <b>of</b><br>
+		&nbsp;&nbsp;	| Player → <b>D</b><br>
+		&nbsp;&nbsp;		| Bulliwug → <b>H</b>
+	 </blockquote>
+	 or just <b>D | H</b> for short.
+
+	 <p/>From the players' point of view, this is nearly the same thing as the
+	 <b>D→H</b> mirror. If they look at it directly, it harms them, if they try to
+	 use it as a weapon, it doesn't work.
+
+	 <p/>And yet its behavior <i>is determined by rules</i> that have
+	 been committed to before play occurs. The GM would in fact be
+	 arguably engaging in the same sort of "cheating" if she were to
+	 fudge the <b>D | H</b> mirror into a consistent <b>D→D</b>
+	 or <b>H→H</b> mirror as she <i>would</i> be if she had fudged a
+	 mirror that was consistent (according to her prior decision, or a
+	 game module specifying it as such) into an inconsistent mirror.
+
+	 <h2>3.</h2>
+	 <blockquote>The "realism" so created still depends on using a certain
+		  fuzzily-defined <i>subset</I> of formal systems, and a
+		  constrained set of <i>human judgments</i>. Some formal systems
+		  appeal to a human sense of <i>regularity</i> of how the world
+		  works.
+	 </blockquote>
+
+	 Some formal rules, even if they are totally, absolutely, unquestionably formal rules,
+	 with clear outcomes that no human whim can gainsay, nonetheless
+	 <b>feel wrong</b>. They <i>feel</i> inconsistent, capricious,
+	 irregular, inhumane, unrealistic.
+	 <p/>
+
+	 To really be a good "blorb" game that satisfies its players' sense of a realistic world
+	 that is <i>consistent enough</i> you have to have not just a formal system, but a formal
+	 system that feels sufficiently <i>uniform</I>.
+
+	 <p/>
+	 And to have a good "garst" game that satisfies
+	 its players' sense of a realistically rich world, you nonetheless have to include
+	 some principle of inductive uniformity in how you perform "human judgment". If you wave
+	 the bone wand at five animals and it makes them double in size, then it would be
+	 strange if you wave it at a duck and it shrinks it &mdash; unless there's a good reason why
+	 ducks should behave differently.
+	 <p/>
+	 I'm not sure I have a good theory of which rules feel this way
+	 &mdash; or <i>ought</i> to feel this way &mdash; but this is a recurring theme in lots
+	 other domains. I think it's neat that this shows up in rpgs as well:
+	 both the idea that <i>some rules are better than others by being more uniform</i>, and
+	 that <i>determining what really counts as "uniform" is hard</i>.
+
+	 <ul>
+		<li>In <b>physics</b> generally, we have made a lot of progress by assume that
+		  the universe evolves according to relatively simple and
+		  well-behaved rules, even though it's sometimes contentious
+		  what exactly we mean by "simple" and "well-behaved". The moon
+		  falls toward the earth just as an apple does. Energy is
+		  conserved. The laws of physics are invariant under lorentz
+		  transformations.
+		<li>In interpretations of <b>quantum physics</b> specifically,
+		  we have experimental results that appear to depend on the
+		  observer's choices about how the experiment is observed. Even
+		  though there is a well-articulated and empirically validated
+		  formalism that explains the outcome of the experiment, this formalism
+		  persists in <i>feeling</i> otherworldly and counterintuitive to many, because
+		  observer-dependence flies in the face of our expectations of nature proceeding
+		  uniformly, and indifferently to its occupants.
+		<li>In <b>law</b>, a feeling of fairness goes hand-in-hand with a law
+		  applying to all people equally, but of course there is the
+		  famous Anatole France quote about how "the law, in its
+		  majestic equality, forbids rich and poor alike to sleep under
+		  bridges, to beg in the streets, and to steal their bread."
+		<li>In the <b>philosophy of language</b> we know intuitively
+		  that the concepts of <i>blue</i> and <i>green</i> are
+		  obviously natural, sensible concepts, and
+		  that <a href="https://en.wikipedia.org/wiki/New_riddle_of_induction"><i>grue</i>
+			 and <i>bleen</i></a> are monstrous and non-law-like. But how do we know this?
+		<li>In <b>mathematics</b>, the idea of discontinuous functions was once controversial,
+		  even though it's now easily accepted. To a mathematician of a bygone era, the function
+		  defined by f(x) = x when x &lt; 0 and f(x) = x<sup>2</sup> when x &ge; 0 is a monstrosity;
+		  portions of two natural functions, unnaturally combined.
+		<li>Any principle of <b>induction</b> (as in: if something has happened many times before,
+		  the same thing will probably happen again) depends on prior agreement about what "the same thing"
+		  even means.
+	 </ul>
+
+	 ...and I'll let that be a segue into what I'd like to close with, <a href="https://www.scottaaronson.com/democritus/lec15.html">my favorite joke about philosophical notions of uniformity</a>:
+	 <blockquote>
+		[Imagine a planet] full of people who believe in anti-induction: if the sun has risen every day in the past, then today, we should expect that it won’t.
+		<p/>
+		As a result, these people are all starving and living in poverty. Someone visits the planet and tells them, “Hey, why are you still using this anti-induction philosophy? You’re living in horrible poverty!”
+		<p/>
+		“Well, it never worked before...”
+	 </blockquote>
+<!--
 	 <h2>The Feeling of Modal Necessity</h2>
 
 	 A game can feel real when it feels as if there is a
@@ -683,10 +853,6 @@ believe in as a fairly well-specified mathematical object, in a way that does no
 	 secretly, to herself), it's a mountain mammoth now. Roll for
 	 initiative!
 
-
-
-
-
 	 <p/>Note carefully that the <I>in-game events</I> as described
 	 could have happened precisely the same way. For sure an
 	 improvisational game
@@ -700,6 +866,6 @@ believe in as a fairly well-specified mathematical object, in a way that does no
 	 <p/>
 
 	 <h2>Programming the Mirror</h2>
-	 http://story-games.com/forums/discussion/21073/four-mirror-scenarios-and-two-groups
+-->
 
 </html>
