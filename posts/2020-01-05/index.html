@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+	 <script
+		src="https://code.jquery.com/jquery-3.3.1.min.js"
+		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		crossorigin="anonymous"></script>
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		.ib { display: inline-block; }
+		center { vertical-align: middle; }
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+		.tables { display: flex; align-items: center; }
+	 </style>
+	 <title>Polynomials as $n$-cells</title>
+  </head>
+  <body style="width: 800px">
+	 <h1>Polynomials as $n$-cells</h1>
+
+	 I want to articulate a way in which it
+	 almost<a href="#almost1"><sup>1</sup></a> seems possible to
+	 interpret almost<a href="#almost2"><sup>2</sup></a> any
+	 multivariate polynomial function $f:\R^n \to \R$ as a
+	 $n$-dimensional cell in an $\omega$-category. In a single
+	 sentence, the crux of the interpretation is:
+	 <blockquote>Read the graph of $f$ as a <a href="https://en.wikipedia.org/wiki/String_diagram">string diagram</a>.</blockquote>
+
+	 In what follows we'll assume all functions mentioned are polynomials
+	 unless specified otherwise. <p/>
+
+	 <h2>Example</h2>
+	 Let $f : \R^2 \to \R$ be
+	 \[f(x,y) = x^3 + y - 3x\]
+	 We can graph it and interpret it as a string diagram like so:
+	 <center><img src="diagram1.png"></center>
+	 <p/>
+	 The region where the function $f$ is negative is considered
+	 an object $C$ of the $\omega$-category. The region where $f$ is
+	 positive is called the object $D$. The points where $f$ is zero,
+	 but $f_x$, the $x$-derivative of $f$, is positive, form two curves labelled
+	 $F$ in the diagram: we interpret these as a morphism $F : C \to D$.
+	 Places where $f = 0$ and $f_x &lt; 0$ we interpret as a morphism $U : D \to C$.
+	 <p/>
+	 Finally, the points where $F$ and $U$ come together in the diagram
+	 are viewed as 2-cells. At the point labelled as the
+	 2-cell $\eta :  \rid_{C} \to UF$, the function $f$ has the property that
+	 $f = 0$ and $f_x = 0$, but $f_{xx} > 0$ and $f_y > 0$.
+	 At the point labelled $\epsilon :FU \to \rid_{D}$, we have
+	 $f = 0$ and $f_x = 0$, but $f_{xx} &lt; 0$ and $f_y > 0$.
+	 <p/>
+	 The intended interpretation of $f = x^3 + y - 3x$ is the composite 2-cell
+	 \[ \epsilon_F \o F  \eta : F \to F\]
+	 familiar from the <a href="https://en.wikipedia.org/wiki/Adjoint_functors">triangle identities of an adjunction</a>.
+	 <p/>
+
+	 <h2>Criticality</h2>
+	 The crucial thing is to define which
+	 points of the graph of $f$ count as 'exceptional', 'interesting',
+	 'critical', i.e. where higher dimensional cells are happening.
+	 There are various levels of criticality, one for each dimension.
+	 For a point to be $k$-critical means that belongs to a $k$-cell in
+	 the graph of $f$.
+	 <p/>
+
+	 We first have to define an auxiliary function $D^k(f) : \R^n \to \R$, for
+	 any $f(x_1, \ldots, x_n) : \R^n \to \R$ and integer $k$ such that $1 \le k \le n$.
+	 We say:
+	 <ul>
+		<li>$D^1(f) = f$</li>
+		<li>\(D^{k+1}(f) = \displaystyle\det_{1\le ij \le k} {\partial D^i(f) \over \partial x_j}= \left|
+		  \begin{array}{ccc}
+		  {\partial \over\partial x_1} D^1(f)&\ldots & {\partial \over\partial x_k}D^1(f) \\
+		  \vdots & \ddots & \vdots \\
+		  {\partial \over\partial x_1} D^k(f)&\ldots & {\partial \over\partial x_k}D^k(f) \\
+		  \end{array}\right|\)</li>
+	 </ul>
+	 We say a point $p\in \R^n$
+	 is <em>$k$-critical in $f$</em> if $D^{\ell}(f) = 0$ for all $\ell \in 1,\ldots, k$.
+
+	 <p/>
+	 We say a point is <em>exactly $k$-critical</em> if it is $k$-critical and
+	 not $(k+1)$-critical.
+
+	 <h3>Checking Back With the Example</h3>
+
+	 We can see that this definition lines up with what we were saying
+	 in the example above. The morphisms are points that are
+	 exactly 1-critical &mdash; the points where $D^1(f) = f = 0$, but where
+	 \[D^2(f) = \left| {\partial D^1(f) \over \partial x_1 }\right| = f_x \ne 0 \]
+
+	 <p/>
+
+	 Similarly, the 2-cells are the points that are exactly 2-critical &mdash;
+	 where $f_x = 0$, but where
+	 \[ D^3(f) = \left|
+	 \begin{array}{cc}
+	 {\partial \over\partial x_1} D^1(f) & {\partial \over\partial x_2}D^1(f) \\
+	 {\partial \over\partial x_1} D^2(f) & {\partial \over\partial x_2}D^2(f) \\
+	 \end{array}
+	 \right| \]
+
+	 \[= \left|
+	 \begin{array}{cc}
+	 {\partial \over\partial x} f & {\partial \over\partial y}f \\
+	 {\partial \over\partial x} f_x & {\partial \over\partial y}f_x \\
+	 \end{array}
+	 \right|
+
+	 = \left|
+	 \begin{array}{cc}
+	  f_x & f_y \\
+	  f_{xx} & f_{xy} \\
+	 \end{array}
+	 \right|
+
+	 = \left|
+	 \begin{array}{cc}
+	  0 & f_y \\
+	  f_{xx} & f_{xy} \\
+	 \end{array}
+	 \right|
+
+	 = -f_{xx}f_y \ne 0
+
+	 \]
+
+	 <h2>Cells of the Putative $\omega$-Category</h2>
+
+
+	 An $n$-cell is a function $f:\R^n \to \R$ that has no $(n+1)$-critical
+	 points. <p/>
+
+	 An $n$-cell is <em>trivial</em> if doesn't have any $n$-critical points.
+	 <p/>
+
+	 We expect that trivial cells act like equivalences: the domain
+	 and codomain of a trivial cell can be identified.
+	 However, we haven't even defined what the domain and codomain of cells are!
+	 <p/>
+	 We'd like to say something like: the domain of a morphism
+	 $f : \R \to \R$ is
+	 $f(-\infty)$ and the codomain of $f$ is $f(\infty)$. This isn't
+	 precise, but since we said that functions that don't change sign
+	 are trivial, we identify all positive 0-cells together, (calling
+	 them collectively $C$ in the example above) and all negative
+	 0-cells together (calling them $D$ in the example above).
+	 Therefore it is more or less sensible to ask for $f(\infty)$ as
+	 being either $C$ or $D$ according to
+	 the sign $f$ asympotically reaches if you make its argument
+	 arbitrarily large.
+
+	 <h2>Questions</h2>
+	 But obviously this is no good as a definition of a category if we can't
+	 compose cells.
+	 <ul>
+		<li>Is there a nice way to define composition?
+
+		<li>What is a complete classification of the set of $n$-cells up
+		to trivial $(n+1)$-cell equivalence?
+	 </ul>
+<h2>Footnotes</h2>
+<footer>
+<ol>
+<li id="almost1">In the ordinary sense of the english word.
+<li id="almost2">In the sense of "except for a set of zero measure".
+</footer>
+  </body>
+  <script>
+
+	 renderMathInElement(
+		document.body,
+		{
+		  delimiters: [
+			 {left: "$$", right: "$$", display: true},
+			 {left: "\\[", right: "\\]", display: true},
+			 {left: "$", right: "$", display: false},
+			 {left: "\\(", right: "\\)", display: false}
+		  ],
+		  macros: {
+      	 "\\rid": "\\mathrm{id}",
+      	 "\\st": "\\mathop|",
+			 "\\R": "\\mathbb{R}",
+			 "\\N": "\\mathbb{N}",
+			 "\\Z": "\\mathbb{Z}",
+			 "\\rset": "\\mathbf{Set}",
+			 "\\rctx": "\\mathop\\mathsf{ctx}",
+			 "\\x": "\\times",
+			 "\\prov": "\\vdash",
+			 "\\tensor": "\\otimes",
+			 "\\lol": "\\multimap",
+			 "\\rtype": "\\mathsf{type}",
+			 "\\dom": "\\mathop\\mathsf{dom}",
+			 "\\cod": "\\mathop\\mathsf{cod}",
+			 "\\med": "\\mathop\\mathsf{med}",
+			 "\\sc": "\\mathop\\mathsf{sc}",
+			 "\\rtrue": "\\mathop\\mathsf{true}",
+			 "\\ract": "\\mathop\\mathsf{act}",
+			 "\\dns": "{\\downarrow}",
+			 "\\ups": "{\\uparrow}",
+			 "\\celse": "{\\ |\\ }",
+			 "\\tri": "\\triangleright",
+			 "\\imp": "\\Rightarrow",
+			 "\\A": "\\mathbf{A}",
+			 "\\C": "\\mathbf{C}",
+			 "\\D": "\\mathbf{D}",
+			 "\\PP": "\\mathbf{P}",
+			 "\\NN": "\\mathbf{N}",
+			 "\\op": "\\mathrm{op}",
+			 "\\dash": "-",
+			 "\\o": "\\circ",
+			 "\\ll": "[\\![",
+			 "\\rr": "]\\!]",
+			 "\\wat": "\\mathop{@}",
+			 "\\prequiv": "\\dashv\\vdash",
+          "\\llto": "\\rightarrowtail",
+          "\\rrto": "\\twoheadrightarrow",
+			 "\\next": "{\\blacktriangleright}",
+		  }
+		}
+    );
+  </script>
+</html>
