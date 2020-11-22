@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 const posts = [
+  {"dir": "2020-11-22", "titles": "Directed Spaces vs. Categories"},
   {"dir": "2020-01-05", "title": "Polynomials as $n$-cells"},
   {"dir": "2019-09-03", "title": "Some Thoughts on Story Games"},
   {"dir": "2018-08-31", "title": "Orienting Simplices"},
@@ -20,12 +21,12 @@ const posts = [
   {"dir": "2018-05-27", "title": "Depending on Category Variables, Dependently"},
   {"dir": "2018-05-20", "title": "Depending on Category Variables"},
   {"dir": "2018-05-13", "title": "Slices of Presheaf Categories"},
-  {"dir":"2018-05-06", "title": "Everything I've Learned About Logic in the Last Decade or So, Part 4"},
-  {"dir":"2018-04-29", "title": "Everything I've Learned About Logic in the Last Decade or So, Part 3"},
-  {"dir":"2018-04-22", "title": "Everything I've Learned About Logic in the Last Decade or So, Part 2"},
-  {"dir":"2018-04-15", "title": "Everything I've Learned About Logic in the Last Decade or So, Part 1"},
-  {"dir":"2018-04-08", "title": "Wellen's Synthetic Differential Geometry"},
-  {"dir":"2018-04-01", "title": "Doing $k$-means with intermediate points"},
+  {"dir": "2018-05-06", "title": "Everything I've Learned About Logic in the Last Decade or So, Part 4"},
+  {"dir": "2018-04-29", "title": "Everything I've Learned About Logic in the Last Decade or So, Part 3"},
+  {"dir": "2018-04-22", "title": "Everything I've Learned About Logic in the Last Decade or So, Part 2"},
+  {"dir": "2018-04-15", "title": "Everything I've Learned About Logic in the Last Decade or So, Part 1"},
+  {"dir": "2018-04-08", "title": "Wellen's Synthetic Differential Geometry"},
+  {"dir": "2018-04-01", "title": "Doing $k$-means with intermediate points"},
 ];
 
 let html = `<!DOCTYPE html>

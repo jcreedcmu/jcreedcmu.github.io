@@ -1,0 +1,370 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex/katex.min.css">
+	 <script
+		src="https://code.jquery.com/jquery-3.3.1.min.js"
+		integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+		crossorigin="anonymous"></script>
+    <script src="../../katex/katex.min.js"></script>
+    <script src="../../katex/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		.ib { display: inline-block; }
+		center { vertical-align: middle; }
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+		.tables { display: flex; align-items: center; }
+	 </style>
+	 <title>Directed Spaces vs. Categories</title>
+  </head>
+  <body style="width: 800px">
+	 <h1>Directed Spaces vs. Categories</h1>
+
+	 <h2>Categories</h2>
+
+	 <a href="https://jcreedcmu.github.io/posts/2018-05-20/index.html">I
+	 wrote a little before</a> about the well-known fact that the
+	 category <b>Cat</b> isn't locally cartesian closed, which means
+	 that naively attempting to build a (dependent) type theory where
+	 "every type is a category" fails.
+
+	 <p>We can see this directly in an example of a pushout that is not stable
+		under pullback:
+		<center><img src="../2018-05-20/pushpull.png"></center> When we
+		take the pushout of two morphisms, $f : A \to B$ and $g : B \to
+		C$, joining them at the middle object $B$, we are asking the
+		question: what is the minimal category that contains the
+		morphism $f$ like so, and contains the morphism $g$ like so?
+		Because <I>being</I> a category requires having composites, the
+		answer to that question is a category with <I>three</I>
+		(nonidentity) morphisms. The third morphism, $gf$, springs
+		magically into existence, once $f$ and $g$ are simultaneously
+		present in a composable configuration.
+
+	 <p>I want to focus in on <I>why</I> this "magically appearing"
+		morphism is problematic for the purposes of the lccc property,
+		and therefore for supporting dependent types. It's not just that
+		it <I>appears</I> as a consequence of the pushout, but also
+		because of what happens during the pullback.
+
+	 <p>When we try to restrict attention to that magically-created
+		morphism $gf : A \to C$ --- that is, when we take a pullback
+		along the inclusion of $gf$ --- we get back so little data that
+		it's no longer enough to explain where $gf$ came from. We just
+		get the objects $A$ and $C$ in the northwest and southeast
+		corners of the post-pullback pushout square. The morphisms $f$
+		and $g$ are absent. In a sense made definite by the result of
+		taking the pullback, we see that the morphisms $f$ and $g$
+		that <I>cause $gf$ to exist</I> are not the material
+		that <I>constitute</I> the morphism $gf$. They're separate from
+		it.
+
+		<h2>Directed Spaces</h2>
+
+		So I want to think about situations where this is <I>not</I> the
+		case: where a composite path is really <I>made up of</I> the
+		parts that compose to form it. I attempt to do this by
+		considering a certain category of sheaves.
+
+	 <p>Let $\C$ be the category with one object $\U$, which is identified with the open unit interval
+		$(0,1)$. The morphisms will be all strictly monotone continuous maps $(0,1) \to (0,1)$.
+		\[ \C(\U,\U) = \{f : \U \to \U \st \forall x,y \in \U. x < y \imp f(x) < f(y)\}\]
+																										 </p>
+
+	 We could then think about the presheaf category $\rset^{\C^\op}$.
+	 Let's define a Grothendieck topology $J$ to say which of those presheaves are sheaves: a sieve
+	 $S \subseteq \C(\U,\U)$ is considered covering iff the union of
+	 all the ranges of morphisms in the sieve in fact cover the unit
+	 interval.
+
+	 \[ S \in J \iff \forall y \in \U . \exists f \in S . \exists x \in \U . f(x) = y \]
+
+	 What do sheaves for this site look like?
+
+	 <p>A presheaf $F : \rset^{\C^\op}$ is some kind of directed space.
+		The set $F(\U)$ is the set of all valid paths through the space.
+		Each one of those paths can be thought of as "a permissible way
+		of mapping the unit interval (0,1) into the space".
+		<center><img src="diagram1.png"></center>
+		The reason
+		why we say $F$ is a directed space is that the monotonicity
+		requirement in the definition of $\C(\U,\U)$ means there's no
+		guarantee that we can reverse paths.
+	 <p>
+		However, we <I>do</I> know that we can at least "zoom in" on any
+		path, or reparameterize it in time, by pulling back along a
+		morphism $\U \to \U$.
+		<center><img src="diagram2.png"></center>
+		In other words: if a path is acceptable, if it goes "with the grain" of the space
+		it traverses, then any subpath of that path is also acceptable.
+	 <p>
+		The sheaf condition provides the converse: if a path is
+		acceptable everywhere locally (i.e. if a path can be cobbled
+		together out of a "covering" collection of acceptable parts)
+		then the path is globally acceptable. A directed space must
+		have a notion of going "with the grain" that <I>is a local
+		  condition</I>.
+
+		<h2>Some Examples of Directed Spaces</h2>
+		<center><img src="diagram3.png"></center>
+		Here are some examples of directed spaces.
+		<ol>
+		  <li>$U$<p>
+				The space $U$ is just the yoneda embedding of the object $\U$ of the presheaf base category.
+				The set $U(\U)$ consists of all strictly monotone continuous functions $(0,1)\to (0,1)$, and the effect
+				of $U$ on morphisms is simply composition.
+			 <P>
+				There are plenty of morphisms in the presheaf category (i.e.
+				natural transformations) from $U$ to itself, one for each
+				strictly monotone continuous map from $(0,1) \to (0,1)$, which we know to
+				be the case by the Yoneda lemma.
+		  </li>
+		  <li>$V$
+			 <p>
+				The space $V$ is defined by setting $V(\U)$ to be the set of
+				all continuous maps $(0,1) \to [0,1]$ that are strictly monotone "except at the endpoints"
+				in the following sense.
+			 <p>
+				Say a map $f : (0,1) \to (0,1)$ is "interior strictly monotone" if for all $x,y \in \U$
+				\[\forall x, y . x \le y \imp f(x) \le f(y) \]
+				\[\forall x, y . f(x) = f(y) \imp (x = y \lor f(x) = 0 \lor f(x) = 1)\]
+				The action of $V$ on morphisms is again simply composition.
+		  </li>
+		  <li>$U_0$
+			 <p>
+				The space $U_0$ is defined by setting $U_0(\U)$ to be the set of
+				all continuous (not necessarily strictly) monotone maps $(0,1) \to (0,1)$.
+				The action of $U_0$ on morphisms is given by composition.
+		  </li>
+		  <li>$V_0$
+			 <p>
+				The space $V_0$ is defined by setting $V_0(\U)$ to be the set of
+				all continuous (not necessarily strictly) monotone maps $(0,1) \to [0,1]$.
+				The action of $V_0$ on morphisms is given by composition.
+		  </li>
+
+		  <li>$C$
+			 <p>
+				The space $C$ is defined by setting $C(\U)$ to be the closed unit interval $[0,1]$.
+			 <p>
+				The intuition behind the above drawing of $C(\U)$ is that,
+				unlike the previous directed spaces, which consist of a
+				full continuum-length interval of possible "interior"
+				points, the structure of $C$ consists of merely (a)
+				two <I>end</I>points, (depicted as two regions of black ink) together with
+				(b) a <I>single</I> transitional interior point. (depicted
+				as the orange arrowhead).
+			 <p>
+				Each of the extended regions of black ink is to be
+				understood, thinking in terms of homotopy-equivalence, as
+				indistinguishable from a single point.
+			 <p>
+				The intended meaning of an element $x \in (0,1) \subseteq
+				[0,1] = C(\U)$ is the <I>time at which</I> a probe path
+				from $(0,1)$ reaches (and necessarily crosses) the single
+				interior transition point. The meaning of the element $0
+				\in C(\U)$ is a probe path that stays entirely inside the
+				the right endpoint, the endpoint 1 of the space (i.e. the
+				"transition time" was 0, it already had transitioned from
+				endpoint 0 to endpoint 1) and the meaning of the element $1 \in C(\U)$
+				is a probe path that stays entirely in the endpoint 0.
+			 <p>
+				The action of $C$ on morphisms can be defined in light of
+				this intended meaning. For a map $f : (0,1) \to (0,1)$, we need
+				to contravariantly give a map $C(\U) \to C(\U)$, i.e. a map $C(f) : [0,1] \to [0,1]$.
+				Let $y \in [0,1]$ be given.
+				<ul>
+				  <li>If $y = 0$, then $C(f)(y) = 0$</li>
+				  <li>If $y = 1$, then $C(f)(y) = 1$</li>
+				  <li>If $\forall x . f(x) < y$, then $C(f)(y) = 1$</li>
+				  <li>If $\forall x . f(x) > y$, then $C(f)(y) = 0$</li>
+				  <li>If $\exists x . f(x) = y$, then $C(f)(y) = x $</li>
+				</ul>
+		  </li>
+
+		  <li>$1$
+			 <p>
+				The space $1$ is defined by setting $1(\U)$ to be a singleton set.
+				The action of $1$ on morphisms is the identity function.
+		  </li>
+
+		</ol>
+
+		<h2> Maps Between Spaces</h2>
+
+		There are some "obvious" maps $U \to V$ and $U_0 \to V_0$. We
+		are simply including open intervals into closed intervals.
+	 <p>
+		Comparing $U$ to $U_0$ (and $V$ to $V_0$) is more interesting.
+		The directed "texture" of the interior of $U$ is different from
+		that of $U_0$. The space $U_0$ allows for paths into it that
+		slow down to a complete stop, unmoving at some interior point of
+		it, and then maybe resume going forward. The space $U$ does not
+		--- it has a sort of minimum speed limit. To think of it another
+		way: it's as if $U$ is an <I>irreflexive</I> path graph of
+		infinite length, and $U_0$ is a <I>reflexive</I> path graph,
+		with infinitesimal self-edge loops at every interior point.
+	 <p>
+		Because of this, there <I>does</I> exist a sensible inclusion
+		map from $U$ to $U_0$ (and it makes sense that we'd have a graph
+		homomorphism from an irreflexive graph to a reflexive one that
+		is otherwise the same shape) but there is no map $U_0 \to U$.
+	 <p>
+		Likewise, there is a sensible inclusion $V \to V_0$, and only the two
+		trivial maps $V_0 \to V$ that map all of $V_0$ to an endpoint of $V$.
+	 <p>
+		There are endpoint maps $1 \to V$ and $1 \to V_0$. There are no
+		maps $1 \to U$. There are lots of maps $1 \to U_0$ into the
+		interior of $U_0$, as well as corresponding maps $1 \to V_0$
+		into the interior of $V_0$. The terminal object 1 could be
+		thought of as "sitting still" and so it is acceptable to map it
+		into the interior of objects like $U_0$ and $V_0$,
+		and <I>un</I>acceptable to map it into the interior of objects
+		like $U$ and $V$ that have a "minimum speed limit".
+	 <p>
+		The object $C$, as we suggested above, is structured as two
+		endpoints, plus one "interior point" which imposes a direction,
+		and which requires motion through it to occur only in one
+		direction. We can also think of the endpoints as <I>regions that
+		allow bidirectional motion</I>. So while $V$ is a reflexive
+		directed path graph, $C$ is like an infinite graph
+		that <I>almost everywhere</I> has edges going in both
+		directions, except right in the middle of it, it has a single
+		edge pointing only to the right. This means that it should be
+		easy to find a canonical map $V \to C$, and harder to map $C \to
+		V$.
+	 <p>
+		Indeed, we can construct a map $V \to C$, i.e. a map $\iota : V(\U) \to
+		C(\U)$, exactly by unpacking the intuition defined in the
+		definition of $C$. Given an $f : (0,1) \to [0,1] \in V(\U)$, we ask for
+		which $x$ we find $f(x) = 1/2$. (there can be at most one such $x$)
+		If there is such an $x$, we set $\iota(f) = x$. If the range of $f$ is always
+		below $1/2$, then we set $\iota(f) = 1$, and if the range of $f$ is always greater than $1/2$,
+		we set $\iota(f) = 0$.
+	 <p>
+		Exercise: show every map $C \to V$ factors through $1$.
+
+		<h2>Why Is This Interesting?</h2> Even though we already know
+		that sheaf categories are toposes, and therefore lccc, we can
+		get a direct feel for <I>why</I> the failure of <B>Cat</B> being
+		lccc doesn't happen here.
+		<center><img src="diagram4.png"></center> The reason is this: if
+		you consider the notion of path that the category is based on,
+		composite paths <I>literally contain</I> the paths that compose
+		them. There's no way of naming the path $gf$ that does not have
+		$f$ and $g$ as its constituents. Therefore the pushout of $f$
+		and $g$ certainly survives the pullback along the "inclusion of
+		$gf$ in the pushout of $f$ and $g$", because that pullback is
+		trivially along an identity morphism.
+
+		<h2>What about Categories-as-Types?</h2>
+
+		This whole business may seem to be solving a problem that nobody
+		wanted solved. We <I>wanted</I> to have types be categories, and
+		instead I'm talking about types that are directed spaces, which
+		maybe <I>have</I> fundamental categories the way that
+		topological spaces have fundamental groupoids, but aren't the
+		same thing as categories.
+	 <p>
+		But I think that it actually is the case that categories include
+		into directed spaces in this sense. The object $C$ described
+		above is the category with two objects and one nontrivial arrow:
+		there is really only one place to transition.
+	 <p>
+		We must be careful that pushouts in the category of
+		directed spaces are not the same thing as pushouts
+		in <b>Cat</b>. If I pushout two copies of $C$ joined at their
+		endpoints, I get something that I might reasonably call $C_2$.
+
+		<center><img src="diagram5.png"></center>
+
+		The space $C_2$ has three points (i.e. maps from $1$) and two
+		"directed transitions".
+	 <p>
+		We may notice that even though a $V$-path and a $V$-path into a
+		space can always compose to give another $V$-path, so there is a
+		surjection $V \to C_2$. But it's <I>not</I> the case that the
+		two pushout-provided injections $C\to C_2$ "compose" to produce
+		a surjective map $C \to C_2$. There are in fact only 5 different
+		maps $C \to C_2$, one for every monotone map $\{0,1\} \to
+		\{0,1/2,2\}$ <i>except</I> for the 'spanning' one that sends 0
+		to 0 and 1 to 1. The domain $C$ doesn't have enough "stretch" to
+		cover <I>two</I> transitional points, and the codomain $C_2$
+		doesn't have a single-transition "shortcut" from its leftmost
+		endpoint to its rightmost.
+
+		<h2>Conjecturing a Modality</h2> So this feels very much like
+		the notion of Kan completeness (i.e "being a Segal type") that
+		shows up
+		in <a href="https://arxiv.org/abs/1705.07442">Riehl-Shulman</a>.
+		Not every type is a category, but some types are: those in which
+		every time we find a $V$-path we can <I>also</I> find a shortcut
+		$C$-path. I think this is the same thing as saying: a type $T$
+		is a category if it's fibrant with respect to the inclusion $V
+		\to C$ being a cofibration.
+
+		<center><img src="diagram6.png"></center>
+
+		So should I expect there to exist a "fibrant replacement"
+		modality that adds in just enough "shortcut" morphisms to make a
+		type into a category in the most conservative way?
+  </body>
+  <script>
+
+	 renderMathInElement(
+		document.body,
+		{
+		  delimiters: [
+			 {left: "$$", right: "$$", display: true},
+			 {left: "\\[", right: "\\]", display: true},
+			 {left: "$", right: "$", display: false},
+			 {left: "\\(", right: "\\)", display: false}
+		  ],
+		  macros: {
+      	 "\\rid": "\\mathrm{id}",
+      	 "\\st": "\\mathop|",
+			 "\\U": "\\mathbb{U}",
+			 "\\R": "\\mathbb{R}",
+			 "\\N": "\\mathbb{N}",
+			 "\\Z": "\\mathbb{Z}",
+			 "\\rset": "\\mathbf{Set}",
+			 "\\rctx": "\\mathop\\mathsf{ctx}",
+			 "\\x": "\\times",
+			 "\\prov": "\\vdash",
+			 "\\tensor": "\\otimes",
+			 "\\lol": "\\multimap",
+			 "\\rtype": "\\mathsf{type}",
+			 "\\dom": "\\mathop\\mathsf{dom}",
+			 "\\cod": "\\mathop\\mathsf{cod}",
+			 "\\med": "\\mathop\\mathsf{med}",
+			 "\\sc": "\\mathop\\mathsf{sc}",
+			 "\\rtrue": "\\mathop\\mathsf{true}",
+			 "\\ract": "\\mathop\\mathsf{act}",
+			 "\\dns": "{\\downarrow}",
+			 "\\ups": "{\\uparrow}",
+			 "\\celse": "{\\ |\\ }",
+			 "\\tri": "\\triangleright",
+			 "\\imp": "\\Rightarrow",
+			 "\\A": "\\mathbf{A}",
+			 "\\C": "\\mathbf{C}",
+			 "\\D": "\\mathbf{D}",
+			 "\\PP": "\\mathbf{P}",
+			 "\\NN": "\\mathbf{N}",
+			 "\\op": "\\mathrm{op}",
+			 "\\dash": "-",
+			 "\\o": "\\circ",
+			 "\\ll": "[\\![",
+			 "\\rr": "]\\!]",
+			 "\\wat": "\\mathop{@}",
+			 "\\prequiv": "\\dashv\\vdash",
+          "\\llto": "\\rightarrowtail",
+          "\\rrto": "\\twoheadrightarrow",
+			 "\\next": "{\\blacktriangleright}",
+		  }
+		}
+    );
+  </script>
+</html>
