@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex-0.12.0/katex.min.css">
+    <script src="../../katex-0.12.0/katex.min.js"></script>
+    <script src="../../katex-0.12.0/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		.ib { display: inline-block; }
+		center { vertical-align: middle; }
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+		.tables { display: flex; align-items: center; }
+		.rotate180  {
+		  transform: rotate(180deg) translate(0px, 3px);
+		  display: inline-block;
+		}
+	 </style>
+	 <title>Classical Logic in Intuitionistic Logic</title>
+  </head>
+  <body style="width: 800px">
+	 <h1>Classical Logic in Intuitionistic Logic</h1>
+
+	 This is very much "not new content", but I had a conversation
+	 recently where I tried to summarize the way I prefer to think
+	 about the embedding of classical logic into intuitionistic logic
+	 --- a way that relies heavily on polarization of propositions, and
+	 focused proof search --- and realized that my memory it was rusty,
+	 and I didn't have a great place to point to for a reasonably
+	 concise and complete summary how it goes.
+	 <p>
+		So this post is meant to be that.
+
+	 <h2>Classical Propositional Logic</h2>
+
+	 Here is the polarized syntax of classical propositional logic. I'm
+	 using linear logic symbols to distinguish the different polarities
+	 of the conjunctions ($\otimes, \&, 1, \top$) and the disjunctions
+	 ($\oplus, \par, 0, \bot$) I'm writing negation the same way for
+	 either polarity. Using different symbols might be clearer, but I
+	 don't think there's any really suggestive conventional set of
+	 symbols already established. Polarity shifts are written $\ups$ and $\dns$.
+	 Atomic propositions are $a^+$ and $a^-$.
+
+	 \[
+	 \begin{array}{rll}
+	 \textrm{Positive Props} & P& ::= P \otimes P \celse P \oplus P \celse 1 \celse 0 \celse \lnot N \celse \dns N  \celse a^+(x)\\
+	 \textrm{Negative Props} & N& ::= N \& N  \celse N \par N \celse \top \celse \bot \celse \lnot P \celse \ups P  \celse a^-(x)
+	 \end{array}
+	 \]
+
+	 The basic judgment of classical logic is $\Gamma \# \Delta$, thought of
+	 as meaning something like "The assumptions $\Gamma$ entail one of
+	 the conclusions $\Delta$"
+
+	 <h2>Intuitionistic Propositional Logic</h2>
+	 To represent classical logic, we don't even need to define all of intuitionistic logic as it is normally understood.
+	 Just the positive propositions, and a single negative proposition: negation.
+	 \[
+	 \begin{array}{rll}
+	 \textrm{Positive Props} & P& ::= P \otimes P \celse P \oplus P \celse 1 \celse 0 \celse  \dns N  \celse b^+(x, s)\\
+	 \textrm{Negative Props} & N& ::=  \lnot P
+	 \end{array}
+	 \]
+
+	 <h2>The Translation</h2>
+  </body>
+  <script>
+
+	 renderMathInElement(
+		document.body,
+		{
+		  strict: false,
+		  trust: true,
+		  delimiters: [
+			 {left: "$$", right: "$$", display: true},
+			 {left: "\\[", right: "\\]", display: true},
+			 {left: "$", right: "$", display: false},
+			 {left: "\\(", right: "\\)", display: false}
+		  ],
+		  macros: {
+      	 "\\rid": "\\mathrm{id}",
+      	 "\\st": "\\mathop|",
+			 "\\U": "\\mathbb{U}",
+			 "\\R": "\\mathbb{R}",
+			 "\\N": "\\mathbb{N}",
+			 "\\Z": "\\mathbb{Z}",
+			 "\\rset": "\\mathbf{Set}",
+			 "\\rctx": "\\mathop\\mathsf{ctx}",
+			 "\\x": "\\times",
+			 "\\prov": "\\vdash",
+			 "\\tensor": "\\otimes",
+			 "\\lol": "\\multimap",
+			 "\\rtype": "\\mathsf{type}",
+			 "\\dom": "\\mathop\\mathsf{dom}",
+			 "\\cod": "\\mathop\\mathsf{cod}",
+			 "\\med": "\\mathop\\mathsf{med}",
+			 "\\sc": "\\mathop\\mathsf{sc}",
+			 "\\rtrue": "\\mathop\\mathsf{true}",
+			 "\\ract": "\\mathop\\mathsf{act}",
+			 "\\dns": "{\\downarrow}",
+			 "\\ups": "{\\uparrow}",
+			 "\\celse": "{\\ |\\ }",
+			 "\\tri": "\\triangleright",
+			 "\\imp": "\\Rightarrow",
+			 "\\A": "\\mathbf{A}",
+			 "\\C": "\\mathbf{C}",
+			 "\\D": "\\mathbf{D}",
+			 "\\PP": "\\mathbf{P}",
+			 "\\NN": "\\mathbf{N}",
+			 "\\op": "\\mathrm{op}",
+			 "\\dash": "-",
+			 "\\o": "\\circ",
+			 "\\ll": "[\\![",
+			 "\\rr": "]\\!]",
+			 "\\wat": "\\mathop{@}",
+			 "\\prequiv": "\\dashv\\vdash",
+          "\\llto": "\\rightarrowtail",
+          "\\rrto": "\\twoheadrightarrow",
+			 "\\next": "{\\blacktriangleright}",
+			 "\\par": "{\\htmlClass{rotate180}{\\&}}"
+		  }
+		}
+    );
+  </script>
+</html>
