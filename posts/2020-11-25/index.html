@@ -26,10 +26,10 @@
 	 This is very much "not new content", but I had a conversation
 	 recently where I tried to summarize the way I prefer to think
 	 about the embedding of classical logic into intuitionistic logic
-	 --- a way that relies heavily on polarization of propositions, and
-	 focused proof search --- and realized that my memory it was rusty,
-	 and I didn't have a great place to point to for a reasonably
-	 concise and complete summary how it goes.
+	 --- a way that relies on polarization of propositions --- and
+	 realized that my memory it was rusty, and I didn't have a great
+	 place to point to for a reasonably concise and complete summary
+	 how it goes.
 	 <p>
 		So this post is meant to be that.
 
@@ -51,9 +51,31 @@
 	 \end{array}
 	 \]
 
-	 The basic judgment of classical logic is $\Gamma \# \Delta$, thought of
+	 The judgment of classical logic is $\Gamma \# \Delta$, thought of
 	 as meaning something like "The assumptions $\Gamma$ entail one of
-	 the conclusions $\Delta$"
+	 the conclusions $\Delta$", or "It cannot be that everything in $\Gamma$ is
+	 true, and everything in $\Delta$ is false". For the purposes
+	 of this exposition, we allow only positive propositions in $\Gamma$,
+	 and negative propositions in $\Delta$:
+	 \[
+	 \begin{array}{rll}
+	 \textrm{True Context} & \Gamma& ::= \cdot \celse \Gamma, P\celse a_+(x) \\
+	 \textrm{False Context} & \Delta& ::= \cdot \celse \Delta, N\celse a_-(x) \\
+	 \end{array}
+	 \]
+
+	 We also allow 'stabilized' atomic propositions, written with their
+	 polarity as a subscript rather than a superscript. A stabilized
+	 atom is part of the "judgmental machinery" of the context, as
+	 opposed to being a proposition itself. This gives atoms a step to
+	 undergo that parallels, for example, the transition step that
+	 tensor undergoes when it "becomes a comma" in the context.
+
+ 	 \[
+	 {\Gamma \# A ,\Delta \qquad \Gamma \# B,\Delta \over\Gamma \# A\& B,\Delta }
+	 \qquad
+	 {\Gamma, A \#\Delta \qquad \Gamma,  B \#\Delta \over\Gamma,  A\oplus B\#\Delta }
+	 \]
 
 	 <h2>Intuitionistic Propositional Logic</h2>
 	 To represent classical logic, we don't even need to define all of intuitionistic logic as it is normally understood.
@@ -65,7 +87,48 @@
 	 \end{array}
 	 \]
 
-	 <h2>The Translation</h2>
+	 \[
+	 \begin{array}{rll}
+	 \textrm{Context} & \Gamma& ::= \cdot \celse \Gamma, P\celse b_+(x,s) \\
+	 \textrm{Right Side} & J& ::= N\celse \bot \\
+	 \end{array}
+	 \]
+
+ 	 \[
+	 {\Gamma \prov A  \qquad \Gamma \prov B \over\Gamma \prov A\& B }
+	 \qquad
+	 {\Gamma, A \prov J \qquad \Gamma,  B \prov J \over\Gamma,  A\oplus B\prov J }
+	 \]
+
+	 <h2>The Translation</h2> The function $T^+(P)$ takes in a positive
+	 classical proposition, and outputs a positive intuitionistic
+	 proposition. The function $T^-(N)$ takes in a negative classical
+	 proposition, and outputs a <b>positive</b> intuitionistic
+	 proposition.
+\[\begin{array}{l|l}
+P & T^+(P)\\
+\hline
+P_1 \otimes P_2 & T^+(P_1) \otimes T^+(P_2) \\
+ P_1 \oplus P_2 & T^+(P_1) \oplus T^+(P_2) \\
+ 1 & 1\\
+ 0 & 0\\
+ \lnot N & T^-(N) \\
+ \dns N  & \dns \lnot T^-(N)\\
+ a^+(x) & b^+(x, +)
+\end{array}
+\qquad
+\begin{array}{l|l}
+N & T^+(N)\\
+\hline
+N_1 \par N_2 & T^+(N_1) \otimes T^+(N_2) \\
+ N_1 \& N_2 & T^+(N_1) \oplus T^+(N_2) \\
+ \bot & 1\\
+ \top & 0\\
+ \lnot P & T^+(P) \\
+ \ups P  & \dns \lnot T^+(P)\\
+ a^-(x) & b^+(x, -)
+\end{array}
+\]
   </body>
   <script>
 
