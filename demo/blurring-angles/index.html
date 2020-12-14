@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	 <meta charset="utf-8" />
+	 <title>Blurring Angles</title>
+  </head>
+  <script type="text/javascript" src="main.js">
+  </script>
+  <body onload="go()">
+	 <h2>Blurring Angles</h2>
+	 <canvas id="webgl" width="512" height="512"></canvas><br>
+	 <div style="max-width: 20em;">
+		Click on canvas to toggle iteration.
+		<p/>
+		Every pixel holds a point on the unit circle (mapped onto the
+		circle inscribed in the square red[0,1] x green[0,1]) and on every
+		step of the simulation, you average the point with its neighbors.
+		<p/>
+		If every pixel held an arbitrary point in the plane, this would just be a blur.
+		But if we average a set of points on the unit circle, and then <b>normalize</b>
+		to get back onto the unit circle, we end up with "clockwise" and
+		"counterclockwise" singularities, which attract one another and annihilate.
+	 </div>
+  </body>
+</html>
