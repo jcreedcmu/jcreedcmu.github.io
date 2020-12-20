@@ -1,0 +1,342 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex-0.12.0/katex.min.css">
+    <script src="../../katex-0.12.0/katex.min.js"></script>
+    <script src="../../katex-0.12.0/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		.ib { display: inline-block; }
+		center { vertical-align: middle; }
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+		.tables { display: flex; align-items: center; }
+		.rotate180  {
+		  transform: rotate(180deg) translate(0px, 3px);
+		  display: inline-block;
+		}
+	 </style>
+	 <title>Classical Logic in Intuitionistic Logic</title>
+  </head>
+  <body style="width: 800px">
+	 <h1>Classical Logic in Intuitionistic Logic</h1>
+
+	 This is very much "not new content", but I had a conversation
+	 recently where I tried to summarize the way I prefer to think
+	 about the embedding of classical logic into intuitionistic logic
+	 --- a way that relies on polarization of propositions --- and
+	 realized that my memory it was rusty, and I didn't have a great
+	 place to point to for a reasonably concise and complete summary
+	 how it goes.
+	 <p>
+		So this post is meant to be that.
+	 <p>
+		In a slogan, the translation can be summarized as follows:
+		<blockquote>
+		  <ul>
+			 <li> Shifts become negations,
+			 <li> Negations become nothing,
+			 <li> Everything else becomes positive.
+		  </ul>
+		</blockquote>
+
+	 <h2>Classical Propositional Logic</h2>
+
+	 Here is the polarized syntax of classical propositional logic. I'm
+	 using linear logic symbols to distinguish the different polarities
+	 of the conjunctions ($\otimes, \&, 1, \top$) and the disjunctions
+	 ($\oplus, \par, 0, \bot$) I'm writing negation the same way for
+	 either polarity. Using different symbols might be clearer, but I
+	 don't think there's any really suggestive conventional set of
+	 symbols already established. Polarity shifts are written $\ups$
+	 and $\dns$. Atomic propositions are $a^+(x)$ and $a^-(x)$. They
+	 may take an argument $x$. We don't really get into the details of
+	 where first-order terms come from here; we could introduce
+	 quantifiers, or just imagine that some first-order constants
+	 exist.
+
+	 \[
+	 \begin{array}{rll}
+	 \textrm{Positive Props} & P& ::= P \otimes P \celse P \oplus P \celse 1 \celse 0 \celse \lnot N \celse \dns N  \celse a^+(x)\\
+	 \textrm{Negative Props} & N& ::= N \& N  \celse N \par N \celse \top \celse \bot \celse \lnot P \celse \ups P  \celse a^-(x)\\
+	 \textrm{Props} & A, B, C & ::= P \celse N
+	 \end{array}
+	 \]
+
+	 For simplicity of stating the relevant theorem, we can have a
+	 non-focused proof theory over this polarized syntax. Introducing
+	 focusing makes carrying out the proof of that theorem much more
+	 straightforward, however, at the cost of additional fiddliness in
+	 defining what valid contexts are.
+	 <p>
+	 In the non-focused case, we say the the judgment of classical logic is $\Gamma \cprov \Delta$, thought of
+	 as meaning something like "The assumptions $\Gamma$ entail one of
+	 the conclusions $\Delta$", or "It cannot be that everything in $\Gamma$ is
+	 true, and everything in $\Delta$ is false".
+
+	 \[
+	 \begin{array}{rll}
+	 \textrm{Context} & \Gamma, \Delta& ::= \cdot \celse \Gamma, A \\
+	 \end{array}
+	 \]
+
+	 The sequent rules are as follows:
+
+
+	 \[
+	 {\Gamma_1 \cprov P_1, \Delta_1 \qquad \Gamma_2 \cprov P_2, \Delta_2   \over\Gamma_1, \Gamma_2 \cprov P_1\otimes P_2, \Delta_1, \Delta_2 }
+	 \qquad
+	 {\Gamma, P , P' \cprov \Delta  \over \Gamma,  P\otimes P'\cprov \Delta }
+	 \]
+
+  	 \[
+	 {\Gamma \cprov P_i ,\Delta  \over\Gamma \cprov P_1\oplus P_2,\Delta }
+	 \qquad
+	 {\Gamma, P \cprov\Delta \qquad \Gamma,  P' \cprov\Delta \over\Gamma,  P\oplus P'\cprov\Delta }
+	 \]
+
+	 \[
+	 {   \over \cdot \cprov 1 }
+	 \qquad
+	 {\Gamma \cprov \Delta  \over \Gamma,  1\cprov \Delta }
+	 \]
+
+  	 \[
+	 {\text{[no right rule for $0$]}}
+	 \qquad
+	 { \over\Gamma,  0\cprov \Delta }
+	 \]
+
+	 \[
+	 {\Gamma, N \cprov \Delta \over \Gamma \cprov \lnot N, \Delta}
+	 \qquad
+	 {\Gamma \cprov N, \Delta \over \Gamma, \lnot N \cprov  \Delta}
+	 \]
+
+ 	 \[
+	 {\Gamma \cprov N,\Delta \over \Gamma \cprov \dns N, \Delta}
+	 \qquad
+	 {\Gamma, N \cprov \Delta \over \Gamma, \dns N \cprov  \Delta}
+	 \]
+
+ 	 \[
+	 {\over a^+(x) \cprov a^+(x)}
+	 \]
+
+  	 \[
+	 {\Gamma \cprov N ,\Delta \qquad \Gamma \cprov N',\Delta \over\Gamma \cprov N\& N',\Delta }
+	 \qquad
+	 {\Gamma, N_i \cprov\Delta  \cprov\Delta \over\Gamma,  N_1\& N_2\cprov\Delta }
+	 \]
+
+	 \[
+	 {\Gamma_1, N_1 \cprov \Delta_1 \qquad \Gamma_2, N_2 \cprov  \Delta_2   \over\Gamma_1, \Gamma_2, N_1\par N_2 \cprov  \Delta_1, \Delta_2 }
+	 \qquad
+	 {\Gamma \cprov N , N', \Delta  \over \Gamma\cprov N\par N',\Delta }
+	 \]
+
+	 \[
+	 {\Gamma \cprov \Delta  \over \Gamma\cprov\bot, \Delta }
+	 \qquad
+	 {   \over \bot \cprov \cdot }
+	 \]
+
+  	 \[
+	 { \over\Gamma\cprov \top, \Delta }
+	 \qquad
+	 {\text{[no left rule for $\top$]}}
+	 \]
+
+
+	 \[
+	 {\Gamma, P \cprov \Delta \over \Gamma \cprov \lnot P, \Delta}
+	 \qquad
+	 {\Gamma \cprov P, \Delta \over \Gamma, \lnot P \cprov  \Delta}
+	 \]
+
+ 	 \[
+	 {\Gamma \cprov P,\Delta \over \Gamma \cprov \ups P, \Delta}
+	 \qquad
+	 {\Gamma, P \cprov \Delta \over \Gamma, \ups P \cprov  \Delta}
+	 \]
+
+ 	 \[
+	 {\over a^-(x) \cprov a^-(x)}
+	 \]
+
+
+	 <h2>Intuitionistic Propositional Logic</h2>
+	 To represent classical logic, we don't even need to define all of intuitionistic logic.
+	 Just the usual positive propositional connectives, and a single negative proposition: negation.
+	 \[
+	 \begin{array}{rll}
+	 \textrm{Sign} & s& ::= {+} \celse {-} \\
+	 \textrm{Positive Props} & P& ::= P \otimes P \celse P \oplus P \celse 1 \celse 0 \celse  \dns N  \celse b^+(x, s)\\
+	 \textrm{Negative Props} & N& ::=  \lnot P\\
+	 \textrm{Props} & A, B, C & ::= P \celse N
+	 \end{array}
+	 \]
+
+	 \[
+	 \begin{array}{rll}
+	 \textrm{Context} & \Gamma& ::= \cdot \celse \Gamma, A \\
+	 \textrm{Right Side} & J& ::= N\celse \bot \\
+	 \end{array}
+	 \]
+
+	 The sequent rules are as follows:
+
+  	 \[
+	 {\Gamma_1 \prov P_1 \qquad \Gamma_2 \prov P_2   \over\Gamma_1, \Gamma_2 \prov P_1\otimes P_2 }
+	 \qquad
+	 {\Gamma, P , P' \prov J  \over \Gamma,  P\otimes P'\prov J }
+	 \]
+
+  	 \[
+	 {\Gamma \prov P_i   \over\Gamma \prov P_1\oplus P_2 }
+	 \qquad
+	 {\Gamma, P \prov J \qquad \Gamma,  P' \prov J \over\Gamma,  P\oplus P'\prov J }
+	 \]
+
+  	 \[
+	 {   \over \cdot \prov 1 }
+	 \qquad
+	 {\Gamma \prov J  \over \Gamma,  1\prov J }
+	 \]
+
+  	 \[
+	 {\text{[no right rule for $0$]}}
+	 \qquad
+	 { \over\Gamma,  0\prov J }
+	 \]
+
+ 	 \[
+	 {\Gamma \prov N \over \Gamma \prov \dns N}
+	 \qquad
+	 {\Gamma, N \prov J \over \Gamma, \dns N \prov  J}
+	 \]
+
+ 	 \[
+	 {\over b(x,s) \prov b(x,s)}
+	 \]
+
+
+ 	 \[
+	 {\Gamma, P \prov \bot \over \Gamma \prov \lnot P}
+	 \qquad
+	 {\Gamma \prov P \over \Gamma, \lnot P \prov  \bot}
+	 \]
+
+
+
+	 <h2>The Translation</h2>
+
+	 We a translations on propositions depending on their polarity.
+	 If $P$ is a positive classical proposition, then $P^+$ is a positive intuitionistic proposition.
+	 If $N$ is a negative classical proposition, then $N^+$ is a <b>positive</b> intuitionistic proposition.
+
+	 \[\begin{array}{l|l}
+	 P & P^+\\
+	 \hline
+	 P_1 \otimes P_2 & P_1^+ \otimes P_2^+ \\
+	 P_1 \oplus P_2 & P_1^+ \oplus P_2^+ \\
+	 1 & 1\\
+	 0 & 0\\
+	 \lnot N & N^+ \\
+	 \dns N  & \dns \lnot N^+\\
+	 a^+(x) & b^+(x, +)
+	 \end{array}
+	 \qquad
+	 \begin{array}{l|l}
+	 N & N^+\\
+	 \hline
+	 N_1 \par N_2 & N_1^+ \otimes N_2^+ \\
+	 N_1 \& N_2 & N_1^+ \oplus N_2^+ \\
+	 \bot & 1\\
+	 \top & 0\\
+	 \lnot P & P+ \\
+	 \ups P  & \dns \lnot P^+\\
+	 a^-(x) & b^+(x, -)
+	 \end{array}
+	 \]
+
+	 To translate classical contexts, we need to pay attention to
+	 whether we're translating a context on the left or on the right,
+	 and then pay attention to the polarity of the proposition we're
+	 translating. For a context $\Gamma$, we define $\Gamma^L$ and $\Gamma^R$ as follows:
+
+	 \[\begin{array}{l|l|l}
+	 \Gamma & \Gamma^L & \Gamma^R\\
+	 \hline
+	 \cdot & \cdot & \cdot\\
+	 \Gamma, P & \Gamma^L,  P^+ & \Gamma^R, \lnot P^+ \\
+	 \Gamma, N & \Gamma^L, \lnot N^+ & \Gamma^R, N^+ \\
+	 \end{array}
+	 \]
+
+	 <h2>The Theorem</h2>
+
+	 <b>Theorem</b> $\Gamma \cprov \Delta$ if and only if $\Gamma^L, \Delta^R \prov \bot$.
+  </body>
+  <script>
+
+	 renderMathInElement(
+		document.body,
+		{
+		  strict: false,
+		  trust: true,
+		  delimiters: [
+			 {left: "$$", right: "$$", display: true},
+			 {left: "\\[", right: "\\]", display: true},
+			 {left: "$", right: "$", display: false},
+			 {left: "\\(", right: "\\)", display: false}
+		  ],
+		  macros: {
+			 "\\cprov": "\\mathrel{\\#}",
+      	 "\\rid": "\\mathrm{id}",
+      	 "\\st": "\\mathop|",
+			 "\\U": "\\mathbb{U}",
+			 "\\R": "\\mathbb{R}",
+			 "\\N": "\\mathbb{N}",
+			 "\\Z": "\\mathbb{Z}",
+			 "\\rset": "\\mathbf{Set}",
+			 "\\rctx": "\\mathop\\mathsf{ctx}",
+			 "\\x": "\\times",
+			 "\\prov": "\\vdash",
+			 "\\tensor": "\\otimes",
+			 "\\lol": "\\multimap",
+			 "\\rtype": "\\mathsf{type}",
+			 "\\dom": "\\mathop\\mathsf{dom}",
+			 "\\cod": "\\mathop\\mathsf{cod}",
+			 "\\med": "\\mathop\\mathsf{med}",
+			 "\\sc": "\\mathop\\mathsf{sc}",
+			 "\\rtrue": "\\mathop\\mathsf{true}",
+			 "\\ract": "\\mathop\\mathsf{act}",
+			 "\\dns": "{\\downarrow}",
+			 "\\ups": "{\\uparrow}",
+			 "\\celse": "{\\ |\\ }",
+			 "\\tri": "\\triangleright",
+			 "\\imp": "\\Rightarrow",
+			 "\\A": "\\mathbf{A}",
+			 "\\C": "\\mathbf{C}",
+			 "\\D": "\\mathbf{D}",
+			 "\\PP": "\\mathbf{P}",
+			 "\\NN": "\\mathbf{N}",
+			 "\\op": "\\mathrm{op}",
+			 "\\dash": "-",
+			 "\\o": "\\circ",
+			 "\\ll": "[\\![",
+			 "\\rr": "]\\!]",
+			 "\\wat": "\\mathop{@}",
+			 "\\prequiv": "\\dashv\\vdash",
+          "\\llto": "\\rightarrowtail",
+          "\\rrto": "\\twoheadrightarrow",
+			 "\\next": "{\\blacktriangleright}",
+			 "\\par": "{\\htmlClass{rotate180}{\\&}}"
+		  }
+		}
+    );
+  </script>
+</html>
