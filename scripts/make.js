@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 const posts = [
+  {"dir": "2020-12-20", "title": "Classical Logic in Intuitionistic Logic"},
   {"dir": "2020-11-22", "title": "Directed Spaces vs. Categories"},
   {"dir": "2020-01-05", "title": "Polynomials as $n$-cells"},
   {"dir": "2019-09-03", "title": "Some Thoughts on Story Games"},
