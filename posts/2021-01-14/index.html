@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex-0.12.0/katex.min.css">
+    <script src="../../katex-0.12.0/katex.min.js"></script>
+    <script src="../../katex-0.12.0/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		.ib { display: inline-block; }
+		center { vertical-align: middle; }
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+		.tables { display: flex; align-items: center; }
+		.rotate180  {
+		  transform: rotate(180deg) translate(0px, 3px);
+		  display: inline-block;
+		}
+	 </style>
+	 <style>
+      .agda2-highlight-bound-variable {
+      }
+      .agda2-highlight-datatype {
+        /* agda2-highlight-datatype-face */
+        color: #0000cd;
+      }
+      .agda2-highlight-inductive-constructor {
+        /* agda2-highlight-inductive-constructor-face */
+        color: #008b00;
+      }
+      .agda2-highlight-keyword {
+        /* agda2-highlight-keyword-face */
+        color: #cd6600;
+      }
+      .agda2-highlight-primitive-type {
+        /* agda2-highlight-primitive-type-face */
+        color: #0000cd;
+      }
+      .agda2-highlight-symbol {
+        /* agda2-highlight-symbol-face */
+        color: #404040;
+      }
+      .region {
+      }
+	 </style>
+	 <title>Trees as Fibrations</title>
+  </head>
+  <body style="width: 800px">
+	 <h1>Trees as Fibrations</h1>
+
+	 Suppose we have a topological space $X$ and a continuous map $\pi$ that
+	 takes $X$ to the closed real unit interval $[0,1]$.
+	 <center><img src="fibration.png"></center>
+	 <b>Question</b>: Let's say we allow ourselves to require some more data and axioms on this structure,
+	 and quotient out by whatever equivalence relation
+	 we like. Is there a nice way to do that
+	 such that the resulting objects are in bijection with trees?
+	 <p/>By trees I mean the following agda datatype:
+		<pre><span class="region"></span><span class="agda2-highlight-keyword"><span class="region">data</span></span><span class="region"> </span><span class="agda2-highlight-datatype"><span class="region">Tree</span></span><span class="region"> </span><span class="agda2-highlight-symbol"><span class="region">:</span></span><span class="region"> </span><span class="agda2-highlight-primitive-type"><span class="region">Set1</span></span><span class="region"> </span><span class="agda2-highlight-keyword"><span class="region">where</span></span><span class="region">
+  </span><span class="agda2-highlight-inductive-constructor"><span class="region">leaf</span></span><span class="region"> </span><span class="agda2-highlight-symbol"><span class="region">:</span></span><span class="region"> </span><span class="agda2-highlight-datatype"><span class="region">Tree</span></span><span class="region">
+  </span><span class="agda2-highlight-inductive-constructor"><span class="region">node</span></span><span class="region"> </span><span class="agda2-highlight-symbol"><span class="region">:</span></span><span class="region"> </span><span class="agda2-highlight-symbol"><span class="region">(</span></span><span class="agda2-highlight-bound-variable"><span class="region">A</span></span><span class="region"> </span><span class="agda2-highlight-symbol"><span class="region">:</span></span><span class="region"> </span><span class="agda2-highlight-primitive-type"><span class="region">Set</span></span><span class="agda2-highlight-symbol"><span class="region">)</span></span><span class="region"> </span><span class="agda2-highlight-symbol"><span class="region">&#8594;</span></span><span class="region"> </span><span class="agda2-highlight-symbol"><span class="region">((</span></span><span class="agda2-highlight-bound-variable"><span class="region">a</span></span><span class="region"> </span><span class="agda2-highlight-symbol"><span class="region">:</span></span><span class="region"> </span><span class="agda2-highlight-bound-variable"><span class="region">A</span></span><span class="agda2-highlight-symbol"><span class="region">)</span></span><span class="region"> </span><span class="agda2-highlight-symbol"><span class="region">&#8594;</span></span><span class="region"> </span><span class="agda2-highlight-datatype"><span class="region">Tree</span></span><span class="agda2-highlight-symbol"><span class="region">)</span></span><span class="region"> </span><span class="agda2-highlight-symbol"><span class="region">&#8594;</span></span><span class="region"> </span><span class="agda2-highlight-datatype"><span class="region">Tree</span></span></pre>
+
+		A tree can be a leaf, or else it is a branching node with an unordered set of branches.
+
+		I'm pretty confident there is a good answer to this question, and below I try to sketch out how I think it looks:
+		<h2>Extra Data</h2>
+
+		We require that all of the points in $X$ are marked as
+		either <I>regular</I> (places where no branching occurs)
+		or <I>singular</I> (where branching may occur, although note
+		that it may be a trivial 1-ary branch). In the example
+		diagrams, the regular points are colored black and the
+		singular points are colored red.
+
+		<h2>Axioms</h2>
+
+		<ol>
+		  <li>("<b>push right</b>") For any $t &lt; u \in [0,1]$, and any $x\in X$ lying in the
+			 fiber over $t$ (i.e. $\pi(x) = t$) there is a <I>unique</I> map $\theta : [t,u] \to X$ such
+			 that  $\theta(t) = x$ and $\pi \o \theta$ is the identity on $[t,u]$.
+			 <p/>
+			 Intuitively: given any point $x \in X$, there is a unique way to "push it forward in time".
+			 <p/>
+			 This property can also be expressed as a unique lifting property: $\pi$ is right orthogonal to the inclusion of the
+			 0 endpoint of the interval $[0,1] = \I$, if we restrict our attention to <i>monotone</i> maps $\I \to \I$
+			 downstairs.
+			 <center><img src="property1.png"></center>
+		  <li>("<b>fill left</b>") For any $t &lt; u \in [0,1]$, and any map $p : (0,1] \in X$ out of the half-open
+			 interval that lies above $(t,u]$ (i.e. for any $v \in (0,1]$ we have $\pi(p(v)) = v$)
+			 there is a <I>unique</I> map $\theta : [t,u] \to X$ such
+			 that
+			 <p/>
+			 Intuitively: given any path $p : (0,1] \to X$ that's "open on the left", there is a unique way to "fill in its left endpoint".
+			 <p/>
+			 This property can also be expressed as a unique lifting property: $\pi$ is right orthogonal to the inclusion of the
+			 half-open interval $(0,1]$ into the closed interval $[0,1] = \I$, if again we restrict our attention to <i>monotone</i>
+			 maps $\I \to \I$ downstairs.
+			 <center><img src="property2.png"></center>
+			 <p/>
+			 The point of this axiom to rule out cases where $X$ has a
+			 branch that "comes into existence" (where we think of time
+			 as proceeding from left to right) with no actual
+			 definite zero-branch branching point that marks its creation. An
+			 example of a space that <I>doesn't</I> satisfy this axiom
+			 is one that has a piece that looks like an interval open
+			 on the left:
+			 <center><img src="property2-note.png"></center>
+
+
+		  <li>("<b>regular points are locally trivial</b>")
+			 For any regular point $x \in X$, there exists a neighborhood $[t,u] \subseteq \I$ of $\pi(x)$ such that
+			 there is a <i>unique</I> lift $\theta : [t,u] \to X$ that lies over $[t,u]$ and has $\theta(\pi(x)) = x$,
+			 and furthermore every point of the image of $\theta$ is regular.
+			 <p/>
+			 Intuitively, every regular point has a neighborhood in $X$ that looks like a single unbranching line.
+		  <li>("<b>singular points are isolated</b>")
+			 For any singular point $x \in X$, there exists a neighborhood $[t,u] \subseteq \I$ of $\pi(x)$ such that
+			 for any lift $\theta : [t,u] \to X$ that lies over $[t,u]$ and has $\theta(\pi(x)) = x$,
+			 the only singular point in the image of $\theta$ is $x$ itself.
+			 <p/>
+			 Intuitively, every singular point has a neighborhood in $X$ with no other singular points in it.
+			 <center><img src="property4.png"></center>
+		  <li>
+			 The fiber $\pi^{-1}(1) \subseteq X$ over time $1$ is a singleton set. (We
+			 could drop this axiom and instead obtain topological realizations of
+			 forests instead of trees.)
+		  <li>All points in the fibers over $0 \in \I$ and  $1 \in \I$ are regular.
+		</ol>
+
+		<h2>Equivalence Relation</h2>
+		I haven't quite nailed down what equivalence relation I need to quotient by, but I think it's given by the existence
+		of higher-dimensional cells that have similar sorts of local triviality properties as above.
+		<h2>Bijection between Spaces and Trees</h2>
+	 <p/>
+	 <h3>Turning a Space into a Tree</h3>
+	 If we're given a space over $\I$ satisfying the axioms above, here's how we compute a tree from it.
+	 Consider the single point $\{*\}$ that lives over the final time 1. It's regular by definition, so there's
+	 at least some nontrivial neighborhood $[t,1] \subseteq \I$ with $t &lt; 1$ such that we get unique lifts over $[t,1]$.
+	 How far back can we push $t$ and still have this property?
+	 <p/>
+    Say $t$ is a <I>unique precedent</I> of a point $x\in X$ lying
+	 over $u$ if there is a unique lift $\theta : [t,u] \to X$ over
+	 $[t,u]$ with $\theta(u) = x$.
+	 <p/>
+	 Say $t$ is a <i>strong unique precedent</I> of $x$ over $u$ if for all $t' &ge; t$, we have that $t'$ is a unique precedent of $x$.
+	 <p/>
+	 Consider the set of strong unique precedents of $*$ over $1$. It's
+	 closed to the right, by the universal quantifier in the definition
+	 of strong unique precedent. So consider its infimum.
+	 <p/>
+	 By the "fill left" axiom, it must <I>attain</I> its infimum. It could be at time 0, in which case we have a leaf of the tree,
+	 but otherwise it must be a <I>singular</I> point &mdash; for otherwise the local triviality of regular points would lets us
+	 extend to unique precedents beyond where we supposed the infimum to be.
+	 <p/>
+
+	 So in conclusion, given any point, we can uniquely "rewind" back
+	 to the most recent singular point that preceded it. Compactness of
+	 the unit interval together with isolation of singular points
+	 guarantees that no path has infinitely many singular points.
+	 Therefore we can use transfinite induction to construct a tree out
+	 of the structure of singular points and intervals of regular
+	 points between them.
+
+	 <h3>Turning a Tree into a Space</h3>
+
+	 This is a more straightforward induction. The tree that is a
+	 single leaf becomes the identity map from $[0,1]$ to itself, with all points declared regular. If we
+	 have a tree that is node, use the induction hypothesis to convert
+	 all of its subtrees $(t_i)_{i\in I}$ to maps $\pi_i : X_i \to [0,1]$.
+
+	 Then take the union $\bigcup_i X_i$ of all these spaces, and identify together
+	 all the points $\pi^{-1}_i(1) \in X_i$, if any. Reparameterize time by postcomposing with the map
+	 \[ (\dash / 2) : [0,1] \to [0,1/2] \]
+	 to obtain a map
+	 \[  \bigcup_i X_i \to [0, 1/2] \]
+	 Now attach the identity map $[1/2,1] \to [1/2, 1]$ to get the final projection
+	 \[ \pi : \left(\left( \bigcup_i X_i\right) \cup [1/2,1]\right) \to [0,1] \]
+	 Declare the single point that lies over $1/2$ (which had been regular
+	 in each $X_i$, because it was on the boundary fiber over time $1$)
+	 to be singular. All points strictly later than it are regular, and all points strictly
+	 earlier than it came from some $X_i$ and are assigned
+	 regularity/singularity according to the $X_i$ it came from.
+	 Then check that all axioms are satisfied.
+	 <center><img src="tree-to-space.png"></center>
+
+  </body>
+  <script>
+
+	 renderMathInElement(
+		document.body,
+		{
+		  strict: false,
+		  trust: true,
+		  delimiters: [
+			 {left: "$$", right: "$$", display: true},
+			 {left: "\\[", right: "\\]", display: true},
+			 {left: "$", right: "$", display: false},
+			 {left: "\\(", right: "\\)", display: false}
+		  ],
+		  macros: {
+			 "\\cprov": "\\mathrel{\\#}",
+      	 "\\rid": "\\mathrm{id}",
+      	 "\\st": "\\mathop|",
+			 "\\I": "\\mathbb{I}",
+			 "\\rset": "\\mathbf{Set}",
+			 "\\rctx": "\\mathop\\mathsf{ctx}",
+			 "\\x": "\\times",
+			 "\\prov": "\\vdash",
+			 "\\tensor": "\\otimes",
+			 "\\lol": "\\multimap",
+			 "\\rtype": "\\mathsf{type}",
+			 "\\dom": "\\mathop\\mathsf{dom}",
+			 "\\cod": "\\mathop\\mathsf{cod}",
+			 "\\med": "\\mathop\\mathsf{med}",
+			 "\\sc": "\\mathop\\mathsf{sc}",
+			 "\\rtrue": "\\mathop\\mathsf{true}",
+			 "\\ract": "\\mathop\\mathsf{act}",
+			 "\\dns": "{\\downarrow}",
+			 "\\ups": "{\\uparrow}",
+			 "\\celse": "{\\ |\\ }",
+			 "\\tri": "\\triangleright",
+			 "\\imp": "\\Rightarrow",
+			 "\\A": "\\mathbf{A}",
+			 "\\C": "\\mathbf{C}",
+			 "\\D": "\\mathbf{D}",
+			 "\\PP": "\\mathbf{P}",
+			 "\\NN": "\\mathbf{N}",
+			 "\\op": "\\mathrm{op}",
+			 "\\dash": "-",
+			 "\\o": "\\circ",
+			 "\\ll": "[\\![",
+			 "\\rr": "]\\!]",
+			 "\\wat": "\\mathop{@}",
+			 "\\prequiv": "\\dashv\\vdash",
+          "\\llto": "\\rightarrowtail",
+          "\\rrto": "\\twoheadrightarrow",
+			 "\\next": "{\\blacktriangleright}",
+			 "\\par": "{\\htmlClass{rotate180}{\\&}}"
+		  }
+		}
+    );
+  </script>
+</html>
