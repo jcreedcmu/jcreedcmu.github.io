@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex-0.12.0/katex.min.css">
+    <script src="../../katex-0.12.0/katex.min.js"></script>
+    <script src="../../katex-0.12.0/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		.ib { display: inline-block; }
+		center { vertical-align: middle; }
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+		.tables { display: flex; align-items: center; }
+		.rotate180  {
+		  transform: rotate(180deg) translate(0px, 3px);
+		  display: inline-block;
+		}
+	 </style>
+	 <title>Surface Diagrams</title>
+  </head>
+  <body style="width: 800px">
+	 <h1>Surface Diagrams</h1>
+
+	 Noam Zeilberger pointed out to me recently
+	 that <a href="https://ncatlab.org/toddtrimble/published/Surface+diagrams">Todd
+	 Trimble had written up</a> some material about how one might
+	 approach formalizing $n$-dimensional surface diagrams
+	 topologically. This post seems to be from about 10 years ago, and
+	 indeed the history of this overall project seems to stretch quite
+	 a few decades back in the research community. After skimming, I
+	 felt encouraged by the fact that I had gotten as far as I had just
+	 messing around with elementary definitions, but found the
+	 complexity of the sort of weird counterexamples you need to
+	 exclude &mdash; and of the machinery others have used to exclude them
+	 &mdash; pretty sobering.
+	 <p>
+
+	 Still I have this sense (though perhaps this is merely wishful
+	 thinking) that higher categories ought to have a very nice
+	 parsimonious characterization &mdash; in particular I feel like
+	 there ought to be some way of characterizing them without any
+	 reference to the <i>analytic</i> structure of $\R^n$, just its
+	 topological and order structure; i.e. without any mention of
+	 tangent spaces and smooth manifolds and such.
+
+	 <p>
+		So here's my best guess at the moment, justified only by the
+		fact that I think it rules out a couple of "monsters" I can
+		think of.
+
+	 <h2>The Data of a Surface Diagram</h2>
+
+	 Here's a picture of a typical string diagram &mdash; i.e. a
+	 2-dimensional surface diagram &mdash; looks like.
+
+	 <center><img src="string-diagram.png"></center>
+
+	 We'll say that the underlying data of a diagram is a <i>picture</I> that assigns
+	 to every point in $\R^2$, an answer to the question: what sort of cell is there?
+	 That is, this particular diagram is a function
+	 \[P : \R^2 \to \{C, D, E, F, f, g, h, k, \ell, \alpha, \beta\}\]
+	 This data is going to be subject to some conditions that ensure that it actually looks like
+	 a well-formed diagram, and not some random jumble.
+	 <p>
+		Those conditions are going to feel inutitively like saying: near
+		each point $x\in \R^2$, the picture $P$ resembles a "standard
+		picture" that corresponds to the value $P(x)$ that $P$ takes at
+		$x$. In other words, we will have a collection of standard pictures, one for each cell, which
+		express both the <i>dimension</I> of that cell, and the domain and codomain of higher cells.
+		Here's what the standard pictures of the cells in this diagram could look like:
+	 <center><img src="boundaries.png"></center>
+	 We see that the standard pictures of the $0$-cells $C, D, E, F$ are maps $\R^0 \to \{C, D, E, F\}$.
+	 The standard pictures of the $1$-cells are maps $\R^1 \to \{C, D, E, F, f, g, h, k, \ell\}$. And
+	 the standard pictures of the $2$-cells $\alpha, \beta$ are maps
+	 \[  \R^2 \to \{C, D, E, F, f, g, h, k, \ell, \alpha, \beta\}\]
+	 What all of these maps have in common is that the standard picture for a cell has the cell itself at its
+	 origin: we could say standard picture $\partial_c$ for a cell $c$ has
+	 the property that $\partial_c(0) = c$.
+
+	 <h2>Orderly Maps</h2>
+	 I want to make a couple of definitions to formalize what <b>resembles</b> means in
+	 <blockquote>...near each point the picture <b>resembles</b> a standard picture...</blockquote>
+
+	 Consider the category <b>OrdSp</b> of "orderly spaces" whose objects are topological spaces $X$
+	 equipped with countably many binary relations ${&lt;_0}, {&lt;_1}, {&lt;_2}, \ldots$,
+	 and whose morphisms are "orderly maps", continuous maps that preserve all those relations.
+	 <p>Let's equip $\R^n$ with a specific collection of orders so that it lives canonically as an object
+		in this category. If $x = (x_0, \ldots, x_{n-1})\in \R^n$ and $y = (y_0, \ldots, y_{n-1}) \in \R^n$
+		we say that $x &lt;_m y$ iff either
+		<ul>
+		  <li>$m \ge n$; or
+		  <li>$x_m &lt; y_m$ and for all $k > m$, we have $x_k = y_k$.
+		</ul>
+		where unsubscripted $&lt;$ means the usual notion of less-than in the reals.
+		If we have a subset $U \subseteq \R^n$, then $U$ is also an orderly space in the evident way, by taking the
+		subset topology, and taking the restriction to $U$ of the relations $&lt;_i$.
+
+	 <p>
+		An example of typical orderly map $\pi$ from an orderly space
+		$U\subseteq \R^2$ to $\R$ can be illustrated as follows. We show
+		a coloring of $\R$, thought of as a map $\partial : \R \to K$ to
+		a set $K$ of colors, and we show the induced coloring $\partial \o \pi$ on $U$:
+	 <center><img src="orderly.png"></center>
+	 The coloring is allowed to wiggle back and forth freely in the $x_0$-axis
+	 but within each constant $x_1$-slice we
+	 have to have a monotone advancement from red, to orange, to yellow, etc. as we proceed
+	 from left to right (because whenever $x &lt; y$, we'll  find that  $(x, t) &lt;_0 (y, t)$ in $U$,
+	 which then requires $\pi(x_0) &lt; \pi(y_0)$)
+
+	 <h2>Defining Good Pictures</h2>
+
+	 Suppose we have a set $C$ of cells, and for each cell $c \in C$,
+	 we're given a number $d(c)\in \N$ (the "dimension of $c$") and a map
+	 $\partial_c : \R^{d(c)} \to C$ (the "boundary of $c$") such that $\partial_c(0) = c$.
+
+	 A <i>picture</I> is a function $P : \R^n \to C$. A picture is <i>good</i> at a point $x \in \R^n$
+	 iff there exists an open neighborhood $U\subseteq \R^n$ of $x$, and an orderly map $\pi : U \to \R^{d(P(x))}$
+	 such that
+	 \[\forall y \in U . P(y) = \partial_{P(x)}(\pi(y))\]
+
+	 In other words: a picture is good at a point if a neighborhood of
+	 that point agrees with the standard picture of the cell assigned
+	 to that point, up to reparameterization by an orderly morphism.
+
+	 <h2>Defining (something like) $\omega$-Categories</h2>
+	 I think something like an $\omega$-category is given by the following definition, though I'd need
+	 to define maps (and higher maps) between them to make that more formal:
+	 <p>
+		A <i>directed space</i> consists of a set $C$, a map $d : C \to \N$, and for each $c\in C$ a map
+		$\partial_c : \R^{d(c)}$ such that for every $c$ and every nonzero $x \in \R^{d(c)}$,
+		<ul>
+		  <li> $\partial_c(0) = c$
+		  <li> $d(\partial_c(x)) < d(c)$
+		  <li> $\partial_c$ is a good picture at $x$
+		</ul>
+  </body>
+  <script>
+
+	 renderMathInElement(
+		document.body,
+		{
+		  strict: false,
+		  trust: true,
+		  delimiters: [
+			 {left: "$$", right: "$$", display: true},
+			 {left: "\\[", right: "\\]", display: true},
+			 {left: "$", right: "$", display: false},
+			 {left: "\\(", right: "\\)", display: false}
+		  ],
+		  macros: {
+			 "\\cprov": "\\mathrel{\\#}",
+      	 "\\rid": "\\mathrm{id}",
+      	 "\\st": "\\mathop|",
+			 "\\I": "\\mathbb{I}",
+			 "\\rset": "\\mathbf{Set}",
+			 "\\rctx": "\\mathop\\mathsf{ctx}",
+			 "\\x": "\\times",
+			 "\\prov": "\\vdash",
+			 "\\tensor": "\\otimes",
+			 "\\lol": "\\multimap",
+			 "\\rtype": "\\mathsf{type}",
+			 "\\dom": "\\mathop\\mathsf{dom}",
+			 "\\cod": "\\mathop\\mathsf{cod}",
+			 "\\med": "\\mathop\\mathsf{med}",
+			 "\\sc": "\\mathop\\mathsf{sc}",
+			 "\\rtrue": "\\mathop\\mathsf{true}",
+			 "\\ract": "\\mathop\\mathsf{act}",
+			 "\\dns": "{\\downarrow}",
+			 "\\ups": "{\\uparrow}",
+			 "\\celse": "{\\ |\\ }",
+			 "\\tri": "\\triangleright",
+			 "\\imp": "\\Rightarrow",
+			 "\\A": "\\mathbf{A}",
+			 "\\C": "\\mathbf{C}",
+			 "\\D": "\\mathbf{D}",
+			 "\\PP": "\\mathbf{P}",
+			 "\\NN": "\\mathbf{N}",
+			 "\\op": "\\mathrm{op}",
+			 "\\dash": "-",
+			 "\\o": "\\circ",
+			 "\\ll": "[\\![",
+			 "\\rr": "]\\!]",
+			 "\\wat": "\\mathop{@}",
+			 "\\prequiv": "\\dashv\\vdash",
+          "\\llto": "\\rightarrowtail",
+          "\\rrto": "\\twoheadrightarrow",
+			 "\\next": "{\\blacktriangleright}",
+			 "\\par": "{\\htmlClass{rotate180}{\\&}}"
+		  }
+		}
+    );
+  </script>
+</html>
