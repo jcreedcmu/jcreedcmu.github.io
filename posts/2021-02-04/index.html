@@ -52,36 +52,40 @@
 
 	 <h2>The Data of a Surface Diagram</h2>
 
-	 Here's a picture of a typical string diagram &mdash; i.e. a
+	 Here's a picture of what a typical string diagram &mdash; i.e. a
 	 2-dimensional surface diagram &mdash; looks like.
 
 	 <center><img src="string-diagram.png"></center>
 
 	 We'll say that the underlying data of a diagram is a <i>picture</I> that assigns
-	 to every point in $\R^2$, an answer to the question: what sort of cell is there?
+	 to every point in $\R^2$ an answer to the question: which cell is located at that point?
 	 That is, this particular diagram is a function
 	 \[P : \R^2 \to \{C, D, E, F, f, g, h, k, \ell, \alpha, \beta\}\]
 	 This data is going to be subject to some conditions that ensure that it actually looks like
-	 a well-formed diagram, and not some random jumble.
+	 a well-formed diagram, and not some random jumble of cells.
 	 <p>
 		Those conditions are going to feel inutitively like saying: near
 		each point $x\in \R^2$, the picture $P$ resembles a "standard
 		picture" that corresponds to the value $P(x)$ that $P$ takes at
-		$x$. In other words, we will have a collection of standard pictures, one for each cell, which
-		express both the <i>dimension</I> of that cell, and the domain and codomain of higher cells.
+		$x$. There will be a collection of standard pictures, one for each cell, which
+		express both the <i>dimension</I> of that cell, and also the domain and codomain of higher cells.
 		Here's what the standard pictures of the cells in this diagram could look like:
 	 <center><img src="boundaries.png"></center>
 
 	 We see that the standard pictures of the $0$-cells $C, D, E, F$
-	 are maps $\R^0 \to \{C, D, E, F\}$.
-
-	 The standard pictures of the $1$-cells are maps $\R^1 \to \{C, D,
-	 E, F, f, g, h, k, \ell\}$.
-
-	 And the standard pictures of the $2$-cells $\alpha, \beta$ are maps
-
-	 \[  \R^2 \to \{C, D, E, F, f, g, h, k, \ell, \alpha, \beta\}\]
-
+	 are maps $\R^0 \to \{C, D, E, F\}$. They're pretty trivial and boring;
+	 they just assign to the unique point of $\R^0$ the value of the
+	 cell whose picture it is.
+	 <p>
+		The standard pictures of the $1$-cells are maps $\R^1 \to \{C, D,
+		E, F, f, g, h, k, \ell\}$. They map the origin to the 1-cell itself,
+		all the negative numbers to the domain 0-cell of the 1-cell, and all the positive
+		numbers to the codomain 0-cell.
+	 <p>
+		And the standard pictures of the $2$-cells $\alpha, \beta$ are maps
+		\[  \R^2 \to \{C, D, E, F, f, g, h, k, \ell, \alpha, \beta\}\]
+		that give a little picture of just that 2-cell by itself.
+<p>
 	 What all of these maps have in common is that the standard picture
 	 for a cell has the cell itself at its origin: if the standard
 	 picture for a cell $c$ is called $\partial_c$, then it has the
@@ -111,7 +115,7 @@
 		a coloring of $\R$, thought of as a map $\partial : \R \to K$ to
 		a set $K$ of colors, and we show the induced coloring $\partial \o \pi$ on $U$:
 	 <center><img src="orderly.png"></center>
-	 The coloring is allowed to wiggle back and forth freely in the $x_0$-axis
+	 The coloring is allowed to wiggle back and forth freely in the $x_0$-axis (as time proceeds along the $x_1$ axis)
 	 but within each constant $x_1$-slice we
 	 have to have a monotone advancement from red, to orange, to yellow, etc. as we proceed
 	 from left to right (because whenever $x &lt; y$, we'll  find that  $(x, t) &lt;_0 (y, t)$ in $U$,
