@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../katex-0.12.0/katex.min.css">
+    <script src="../../katex-0.12.0/katex.min.js"></script>
+    <script src="../../katex-0.12.0/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		.ib { display: inline-block; }
+		center { vertical-align: middle; }
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+		.tables { display: flex; align-items: center; }
+		.rotate180  {
+		  transform: rotate(180deg) translate(0px, 3px);
+		  display: inline-block;
+		}
+	 </style>
+	 <title>Differential Geometry On Cartographic Spaces</title>
+  </head>
+  <body style="width: 800px">
+	 <h1>Differential Geometry On Cartographic Spaces</h1>
+
+	 <h2>Cartographic Sets</h2>
+	 There's a combinatorial way of describing $n$-dimensional discrete spaces that I'm quite
+	 fond of, that I've seen go by under various different names: it's very close to
+	 <a href="https://en.wikipedia.org/wiki/Abstract_polytope">Abstract Polytopes</a>, but has a more algebraic feel.
+	 I've seen them called "<a href="https://arxiv.org/abs/1812.04148">Maniplexes</A>", although maybe to be
+	 a maniplex is to satisfy a slightly broader set of nondegeneracy conditions. Anyway, I'm going
+	 to refer to them here as "Cartographic Spaces", following Grothendieck's description of the Cartographic Group
+	 in <a href="https://ncatlab.org/nlab/show/Esquisse+d%27un+programme">Esquisse d'un Programme</a>.
+	 <p>
+		Here's the definition: an ($n$-dimensional) <em>cartographic
+      set</em> is an action of the ($n$-dimensional) cartographic
+      group on a set $X$. The cartographic group is given by generators and relations
+		\[ (\sigma_0, \ldots, \sigma_n \st  \sigma_i^2 = (\sigma_i\sigma_j)^2 = 1,\ (|i - j| > 1)) \]
+		The intuition behind this definition is that a $n$-dimensional space is made up of cells:
+		0-dimensional vertices, 1-dimensional edges, 2-dimensional faces (which, since this isn't a <em>simplicial</em>
+		complex, can be generally polygons, rather than merely triangles), 3-dimensional volumes, etc.
+
+	 <p>The elements of the set $X$ on which the group acts are not
+		cells but <em>flags</em>: a flag is a choice of a 0-cell $c_0$
+		and a 1-cell $c_1$, and $\cdots$ and an $n$-cell $c_n$, such
+		that all the $(c_i)_{i\in \{0,\ldots,n\}}$ are incident to one
+		another. For example, here is a depiction of a 2-dimensional space,
+		with some flags indicated by short lines attached to the face and edge
+		that they belong to, drawn <em>nearer</em> to the vertex they belong to:
+	 <center><img src="flags1.png"></center>
+	 The 10 red flags all correspond to the top, 5-sided face, and the
+	 8 blue flags all belong to the front, 4-sided face. It is more convenient to draw
+	 flags as dots near their incident cells, like so:
+	 <center><img src="flags2.png"></center>
+	 so that we can draw the action of the group generators $\sigma_i$ on them as a graph:
+	 <center><img src="flags3.png"></center>
+
+	 The graph is undirected because we required that every $\sigma_i$
+	 is an involution $\sigma_i^2 = 1$. The effect of $\sigma_i$ is an
+	 "$i$-dimensional flip": when we hit a flag with $\sigma_i$, we
+	 take as input some flag $(c_0, c_1, \ldots, c_i, \ldots, c_n)$, and we change it
+	 to $(c_0, c_1, \ldots, c_i', \ldots, c_n)$, the unique other flag that differs
+	 from the first in only its $i$-dimensional cell.
+	 <p>
+		The fact that non-adjacent generators are supposed to commute ($\sigma_i\sigma_j = 1$ when $|i - j| > 2$) here
+		means specifically that $\sigma_0$ and $\sigma_2$ commute, so we always end up with <em>squares</em>
+		of blue and green edges in the above diagram, with blue and green edges alternating around each square.
+
+		<h2>Cartographic Spaces</h2>
+
+		I wanted to puzzle out for myself how one should think about discrete
+		differential geometry on these structures, and I think there's a
+		very pleasant answer. In order to talk about flows and forms and so on, we have to generalize
+		cartographic sets to cartographic linear <em>spaces</em>. This is as easy as replacing "action on a set"
+		with "linear action on a linear vector space".
+	 <p>
+		A <em>cartographic space</em> is defined to be a vector space
+		$V$ together with a homomorphism from the $n$-dimensional
+		cartographic group to the group of linear maps $V \to V$.
+	 <p>
+		For example, if we have a cartographic set $X$, we can trivially
+		define a cartographic space from it: simply let the space $V$ be
+		the space of all linear combinations of elements of $X$, and let
+		the action of $\sigma_i$ on $V$ be the natural extension from
+		its action on basis elements to general elements of $V$.
+	 <h2>$k$-Vector Fields</h2>
+		We can then define what it means to be a $k$-vector field on $V$
+		in a nice way: if $k \in \{0,\ldots,n\}$, we say that a $k$-vector field on $V$
+		is an element $v \in V$ such that for any $i$, we have $\sigma_i v = -v$ if $i &lt; k$,
+	 and $\sigma_i v = v$ if $i > k$. We can write this as a linear subspace of $V$:
+	 \[ V_k = \{ v \in V \st \forall i . (i &lt; k \imp \sigma_i v = -v) \wedge (i > k \imp \sigma_i v = v)\}\]
+	 \[ = \bigcap_{i &lt; k}\ker(\sigma_i + 1) \cap \bigcap_{i > k} \ker(\sigma_i - 1) \]
+	 <p>
+		Here is an example of a $0$-vector field on $V$, i.e. a scalar
+		field on the vertices of the space. The condition above requires
+		$\sigma_1 v = v$ and $\sigma_2 v = v$; flipping the edge we're
+		sitting on shouldn't change the coefficient of the flag we're
+		looking at, and neither should flipping the face. All that
+		matters is the vertex.
+	 <center><img src="flags4.png"></center>
+
+	 Here is an example of a $1$-vector field on $V$, i.e. a collection
+	 of weighted oriented edges. The condition above requires $\sigma_0 v = -v$
+	 and $\sigma_2 v = v$. If we flip a vertex, we must flip the sign of the coefficient,
+	 but if we flip the face, we must keep the coefficient constant.
+	 <center><img src="flags5.png"></center>
+
+	 Finally, Here is an example of a $2$-vector field on $V$, i.e. a
+	 collection of weighted oriented faces. The condition above
+	 requires $\sigma_0 v = -v$ and $\sigma_1 v = -v$. If we flip
+	 either the vertex or edge of a flag, we must flip the sign of the
+	 coefficient.
+	 <center><img src="flags6.png"></center>
+
+	 <h2>Computing Boundaries</h2>
+	 If we are to do differential geometry, we have to have some notion that plays the role of taking the
+	 boundary of a bit of space, or, dually, takes the exterior derivative of a form, bumping the dimension
+	 of a field (or form) down or up by one, respectively.
+	 <p>
+		Curiously, I think both of these operations in this setting &mdash; at least when the cartographic space
+		in question arises from a cartographic set &mdash; can be realized (when we fix the dimension $k$)
+		as <i>projection</I> operators on $V$, i.e. linear idempotent maps $V \to V$.
+		Given the involutivity of $\sigma_i$, we do know that $\mu_i = (\sigma_i + 1) / 2$ is idempotent,
+		for
+		\[ \mu_i \mu_i v = \mu_i (\sigma_i v + v) / 2 \]
+		\[= (\sigma_i \sigma_i v + 2 \sigma_i v + v) / 4\]
+		\[= ( v + 2 \sigma_i v + v) / 4\]
+		\[= ( 2 \sigma_i v + 2v) / 4\]
+		\[= ( \sigma_i v + v) / 2\]
+		\[= \mu_i v\]
+		We can also define the 'opposite' projection $\bar \mu_i = (1 - \sigma_i) / 2$. It is easy
+		to check that $\im \mu_i = \ker \bar \mu_i$ and $\ker \mu_i = \im \bar\mu_i$ and $\mu_i + \bar\mu_i = 1$.
+
+		Now I claim that there are projections $L_k, R_k : V \to V$, uniquely defined by requiring that
+		\[\im L_k = \bigcap_{i &lt; k} \ker \mu_i \qquad \im R_k =  \bigcap_{i > k} \im \mu_i \]
+		\[\ker L_k = \sum_{i &lt; k} \im \mu_i \qquad \ker R_k = \sum_{i > k} \ker \mu_i \]
+		and in fact these commute, $L_k R_k = R_k L_k$. Let's define $\pi_k = L_k R_k$.
+		I claim moreover that the image of $\pi_k$ is exactly the set of $k$-vector fields $V_k$, since
+	 \[ V_k = \bigcap_{i &lt; k}\ker(\sigma_i + 1) \cap \bigcap_{i > k} \ker(\sigma_i - 1) \]
+		\[ = \bigcap_{i &lt; k}\ker((\sigma_i + 1) / 2) \cap \bigcap_{i > k} \ker((\sigma_i - 1) / 2) \]
+		\[ = \bigcap_{i &lt; k}\ker(\mu_i) \cap \bigcap_{i > k} \ker(\bar\mu_i) \]
+		\[ = \bigcap_{i &lt; k}\ker(\mu_i) \cap \bigcap_{i > k} \im(\mu_i) \]
+		\[ = \im L_k \cap \im R_k\]
+	 <p>
+		Now the punchline is that taking a $(k+1)$-vector field that already lives $V_{k+1}$ and hitting it with $\pi_k$
+		is essentially the same thing as taking its boundary. In this case, if we wanted to show that
+		the chain complex condition
+		\[\partial \partial = 0\]
+		holds, it would suffice to show that
+		\[ \pi_{k-1}\pi_k\pi_{k+1} = 0 \tag{1}\]
+		For we start with some vector $v$ that lives in $V_{k+1}$, and so we know that $\pi_{k+1} v = v$.
+		If we take its boundary once, that's $\pi_k \pi_{k+1} v$. If we take its boundary twice, that's
+		$\pi_{k-1}\pi_k \pi_{k+1}$. To establish (1), we need only check a few 'absorption' properties,
+		namely that for any $k$, we have
+		\[ i&lt; k \imp (L_k \bar\mu_i = L_k = \bar\mu_i L_k) \quad L_k L_{k+1} = L_{k+1} \]
+		\[ i&gt; k \imp (R_k \mu_i = R_k = \mu_i R_k) \quad R_{k-1} R_{k} = R_{k-1}\]
+		which means that
+		\[ \pi_{k-1}\pi_k\pi_{k+1} =   L_{k-1}R_{k-1} R_k L_k L_{k+1}R_{k+1} \]
+		\[ =   L_{k-1}R_{k-1}  L_{k+1}R_{k+1} \]
+		\[ =   L_{k-1}R_{k-1}\mu_k  \bar\mu_k L_{k+1}R_{k+1} \]
+		\[ =   L_{k-1}R_{k-1} 0 L_{k+1}R_{k+1} \]
+		\[ =   0 \]
+	 <p>
+		I think this is really nice! The reason that a double-boundary
+		(or dually, double-exterior-derivative) is always zero, is really just the fact
+		that a vector field can't simultaneously be in the image of $\mu_k$ ("$k$-even", "$k$-bosonic")
+		and in the image of $\bar\mu_k$ ("$k$-odd", "$k$-fermionic")
+
+  </body>
+  <script>
+
+	 renderMathInElement( document.body, { strict: false, trust: true,
+		delimiters: [ {left: "$$", right: "$$", display: true}, {left:
+		"\\[", right: "\\]", display: true}, {left: "$", right: "$",
+		display: false}, {left: "\\(", right: "\\)", display: false} ],
+		macros: { "\\cprov": "\\mathrel{\\#}", "\\rid": "\\mathrm{id}",
+		"\\st": "\\mathop|", "\\I": "\\mathbb{I}", "\\rset":
+		"\\mathbf{Set}", "\\rctx": "\\mathop\\mathsf{ctx}", "\\x":
+		"\\times", "\\prov": "\\vdash", "\\tensor": "\\otimes", "\\lol":
+		"\\multimap", "\\rtype": "\\mathsf{type}", "\\dom":
+		"\\mathop\\mathsf{dom}", "\\cod": "\\mathop\\mathsf{cod}",
+		"\\med": "\\mathop\\mathsf{med}", "\\sc":
+		"\\mathop\\mathsf{sc}", "\\rtrue": "\\mathop\\mathsf{true}",
+		"\\ract": "\\mathop\\mathsf{act}", "\\dns": "{\\downarrow}",
+		"\\ups": "{\\uparrow}", "\\celse": "{\\ |\\ }", "\\tri":
+		"\\triangleright", "\\imp": "\\Rightarrow", "\\A":
+		"\\mathbf{A}", "\\C": "\\mathbf{C}", "\\D": "\\mathbf{D}",
+		"\\PP": "\\mathbf{P}", "\\NN": "\\mathbf{N}", "\\op":
+		"\\mathrm{op}", "\\dash": "-", "\\o": "\\circ", "\\ll": "[\\![",
+		"\\rr": "]\\!]", "\\wat": "\\mathop{@}", "\\prequiv":
+		"\\dashv\\vdash", "\\llto": "\\rightarrowtail", "\\rrto":
+		"\\twoheadrightarrow", "\\next": "{\\blacktriangleright}",
+		"\\par": "{\\htmlClass{rotate180}{\\&}}", "\\im":
+		"\\mathrm{im}\\,", } } );
+  </script>
+</html>
