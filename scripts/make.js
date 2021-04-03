@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const posts = [
-  {"dir": "2021-04-03", "title": "Sealevel Logic", "description": '<img src="posts/2021-04-03/map.png">'},
+  {"dir": "2021-04-03", "title": "Sealevel Logic", "description": '<img src="posts/2021-04-03/map.png"/>'},
   {"dir": "2021-03-14", "title": "Differential Geometry On Cartographic Spaces"},
   {"dir": "2021-02-04", "title": "Surface Diagrams"},
   {"dir": "2021-01-14", "title": "Trees as Fibrations"},
