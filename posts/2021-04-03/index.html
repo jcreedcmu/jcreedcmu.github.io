@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+
+  <head>
+    <link rel="stylesheet" href="../../katex-0.12.0/katex.min.css">
+    <script src="../../katex-0.12.0/katex.min.js"></script>
+    <script src="../../katex-0.12.0/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+	 <style>
+		.ib { display: inline-block; }
+		center { vertical-align: middle; }
+		body { padding-left: 40px; max-width: 50em; }
+		.code { white-space: pre; display: block; }
+		td { padding-left: 30px; }
+		.tables { display: flex; align-items: center; }
+		.rotate180  {
+		  transform: rotate(180deg) translate(0px, 3px);
+		  display: inline-block;
+		}
+	 </style>
+	 <title>Sealevel Logic</title>
+  </head>
+  <body style="width: 800px">
+	 <h1>Sealevel Logic</h1>
+
+	 <h2>Maps</h2>
+	 Imagine a map that has dry land, and oceans, and lakes, and
+	 islands, and cities on land, and underwater cities. Here a couple examples:
+	 <center><img src="map1.png"></center>
+	 <center><img src="map2.png"></center>
+
+	 It's possible to describe these maps with an expression syntax.
+	 Each example map has its expression listed below it.
+	 <center><img src="syntax.png"></center>
+
+	 There are "wet expressions" (which describe parts of the map that
+	 are surrounded by water) and "dry expressions" (which describe
+	 parts of the map that are surrounded by land).
+	 <p>
+		A wet expression can either be an underwater city $\wet w$, an expanse of water with nothing in it $\wet 1$, a pair
+		of wet regions next to each other $\wet{W_1 \ox W_2}$, or an <b>island</b> $\I(\dry{D})$, containing a dry expression.
+	 <p>
+		A dry expression can either be a dry-land city $\dry d$, an expanse of land with nothing in it $\dry 1$, a pair
+		of dry regions next to each other $\dry{D_1 \ox D_2}$, or a <b>lake</b> $\L(\wet{W})$, containing a wet expression.
+
+	 <h2>Raising Sealevel</h2>
+
+	 Some maps can arise from others by raising the level of water. We disallow flooding of any cities, thereby converting them from land cities to water cities.
+	 Other than that, land can turn into water, channels can open up between bodies of
+	 water, islands can disappear, and new lakes can appear. We write
+	 $\wet{W} \le \wet{W'}$ (and $\dry{D} \le \dry{D'}$) when $\wet{W'}$ arises from $\wet{W}$
+	 (respectively $\dry{D'}$ arises from $\dry D$) by raising the water level.
+	 <p>
+		For example if $\wet{W_1}$ denotes the map labelled ① above, and
+		$\wet{W_2}$ denotes the map labelled ② above, that is,
+		\[ \wet{W_1} = \wet I(\dry L(\wet{o \ox n\ox I}(\dry{a \ox L}\wet m))\dry{{}\ox b \ox c \ox L}\wet 1) \wet{{}\ox p\ox I}\dry{1} \wet{\ox I}(\dry{d \ox L}\wet{r}\dry{ \ox L}\wet q)\]
+		\[ \wet{W_2} = \wet I(\dry L(\wet{o \ox n\ox I}\dry a\wet{\ox m})\dry{\ox c \ox L}\wet I\dry 1) \wet{{}\ox I{\dry b} \ox p} \wet{\ox I}(\dry{d \ox L}(\wet{r \ox q}))\]
+		then
+		\[ \wet{W_1} \le \wet{W_2}\]
+	 <h2>Axioms for Raising Sealevel</h2>
+	 I believe the following axioms characterize what I mean by "raising sealevel". Use $X, Y, Z$ to stand for expressions that are either $\wet W$ or $\dry D$, and write $X \equiv Y$ to mean both $X \le Y$ and $Y \le X$.
+	 We assert that both colors of $\ox$ are associative, commutative, and unital operators with respect to $1$.
+	 \[ (\wet{ W_1 \ox W_2}) \wet{\ox W_3} \equiv \wet{ W_1 \ox} (\wet{W_2 \ox W_3})
+	 \qquad \wet{ W_1 \ox W_2} \equiv \wet{ W_2 \ox W_1}
+	 \qquad \wet{1\ox W} \equiv \wet W\]
+	 \[ (\dry{ D_1 \ox D_2}) \dry{\ox D_3} \equiv \dry{ D_1 \ox} (\dry{D_2 \ox D_3})
+	 \qquad \dry{ D_1 \ox D_2} \equiv \dry{ D_2 \ox D_1}
+	 \qquad \dry{1\ox D} \equiv \dry D\]
+	 We assert that $\le$ is a partial order:
+	 \[ X \le X \qquad {X \le Y \qquad Y \le Z \over X \le Z}\]
+	 We assert that everything in sight is a congruence:
+	 \[ {\wet{W_1} \le \wet{W_1'} \qquad \wet{W_2} \le \wet{W_2'} \over \wet{W_1 \ox W_2} \le \wet{W_1' \ox W_2'}} \qquad {\dry D \le \dry{D'} \over {\wet I}{\dry D} \le {\wet I}{\dry D'}} \]
+	 \[ {\dry{D_1} \le \dry{D_1'} \qquad \dry{D_2} \le \dry{D_2'} \over \dry{D_1 \ox D_2} \le \dry{D_1' \ox D_2'}} \qquad {\wet W \le \wet{W'} \over {\dry L}{\wet W} \le {\dry L}{\wet W'}} \]
+	 And finally we assert some axioms that express how the topology of the map can genuinely change:
+<table>
+<tr>
+<td>	 $ \wet{I} \dry 1 \le \wet 1 $</td><td>(delete an island)</td>
+</tr>
+<tr>
+<td>	 $ \dry 1 \le \dry{L} \wet 1   $</td><td>(create a lake)</td>
+</tr>
+<tr>
+<td>	 $ \wet{I} (\dry{D_1 \ox D_2}) \le \wet I\dry{D_1} \wet{\ox} \wet I\dry{D_2} $</td><td>(split a landmass)</td>
+</tr>
+<tr>
+<td>	 $ \dry L\wet{W_1} \dry{\ox} \dry L\wet{W_2} \le \dry{L} (\wet{W_1 \ox W_2} )  $</td><td>(merge two bodies of water)</td>
+</tr>
+<tr>
+<td>	 $ \wet I\dry L\wet W  \le  \wet{ W} $</td><td>(delete ring island)</td>
+</tr>
+<tr>
+<td>	 $  \dry{D} \le \dry L\wet I \dry{ D}  $</td><td>(create a moat)</td>
+</tr>
+</table>
+
+	 <h2>A Logic for Raising Sealevel</h2>
+
+	 I have a conjecture about interpreting this syntax into first-order
+	 linear logic, but I don't know whether it's true or not yet.
+	 <p>
+		For the first-order structure, we suppose we have two sorts of
+	 first-order terms, wet terms $\wet \omega$ and dry terms $\dry
+	 \delta$, and a binary relation symbol (that is, an atomic
+	 proposition taking two arguments, one wet, one dry) which we will
+	 write infix as $\wet \omega \tri \dry \delta$. For each named
+	 'city' in the source language, we assume one unary relation symbol
+	 named after that city, which takes a wet or dry term argument
+	 according to whether the city is underwater or on land.
+	 <p>
+	 I want to define a translation function that takes a wet 'proposition' $\wet W$ and wet term $\wet \omega$ to
+	 a first-order linear logic proposition $\wet{W \wat \omega}$, and a function that takes a dry
+	 'proposition' $\dry D$ and a dry term $\dry \delta$ and outputs a first-order linear logic proposition $\dry{D \wat \delta}$.
+	 <p>
+		The definition proceeds by induction on expressions, like so:
+		\[  (\wet{W_1 \ox W_2})\wet{ \wat \omega} = (\wet{W_1 \wat \omega}) \ox (\wet{W_2 \wat \omega})
+\qquad \wet {1 \wat \omega} = 1\]
+\[		(\dry{D_1 \ox D_2})\dry{ \wat \delta} = (\dry{D_1 \wat \delta}) \ox (\dry{D_2 \wat \delta})
+\qquad \dry{1\wat \delta} = 1\]
+\[ {\wet I}{\dry D} \wet{\wat \omega} = \exists \dry \delta . !(\wet\omega\tri\dry \delta ) \ox (\dry {D \wat \delta})  \]
+\[ {\dry L}{\wet W} \dry{\wat \delta} = \forall \wet \omega . !(\wet\omega\tri\dry \delta ) \lol (\wet {W \wat \omega})  \]
+\[ \wet {w \wat\omega} = \wet w(\wet \omega) \]
+\[ \dry {d \wat\delta} = \dry d(\dry \delta) \]
+
+<B>Conjecture</B>: for any wet expressions $\wet{W_1}$ and $\wet{W_2}$, we have $\wet{W_1} \le \wet{W_2}$ if and only if
+$\wet{W_1 \wat \omega} \prov \wet{W_2 \wat \omega}$ in first-order intuitionistic linear logic.
+  </body>
+  <script>
+
+	 renderMathInElement( document.body, { strict: false, trust: true,
+		delimiters: [ {left: "$$", right: "$$", display: true}, {left:
+		"\\[", right: "\\]", display: true}, {left: "$", right: "$",
+		display: false}, {left: "\\(", right: "\\)", display: false} ],
+		macros: { "\\cprov": "\\mathrel{\\#}",
+					 "\\rid": "\\mathrm{id}",
+					 "\\st": "\\mathop|",
+					 "\\rctx": "\\mathop\\mathsf{ctx}",
+					 "\\x": "\\times",
+					 "\\ox": "\\otimes",
+					 "\\prov": "\\vdash",
+					 "\\tensor": "\\otimes",
+					 "\\lol": "\\multimap",
+					 "\\rtype": "\\mathsf{type}",
+					 "\\dns": "{\\downarrow}",
+					 "\\ups": "{\\uparrow}",
+					 "\\celse": "{\\ |\\ }",
+					 "\\tri": "\\triangleright",
+					 "\\imp": "\\Rightarrow",
+					 "\\PP": "\\mathbf{P}",
+					 "\\NN": "\\mathbf{N}",
+					 "\\I": "\\wet{\\mathbf{I}}",
+					 "\\L": "\\dry{\\mathbf{L}}",
+					 "\\dry": "\\textcolor{#c59c78}",
+					 "\\wet": "\\textcolor{#528c86}",
+					 "\\op": "\\mathrm{op}",
+					 "\\dash": "-",
+					 "\\o": "\\circ",
+					 "\\ll": "[\\![",
+					 "\\rr": "]\\!]",
+					 "\\wat": "\\mathop{@}",
+					 "\\prequiv": "\\dashv\\vdash",
+					 "\\llto": "\\rightarrowtail",
+					 "\\rrto": "\\twoheadrightarrow",
+					 "\\next": "{\\blacktriangleright}",
+					 "\\par": "{\\htmlClass{rotate180}{\\&}}",
+					 "\\im": "\\mathrm{im}\\,",
+ } } );
+  </script>
+</html>
