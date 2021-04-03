@@ -1,6 +1,8 @@
 const fs = require('fs');
 
 const posts = [
+  {"dir": "2021-04-03", "title": "RSS Test Post 1",
+	"description": '<p><img src="https://jcreedcmu.github.io/posts/2021-04-03/map1.png"></p> <p>Description.</p>'},
   {"dir": "2021-04-03", "title": "Sealevel Logic",
 	"description": '<img src="https://jcreedcmu.github.io/posts/2021-04-03/map1.png">'},
   {"dir": "2021-03-14", "title": "Differential Geometry On Cartographic Spaces"},
@@ -67,7 +69,7 @@ function gmtDate(p) {
 posts.forEach(p => {
   let description = '';
   if ( p.description !== undefined) {
-	 description = `<![CDATA[${p.description}]]>`;
+	 description = `<![CDATA[ ${p.description} ]]>`;
   }
   rss += `    <item>
       <title>${p.title}</title>
