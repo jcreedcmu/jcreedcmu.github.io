@@ -1,6 +1,8 @@
 const fs = require('fs');
 
 const posts = [
+  {"dir": "2021-04-03", "title": "RSS Test Post 2",
+	"description": '<img src="https://jcreedcmu.github.io/posts/2021-04-03/map1.png">'},
   {"dir": "2021-04-03", "title": "RSS Test Post 1",
 	"description": '<p><img src="https://jcreedcmu.github.io/posts/2021-04-03/map1.png"></p> <p>Description.</p>'},
   {"dir": "2021-04-03", "title": "Sealevel Logic",
