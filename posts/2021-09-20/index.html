@@ -1,0 +1,285 @@
+
+<!DOCTYPE html>
+
+  <head>
+    <link rel="stylesheet" href="../../katex-0.12.0/katex.min.css">
+    <script src="../../katex-0.12.0/katex.min.js"></script>
+    <script src="../../katex-0.12.0/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+    <style>
+      .ib { display: inline-block; }
+      center { vertical-align: middle; }
+      body { padding-left: 40px; max-width: 50em; }
+      .code { white-space: pre; display: block; }
+      td { padding-left: 30px; }
+      .tables { display: flex; align-items: center; }
+      .rotate180  {
+        transform: rotate(180deg) translate(0px, 3px);
+        display: inline-block;
+      }
+    </style>
+    <title>Map Colorings in Type Theory</title>
+  </head>
+  <body style="width: 800px">
+    <h1>Map Colorings in Type Theory</h1>
+    <h2>Type Operators</h2>
+    Consider a type operator $Foo : \rset \x \rset \to \rset$. What are some things it can be?
+    It could be, for example
+    \[ Foo = \lambda (A, B) . A + A + A + B + B \]
+    or
+    \[ Foo = \lambda (A, B) . B \]
+    or
+    \[ Foo = \lambda (A, B) . 1 \]
+    or
+    \[ Foo = \lambda (A, B) . A \x B + A + 3 \]
+    or lots of other things. I'm going to restrict my attention to examples more like the first two,
+    and depict them in the following way:
+    <center>
+      <table style="text-align: center;">
+        <tr><td><img src="figure1a.png"> </td><td><img src="figure1b.png"></td>
+        </tr>
+        <tr>
+          <td>$ Foo = \lambda (A, B) . A + A + A + B + B $</td>
+          <td>$ Foo = \lambda (A, B) . B $</td>
+        </tr>
+      </table>
+    </center>
+    The intuition behind these pictures is this: $A$ and $B$ are knobs that we can turn.
+    We can set them to a type that has any number of elements we like. We can replace every occurrence
+    of the $A$ and $B$ in the diagram with a copy of the input type, and we'll get a picture of the type
+    the type operator outputs. For example, if we set $A$ to 2 and $B$ to 3, we get
+    <center>
+      <table style="text-align: center;">
+        <tr><td><img src="figure2a.png"> </td><td><img src="figure2b.png"></td>
+        <tr>
+          <td>$2 + 2 + 2 + 3 + 3 $</td>
+          <td>$ 3 $</td>
+        </tr>
+      </table>
+    </center>
+    <h2>Higher Type Operators</h2>
+    We can get even fancier if we allow type operators to build their output using <i>higher inductive types</i> from
+    homotopy type theory.
+    For example, we might write the type $ Foo = \lambda(A, B) . A + A + A + B + B$ in pseudo-Agda as
+    <pre>
+    data Foo (A B : Set) : Set where
+        injA1 injA2 injA3 : A → Foo A B
+        injB1 injB2 : B → Foo A B
+    </pre>
+    but beyond that we could imagine adding <i>equations</i> between elements, perhaps a different type
+    <pre>
+    data Bar (A B : Set) : Set where
+        injA1 injA2 injA3 : A → Bar A B
+        injB1 injB2 : B → Bar A B
+        path1 : (a : A) → injA1 a ≡ injA2 a
+        path2 : (a : A) (b : B) → injA3 a ≡ injB2 b
+    </pre>
+    and we might visualize this as
+    <center><img src="figure3.png"></center>
+    If we can introduce equations, we can make the blobs in the picture "adjacent" to one another.
+    <h2>More Inputs</h2>
+    Let's look at a couple examples of some type-operators that take <b>three</b> inputs.
+    <center>
+      <table>
+        <tr style="vertical-align: top;">
+          <td>
+            <pre>
+data Line (A B C : Set) : Set where
+    injA : A → Line A B C
+    injB : B → Line A B C
+    injC : C → Line A B C
+
+    pathAB : (a : A) (b : B) → injA a ≡ injB b
+    pathBC : (b : B) (c : C) → injB b ≡ injC c
+            </pre>
+          </td>
+          <td>
+            <pre>
+data Tri (A B C : Set) : Set where
+    injA : A → Tri A B C
+    injB : B → Tri A B C
+    injC : C → Tri A B C
+
+    pathAB : (a : A) (b : B) → injA a ≡ injB b
+    pathBC : (b : B) (c : C) → injB b ≡ injC c
+    pathAC : (a : A) (c : C) → injA a ≡ injC c
+
+    higher-path : (a : A) (b : B) (c : C) →
+        pathAB a b • pathBC b c ≡ pathAC a c
+            </pre>
+          </td>
+        </tr>
+        <tr  style="text-align: center;"><td><img src="figure4a.png"> </td><td><img src="figure4b.png"></td>
+      </table>
+    </center>
+	 We have constructed the type <tt>Line</tt> as three blobs connected to one another in a line. The
+	 set $A$ might have any number of elements, and the set $B$ might have any number of elements,
+	 but any pair of them has a path equating the $a$ and the $b$. Likewise any $b$ and any $c$.
+	 It might seem like any $a$ and any $c$ have to be equal, by the fact that we can compose
+	 any two paths in HoTT, but this conclusion is premature --- we don't actually know that our input $B$ will
+	 have any inhabitants! So the topology of the type operator <tt>Line</tt> is revealed by the fact tha although
+	 \[\mathrm {Line}\ 1\ 1\ 1 \equiv 1\]
+	 &mdash; that is, the line is just one contractible blob isomorphic to the
+	 unit type if all of the arguments $A, B, C$ are the unit type &mdash; we have nonetheless that
+	 \[\mathrm {Line}\ 1\ 0\ 1 \equiv 2\]
+	 If we set $B$ to the empty type, then the result is the type with two elements.
+
+	<p/>
+	On the other hand, we have
+	 \[\mathrm {Tri}\ 1\ 1\ 1 \equiv 1\]
+	and also
+	 \[\mathrm {Tri}\ 1\ 0\ 1 \equiv 1\]
+	! So at least we know that $\mathrm{Tri}$ and $\mathrm{Line}$ are
+	different, even if you don't believe my diagrams.
+
+	<h2>More General Maps</h2>
+
+	We can now see how, in a univalent universe, a type operator $F :
+	\rset^n \to \rset$ could contain the data of not just "how many
+	times" its arguments are summed, but also a lot of topological
+	information about how they're glued to one another &mdash; it's something like,
+	a map (in the sense of "all planar maps are 4-colorable") with $n$ countries in it. Quite possibly
+	some kind of further regularity/parametricity constraints need to be imposed to actually require planarity or
+	to exclude pathological cases, but let's say provisionally that for any index set $I$ that
+	 <blockquote style="background-color: #def; padding: 10px;">
+		A <I>map with countries indexed by $I$</I>
+		is a functor
+		\[ \mu : (I \to \rset) \to \rset \]
+		such that $\mu(\lambda j . i \equiv j)$ is a contractible type for every $i : I$.
+	 </blockquote>
+	The idea is that the $I$-indexed set of type $(I \to \rset)$
+	generalizes our ability to "turn on" and "turn off" the presence of
+	any particular country, and "read off" how many connected
+	components there are (actually: read off the homotopy equivalence class of just
+	those countries) in the resulting sub-map.
+	 <p/>
+	 For example, our map might be a functor
+	 \[\mu : (\{A,B,\ldots, M,N,O\} \to \rset) \to \rset \]
+	 depicted by
+	 <center><img src="figure5a.png"></center>
+	 and if we plugged in a specific functor
+	 \[\mathbf F : (\{A,B,\ldots, M,N,O\} \to \rset)\]
+	 where
+	 \[ \F(A) = \F(B) = \F(C) = \F(E) = \F(F) = \F(G) = \F(M) = \F(N) = 1\]
+	 and $\F(x) = 0$ otherwise, we would find that $\mu(\F)$ would be the type $S^1 + 2$:
+	 <center><img src="figure5b.png"></center>
+	 The condition that $\mu(\lambda j . i \equiv j)$ is saying that if we "enable"/"turn on" a single country
+	 by setting its type input to 1 and every other type's input to 0 (at least this is what is happening if the indexing
+	 type $I$ is a mere set!) then the "area that the country takes up on the map" is actually a contractible region.
+
+	 <h2>Map Colorings</h2>
+	 The set $I$ is essentially the set of "names" of the countries in a map. A coloring of a map is a function
+	 $k : I \to C$ from country names to a set $C$ of colors, such that no two adjacent countries have the same color.
+	 It came as a surprise to me that there's a very slick HoTT-flavored way of expressing this constraint.
+	 <p/>
+	 Suppose we have an $I$-map $\mu : (I \to \rset) \to \rset$ and a color assignment $k : I \to C$. Notice that there
+	 is a fairly evident way of building a value of type
+	 \[ I \to \sum_{c: C} \mu(\lambda j . c \equiv k(j))\]
+	 What will this map do? It takes a country name as an input. It's going to generate a value in the $k(i)$ branch
+	 of the $\sum$ over $c : C$. So it's going to generate a dependent pair &mdash; whose first component we just said
+	 was $k(i)$, and whose second component must be of type
+	 \[ \mu(\lambda j . k(i) \equiv k(j)) \]
+	 But here's a fact: we know that $\mu(\lambda j . i \equiv j)$ is inhabited, because in fact $\mu$ being a map
+	 means it's contractible. And $\mu$ is a functor, and we can certainly get from $i \equiv j$ to $k i\equiv k j$,
+	 (because we can apply functions to paths), so we can get from $\mu(\lambda j . i \equiv j)$ to $\mu(\lambda j . ki \equiv kj)$.
+	 This finishes the argument that there is a reasonable function of type
+	 \[ I \to \sum_{c: C} \mu(\lambda j . c \equiv k(j))\]
+	 What is this function expressing? It's the map <i>from</i> the set of country names
+	 into a type that is constructed by considering each color in turn, and adding in a type that consists
+	 of what you get when you "enable"/"turn on" all the countries that have that color.
+	 But any countries in this process that are adjacent to one another <i>and</i> which have the same color
+	 in the coloring will be "glued together"! So we make the definition:
+	 <p/>
+	 <blockquote style="background-color: #def; padding: 10px;">
+		A <i>coloring of an $I$-country map $\mu$ with colors from $C$</i> is
+		a map $k : I \to C$ such that the evident induced function \[ I
+		\to \sum_{c: C} \mu(\lambda j . c \equiv k(j))\] is an
+		equivalence.
+	 </blockquote>
+	 We can see in the <b>non</b>-example of a coloring
+	 <center><img src="figure6.png"></center>
+	 that it fails to be a coloring because $A, B \in I$ map to the same point in
+	 \[\sum_{c: C} \mu(\lambda j . c \equiv k(j))\]
+
+	 <h2>Planarity</h2>
+
+	 I'd love to be able to make a clever "synthetic" restatement of
+	 the four-color theorem at this point, but I'm not quite sure how
+	 to enforce that maps are planar! However tempting it is to lean on
+	 the HoTT interpretation of the 2-sphere, I'm pretty sure it's <b>not</b>
+	 good enough to say
+	 <blockquote style="background-color: #fdd; padding: 10px;">
+		A map $\mu$ is <i>planar</i> iff
+		$\mu(\lambda \underline{\ }.1)$
+		is equivalent to the type $S^2$.
+	 </blockquote>
+	 What's happening here is I'm trying to express the idea of erasing country labels, and recovering the underlying
+	 space the map is taking place on by setting all the countries' "multiplicity" to 1 &mdash; that is, by passing
+	 the function $\lambda \underline{\ }.1$ to the map $\mu$. Now for sure a planar map <i>should</I> have this property,
+	 but I think it's insufficient &mdash; I think you could layer countries "on top of" other countries, leading
+	 to more adjacencies than a planar map should allow, while still retaining the property that the "erased" map
+	 still has the homotopy type of $S^2$.
+	 <p/>
+	 However! I think doing this would require a higher inductive type with clauses that postulate the existence of
+	 paths-of-paths-of-paths to adequately "glue together" these extra illegal countries made up only of airspace.
+	 And this seems like an intrinsically "3-dimensional" thing to do. So maybe we can forbid it?
+
+	 <blockquote style="background-color: #ddd; padding: 10px;">
+		<b>Conjecture Template:</b> Suppose $\mu$ is a sufficiently well-behaved functor of type $(I \to \rset) \to \rset$,
+		and $I$ is a finite mere set. "Well-behaved" includes at least that
+		<ul>
+		  <li>$\mu$ is a map
+		  <li> $\mu$ is built up inductively only from injections, paths
+			 between injections, and
+			 paths-between-paths-between-injections, in some suitable
+			 sense.
+		  <li> $\mu(\lambda \underline{\ }.1) \cong S^2$
+		</ul>
+		Then there exists a coloring $I \to 4$ of $\mu$.
+	 </blockquote>
+
+  </body>
+  <script>
+
+    renderMathInElement( document.body, { strict: false, trust: true,
+      delimiters: [ {left: "$$", right: "$$", display: true}, {left:
+      "\\[", right: "\\]", display: true}, {left: "$", right: "$",
+      display: false}, {left: "\\(", right: "\\)", display: false} ],
+      macros: { "\\cprov": "\\mathrel{\\#}",
+					 "\\F": "\\mathbf{F}",
+                "\\rset": "\\mathrm{Set}",
+                "\\rid": "\\mathrm{id}",
+                "\\st": "\\mathop|",
+                "\\rctx": "\\mathop\\mathsf{ctx}",
+                "\\x": "\\times",
+                "\\ox": "\\otimes",
+                "\\prov": "\\vdash",
+                "\\tensor": "\\otimes",
+                "\\lol": "\\multimap",
+                "\\rtype": "\\mathsf{type}",
+                "\\dns": "{\\downarrow}",
+                "\\ups": "{\\uparrow}",
+                "\\celse": "{\\ |\\ }",
+                "\\tri": "\\triangleright",
+                "\\imp": "\\Rightarrow",
+                "\\PP": "\\mathbf{P}",
+                "\\NN": "\\mathbf{N}",
+                "\\I": "\\wet{\\mathbf{I}}",
+                "\\L": "\\dry{\\mathbf{L}}",
+                "\\dry": "\\textcolor{#c59c78}",
+                "\\wet": "\\textcolor{#528c86}",
+                "\\op": "\\mathrm{op}",
+                "\\dash": "-",
+                "\\o": "\\circ",
+                "\\ll": "[\\![",
+                "\\rr": "]\\!]",
+                "\\wat": "\\mathop{@}",
+                "\\prequiv": "\\dashv\\vdash",
+                "\\llto": "\\rightarrowtail",
+                "\\rrto": "\\twoheadrightarrow",
+                "\\next": "{\\blacktriangleright}",
+                "\\par": "{\\htmlClass{rotate180}{\\&}}",
+                "\\im": "\\mathrm{im}\\,",
+ } } );
+  </script>
+</html>
