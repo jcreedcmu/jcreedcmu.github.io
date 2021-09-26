@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 const posts = [
+  {"dir": "2021-09-26", "title": "Semisimplicial Types"},
   {"dir": "2021-09-20", "title": "Map Colorings in Type Theory"},
   {"dir": "2021-04-03", "title": "Sealevel Logic",
 	"description": '<img src="https://jcreedcmu.github.io/posts/2021-04-03/map1.png">'},

@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+
+  <head>
+    <link rel="stylesheet" href="../../katex-0.12.0/katex.min.css">
+    <script src="../../katex-0.12.0/katex.min.js"></script>
+    <script src="../../katex-0.12.0/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+    <style>
+      .agda2-highlight-datatype {
+        /* agda2-highlight-datatype-face */
+        color: #0000cd;
+      }
+      .agda2-highlight-field {
+        /* agda2-highlight-field-face */
+        color: #ee1289;
+      }
+      .agda2-highlight-function {
+        /* agda2-highlight-function-face */
+        color: #0000cd;
+      }
+      .agda2-highlight-inductive-constructor {
+        /* agda2-highlight-inductive-constructor-face */
+        color: #008b00;
+      }
+      .agda2-highlight-keyword {
+        /* agda2-highlight-keyword-face */
+        color: #cd6600;
+      }
+      .agda2-highlight-module {
+        /* agda2-highlight-module-face */
+        color: #a020f0;
+      }
+      .agda2-highlight-operator {
+      }
+      .agda2-highlight-pragma {
+      }
+      .agda2-highlight-primitive {
+        /* agda2-highlight-primitive-face */
+        color: #0000cd;
+      }
+      .agda2-highlight-record {
+        /* agda2-highlight-record-face */
+        color: #0000cd;
+      }
+      .agda2-highlight-symbol {
+        /* agda2-highlight-symbol-face */
+        color: #404040;
+      }
+
+      .ib { display: inline-block; }
+      center { vertical-align: middle; }
+      body { padding-left: 40px; max-width: 50em; }
+      .code { white-space: pre; display: block; }
+      td { padding-left: 30px; }
+      .tables { display: flex; align-items: center; }
+      .rotate180  {
+        transform: rotate(180deg) translate(0px, 3px);
+        display: inline-block;
+      }
+    pre.indent {
+		background-color: #eee;
+		padding: 2em;
+		margin: 1em;
+	 }
+    pre.nobg {
+		background-color: inherit;
+      padding: 0em 2em;
+    }
+    </style>
+    <title>Semisimplicial Types</title>
+  </head>
+  <body style="width: 800px; margin-left: 5em">
+    <h1>Semisimplicial Types</h1>
+	 The following is allegedly a definition of <a href="https://ncatlab.org/homotopytypetheory/show/semi-simplicial+types">semisimplicial types</a> in
+	 type theory, specifically in Agda. Since this is supposed to be an
+	 open problem, and the definition I have below is fairly simple, I
+	 expect it's probably wrong in some way. Perhaps understanding why it's mistaken
+	 is a good puzzle.
+	 <p/>
+	 The code described here, plus examples and further lemmas, is in <a href="https://github.com/jcreedcmu/semisimplicial">this github repo</a>.
+	 <p/>
+	 First we have the standard Agda module header.
+    <pre class="indent">
+<span class="agda2-highlight-symbol">{-#</span> <span class="agda2-highlight-keyword">OPTIONS</span> <span class="agda2-highlight-pragma">--without-K</span> <span class="agda2-highlight-symbol">#-}</span>
+<span class="agda2-highlight-keyword">module</span> <span class="agda2-highlight-module">SemiSimplicialType</span> <span class="agda2-highlight-keyword">where</span></pre>
+
+	 We define equality in the usual way.
+    <pre class="indent">
+<span class="agda2-highlight-keyword">data</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-datatype">_&#8801;_</span></span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">&#8467;</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">A</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set</span> <span class="agda2-highlight-bound-variable">&#8467;</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-bound-variable">a</span> <span class="agda2-highlight-bound-variable">b</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-bound-variable">A</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-primitive">Set</span> <span class="agda2-highlight-bound-variable">&#8467;</span> <span class="agda2-highlight-keyword">where</span> <span class="agda2-highlight-inductive-constructor">refl</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">a</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-bound-variable">A</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-bound-variable">a</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-datatype">&#8801;</span></span> <span class="agda2-highlight-bound-variable">a</span></pre>
+
+	 We define the square of a type; <tt>Sq A</tt> is just <tt>A × A</tt>.
+    <pre class="indent">
+<span class="agda2-highlight-keyword">record</span> <span class="agda2-highlight-record">Sq</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-bound-variable">A</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set</span> <span class="agda2-highlight-keyword">where</span> <span class="agda2-highlight-keyword">constructor</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-inductive-constructor">&#10216;_,_&#10217;</span></span> <span class="agda2-highlight-symbol">;</span> <span class="agda2-highlight-keyword">field</span> <span class="agda2-highlight-field">fst</span> <span class="agda2-highlight-field">snd</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-bound-variable">A</span>
+<span class="agda2-highlight-keyword">open</span> <span class="agda2-highlight-module">Sq</span></pre>
+
+We define a notion of $n$-dimensional cubes in a type $C$. A value of <tt>Cube C</tt> is a value of type $C^{2^n}$ for some $n$.
+    <pre class="indent">
+<span class="agda2-highlight-keyword">data</span> <span class="agda2-highlight-datatype">Cube</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-primitive">Set1</span> <span class="agda2-highlight-keyword">where</span>
+ <span class="agda2-highlight-inductive-constructor">leaf</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-datatype">Cube</span> <span class="agda2-highlight-bound-variable">C</span>
+ <span class="agda2-highlight-inductive-constructor">node</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-datatype">Cube</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-record">Sq</span> <span class="agda2-highlight-bound-variable">C</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-datatype">Cube</span> <span class="agda2-highlight-bound-variable">C</span></pre>
+
+We can depict these as tables. Here's an example 3-dimensional cube, assuming $c_0, \ldots, c_7$ are some values in $C$:
+<center><table>
+<tr><td rowspan=2>$\chi \quad=$</td><td>$c_0$</td><td>$c_1$</td><td></td><td>$c_4$</td><td>$c_5$</td></tr>
+<tr><td>$c_2$</td><td>$c_3$</td><td></td><td>$c_6$</td><td>$c_7$</td></tr>
+</table></center>
+This would be represented in Agda syntax as
+ <pre class="indent nobg">node (node (node (leaf ⟨ ⟨ ⟨ c0 ,  c1 ⟩ , ⟨ c2 , c3 ⟩ ⟩ ,
+                         ⟨ ⟨ c4 ,  c5 ⟩ , ⟨ c6 , c7 ⟩ ⟩ ⟩)))</pre>
+
+We define a map combinator on <tt>Cube</tt> which hits every leaf with a given function.
+    <pre class="indent">
+<span class="agda2-highlight-function">cmap</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-bound-variable">D</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-bound-variable">f</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-bound-variable">D</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-datatype">Cube</span> <span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-datatype">Cube</span> <span class="agda2-highlight-bound-variable">D</span>
+<span class="agda2-highlight-function">cmap</span> <span class="agda2-highlight-bound-variable">f</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-inductive-constructor">leaf</span> <span class="agda2-highlight-bound-variable">x</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-symbol">=</span> <span class="agda2-highlight-inductive-constructor">leaf</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-bound-variable">f</span> <span class="agda2-highlight-bound-variable">x</span><span class="agda2-highlight-symbol">)</span>
+<span class="agda2-highlight-function">cmap</span> <span class="agda2-highlight-bound-variable">f</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-inductive-constructor">node</span> <span class="agda2-highlight-bound-variable">c</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-symbol">=</span> <span class="agda2-highlight-inductive-constructor">node</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-function">cmap</span> <span class="agda2-highlight-symbol">(&#955;</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-operator"><span class="agda2-highlight-inductive-constructor">&#10216;</span></span> <span class="agda2-highlight-bound-variable">x</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-inductive-constructor">,</span></span> <span class="agda2-highlight-bound-variable">y</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-inductive-constructor">&#10217;</span></span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-inductive-constructor">&#10216;</span></span> <span class="agda2-highlight-bound-variable">f</span> <span class="agda2-highlight-bound-variable">x</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-inductive-constructor">,</span></span> <span class="agda2-highlight-bound-variable">f</span> <span class="agda2-highlight-bound-variable">y</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-inductive-constructor">&#10217;</span></span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-bound-variable">c</span><span class="agda2-highlight-symbol">)</span></pre>
+
+Next we define a "subcube" relation between a pair of <tt>Cube</tt>s
+that says that the former arises from the latter by maybe deleting some
+dimensions, and leaving only the data that's closer to the "upper-left" corner of the cube.
+    <pre class="indent">
+<span class="agda2-highlight-keyword">data</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-datatype">_&#8804;_</span></span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-datatype">Cube</span> <span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-datatype">Cube</span> <span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-primitive">Set1</span> <span class="agda2-highlight-keyword">where</span>
+  <span class="agda2-highlight-inductive-constructor">&#949;</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">c</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-bound-variable">C</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-inductive-constructor">leaf</span> <span class="agda2-highlight-bound-variable">c</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-datatype">&#8804;</span></span> <span class="agda2-highlight-inductive-constructor">leaf</span> <span class="agda2-highlight-bound-variable">c</span>
+  <span class="agda2-highlight-operator"><span class="agda2-highlight-inductive-constructor">Y_</span></span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">&#967;</span> <span class="agda2-highlight-bound-variable">&#967;'</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-datatype">Cube</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-record">Sq</span> <span class="agda2-highlight-bound-variable">C</span><span class="agda2-highlight-symbol">)}</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-bound-variable">&#967;</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-datatype">&#8804;</span></span> <span class="agda2-highlight-bound-variable">&#967;'</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-inductive-constructor">node</span> <span class="agda2-highlight-bound-variable">&#967;</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-datatype">&#8804;</span></span> <span class="agda2-highlight-inductive-constructor">node</span> <span class="agda2-highlight-bound-variable">&#967;'</span>
+  <span class="agda2-highlight-operator"><span class="agda2-highlight-inductive-constructor">N_</span></span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">&#967;</span> <span class="agda2-highlight-bound-variable">&#967;'</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-datatype">Cube</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-record">Sq</span> <span class="agda2-highlight-bound-variable">C</span><span class="agda2-highlight-symbol">)}</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-bound-variable">&#967;</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-datatype">&#8804;</span></span> <span class="agda2-highlight-bound-variable">&#967;'</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-function">cmap</span> <span class="agda2-highlight-field">fst</span> <span class="agda2-highlight-bound-variable">&#967;</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-datatype">&#8804;</span></span> <span class="agda2-highlight-inductive-constructor">node</span> <span class="agda2-highlight-bound-variable">&#967;'</span></pre>
+So for example, the subcubes of $\chi$ above consist of the 0-dimensional cube that contains only $c_0$, the three
+1-dimensional cubes $(c_0\ c_1)$, $(c_0\ c_2)$, and $(c_0\ c_4)$, the three 2-dimensional cubes
+<center><table>
+<tr><td>$c_0$</td><td>$c_1$</td><td rowspan=2>,</td><td>$c_0$</td><td>$c_2$</td><td rowspan=2>,</td><td>$c_0$</td><td>$c_1$</td></tr>
+<tr><td>$c_2$</td><td>$c_3$</td><td>$c_4$</td><td>$c_6$</td><td>$c_4$</td><td>$c_5$</td></tr>
+</table></center>
+and finally $\chi$ itself.
+<p/>
+Next we define a function that helps us get the "upper-left-most" cell and "lower-right-most" cell in a cube.
+    <pre class="indent">
+<span class="agda2-highlight-function">pole</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-symbol">({</span><span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-record">Sq</span> <span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-bound-variable">C</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-datatype">Cube</span> <span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-bound-variable">C</span>
+<span class="agda2-highlight-function">pole</span> <span class="agda2-highlight-bound-variable">f</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-inductive-constructor">leaf</span> <span class="agda2-highlight-bound-variable">c</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-symbol">=</span> <span class="agda2-highlight-bound-variable">c</span>
+<span class="agda2-highlight-function">pole</span> <span class="agda2-highlight-bound-variable">f</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-inductive-constructor">node</span> <span class="agda2-highlight-bound-variable">s</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-symbol">=</span> <span class="agda2-highlight-bound-variable">f</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-function">pole</span> <span class="agda2-highlight-bound-variable">f</span> <span class="agda2-highlight-bound-variable">s</span><span class="agda2-highlight-symbol">)</span></pre>
+We call the "upper-left-most" cell the "nadir" and "lower-right-most" cell the "apex".
+    <pre class="indent">
+<span class="agda2-highlight-function">nadir</span> <span class="agda2-highlight-symbol">=</span> <span class="agda2-highlight-symbol">&#955;</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-function">pole</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">C</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-field">fst</span>
+<span class="agda2-highlight-function">apex</span> <span class="agda2-highlight-symbol">=</span> <span class="agda2-highlight-symbol">&#955;</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">C</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-function">pole</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">C</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-field">snd</span></pre>
+
+We can now define the (large) type of semisimplicial types.
+    <pre class="indent">
+<span class="agda2-highlight-keyword">record</span> <span class="agda2-highlight-record">SemiSimplicialType</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set1</span> <span class="agda2-highlight-keyword">where</span>
+  <span class="agda2-highlight-keyword">constructor</span> <span class="agda2-highlight-inductive-constructor">sst</span>
+  <span class="agda2-highlight-keyword">field</span>
+    <span class="agda2-highlight-field">C</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-primitive">Set</span>
+    <span class="agda2-highlight-field">&#8902;</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-field">C</span>
+    <span class="agda2-highlight-field">&#8706;</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-bound-variable">c</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-field">C</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-datatype">Cube</span> <span class="agda2-highlight-field">C</span>
+    <span class="agda2-highlight-field">apex-axiom</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-bound-variable">c</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-field">C</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-function">apex</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-field">&#8706;</span> <span class="agda2-highlight-bound-variable">c</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-datatype">&#8801;</span></span> <span class="agda2-highlight-bound-variable">c</span>
+    <span class="agda2-highlight-field">nadir-axiom</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-bound-variable">c</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-field">C</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-function">nadir</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-field">&#8706;</span> <span class="agda2-highlight-bound-variable">c</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-datatype">&#8801;</span></span> <span class="agda2-highlight-field">&#8902;</span>
+    <span class="agda2-highlight-field">reduce-axiom</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-bound-variable">c</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-field">C</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-symbol">{</span><span class="agda2-highlight-bound-variable">&#967;</span> <span class="agda2-highlight-symbol">:</span> <span class="agda2-highlight-datatype">Cube</span> <span class="agda2-highlight-field">C</span><span class="agda2-highlight-symbol">}</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-bound-variable">&#967;</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-datatype">&#8804;</span></span> <span class="agda2-highlight-field">&#8706;</span> <span class="agda2-highlight-bound-variable">c</span> <span class="agda2-highlight-symbol">&#8594;</span> <span class="agda2-highlight-field">&#8706;</span> <span class="agda2-highlight-symbol">(</span><span class="agda2-highlight-function">apex</span> <span class="agda2-highlight-bound-variable">&#967;</span><span class="agda2-highlight-symbol">)</span> <span class="agda2-highlight-operator"><span class="agda2-highlight-datatype">&#8801;</span></span> <span class="agda2-highlight-bound-variable">&#967;</span>
+</pre>
+We require:
+<ul>
+<li>a type <tt class="agda2-highlight-field">C</tt> of cells, lumping all cells of various dimensions together in "untyped" fashion.
+<li>an element <tt class="agda2-highlight-field">⋆</tt> which is to be the unique (-1)-dimensional cell to get the induction going.
+<li>a map <tt class="agda2-highlight-field">∂</tt> which for every cell gives its complete boundary as a cube. This specifies
+the dimension, and all vertices, edges, faces, etc. of a simplex all at once. As yet we don't know that those subcells fit
+together in any coherent way. That is the job of the following three axioms.
+<p/>
+(For the sake of illustrating the axioms, suppose we want to represent a 2-simplex named <tt>abc</tt> which is supposed to be the
+ triangle whose vertices are <tt>a, b, c</tt> and whose
+edges are named <tt>ab, bc, ac</tt>. Then the boundary of <tt>abc</tt> ought to be the 3-cube
+<center><table>
+<tr><td rowspan=2><tt>∂ abc =</tt></td><td><tt>⋆</tt></td><td><tt>a</tt></td><td><tt></tt></td><td><tt>c</tt></td><td><tt>ac</tt></td></tr>
+<tr><td><tt>b</tt></td><td><tt>ab</tt></td><td><tt></tt></td><td><tt>ab</tt></td><td><tt>abc</tt></td></tr>
+</table></center>
+)
+<li>The <tt class="agda2-highlight-field">apex-axiom</tt> says that the apex of the boundary of any cell is that cell itself.
+In the example above, we see that the bottom-right-most cell of <tt>∂ abc =</tt> is indeed <tt>abc</tt> itself.
+<li>The <tt class="agda2-highlight-field">nadir-axiom</tt> says that the nadir of the boundary of any cell is
+the cell <tt>⋆</tt>.
+In the example above, we see that the top-left-most cell of <tt>∂ abc =</tt> is indeed <tt>⋆</tt>.
+<li>Finally, the <tt class="agda2-highlight-field">reduce-axiom</tt> says that any subcube of a boundary cube is also a valid
+cube &mdash; that is, it really is <i>the</i> boundary cube of its apex. In our example, this requires things such as
+<tt> ∂ a = (⋆ a)</tt> and
+<center><table>
+<tr><td rowspan=2><tt>∂ ac =</tt></td><td><tt>⋆</tt></td><td><tt>a</tt></td></tr>
+<tr><td><tt>c</tt></td><td><tt>ac</tt></td></tr>
+</table></center>
+
+This captures that <tt>a, b, c</tt> really are vertices of the
+semisimplicial type &mdash; for their boundaries are 1-dimensional
+cubes &mdash; and that the putative edge cells <tt>ab, bc, ac</tt>
+really are valid edges of the type, for their boundaries are
+2-dimensional cubes that hereditarily
+satisfy <tt class="agda2-highlight-field">reduce-axiom</tt> as well.
+
+</ul>
+  </body>
+  <script>
+
+    renderMathInElement( document.body, { strict: false, trust: true,
+      delimiters: [ {left: "$$", right: "$$", display: true}, {left:
+      "\\[", right: "\\]", display: true}, {left: "$", right: "$",
+      display: false}, {left: "\\(", right: "\\)", display: false} ],
+      macros: {
+ } } );
+  </script>
+</html>
