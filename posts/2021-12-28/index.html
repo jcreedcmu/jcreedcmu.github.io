@@ -1,0 +1,240 @@
+
+<!DOCTYPE html>
+
+  <head>
+    <link rel="stylesheet" href="../../katex-0.12.0/katex.min.css">
+    <script src="../../katex-0.12.0/katex.min.js"></script>
+    <script src="../../katex-0.12.0/contrib/auto-render.min.js"></script>
+    <script src="../../lib/math.min.js"></script>
+
+	 <style>
+      .ib { display: inline-block; }
+      center { vertical-align: middle; }
+      body { padding-left: 40px; max-width: 50em; }
+      .code { white-space: pre; display: block; }
+      .tables { display: flex; align-items: center; }
+      .rotate180  {
+        transform: rotate(180deg) translate(0px, 3px);
+        display: inline-block;
+      }
+
+		/* li.cdots makes a cdots */
+		li.cdots {  list-style-type: none; }
+		li.cdots:before {  content: '⋯'; }
+		li.np1 {  list-style-type: none; }
+		li.np1:before {  content: 'n+1.'; margin-left: -35px; margin-right: 5px; }
+
+		pre.indent {
+		  background-color: #eee;
+		  padding: 2em;
+		  margin: 1em;
+		}
+		pre.nobg {
+		  background-color: inherit;
+        padding: 0em 2em;
+		}
+    </style>
+    <title>Modal Logic for the Kolmogorov Puzzle</title>
+  </head>
+  <body style="width: 800px; margin-left: 5em">
+    <h1>Modal Logic for the Kolmogorov Puzzle</h1>
+<h2>The Puzzle</h2>
+	 Dan Piponi posted this puzzle:
+	 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">If anyone else wants to have a go... <a href="https://t.co/VtUFs8AlsY">pic.twitter.com/VtUFs8AlsY</a></p>&mdash; Dan Piponi 𓏞 (@sigfpe) <a href="https://twitter.com/sigfpe/status/1474173467016589323?ref_src=twsrc%5Etfw">December 24, 2021</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<blockquote>Suppose all words, all sequences of characters, are of one of two
+classes&mdash;those that are fit to print (decent), and those that are
+not (indecent). Now given an infinite sequence of characters, can you
+always break it into finite sequences so all words except perhaps the
+first one belong to the same class?</blockquote>
+
+The first thing that occurred to me is that it seems like it should generalize nicely when you replace
+<blockquote>a sequence of characters, with words spanning intervals in the natural numbers</blockquote>
+with
+<blockquote>a graph with characters on the edges, with "words" being paths in the graph</blockquote>
+
+<h2>Generalizing to a Graph</h2>
+
+Here's a few preliminary definitions.<p/>
+Consider a directed graph with vertices $V$ and edges $E$. Loops and multiple edges are allowed.
+All graphs we consider will have the same vertices, so we more or less identify a graph with
+its set of edges.
+<p/>
+For any graph $G$, we do the following.
+
+<ol>
+<li> We write $G[x, y]$ for the set of edges from $x$ to $y$ in $G$.
+<li> We write $G^+$ for the graph with the same vertices as $G$, but whose edges
+   are finite nonempty paths consisting of edges in $G$.
+<li> We write $G^*$ for the graph that is the same as $G^+$ but which also allows
+   empty paths $\varepsilon_x$ at every vertex $x:V$. The set of edges of $G^*$ is
+   isomorphic to the edges of $G^+$ disjoint union the vertices of $G$.
+<li> We say a vertex $v_0 \in V$ is $G$-productive if there's an infinite sequence
+   of $G$-edges leading away from it: i.e. if there exists $v_1, v_2, v_3, \ldots$
+   and edges $f_0 \in G[v_0, v_1], f_1 \in G[v_1, v_2], f_2 \in G[v_2, v_3], \ldots$
+<li> We say $H \subseteq G$ if $H$ is a spanning subgraph of $G$; i.e. it has the same
+   vertices, and a subset of its edges.
+</ol>
+
+<h2>The Theorem</h2>
+<b>Theorem</b> [assuming classical logic]
+<blockquote>
+Suppose every vertex in $G$ is $E$-productive, and $D \subseteq E^+$.
+For any $x:V$, there exists a vertex $v:V$ and an edge $k : E^*[x,v]$, such
+that $v$ is $D$-productive or $(E^+\setminus D)$-productive.
+</blockquote>
+<b>Proof</b>
+<blockquote>
+Let x and $D$ be given.
+Consider the proposition
+<center><table >
+<tr><td>$P =$</td ><td>$\forall y:V. \forall f : E^*[x, y].$</td></tr>
+<tr><td></td><td>$\exists z:V. \exists g : E^+[y, z].$</td></tr>
+<tr><td></td><td>$\forall w:V. \forall h : E^+[z, w]. h\in D$</td></tr>
+</table></center>
+
+Classically, either P is true or false.
+
+<h3>Case:  $P$ is true. </h3>
+<ol start="0">
+<li> $P(x, \varepsilon_x)$ gives us an existential witness $z\_0:V$ and an edge $g_0 : E^+[x, z_0]$.
+<li> $P(z_0, g_0)$ gives us an existential witness $z_1:V$ and an edge $g_1 : E^+[z_0, z_1]$.
+<li> $P(z_1, g_0g_1)$ gives us an existential witness $z_2:V$ and an edge $g_2 : E^+[z_1, z_2]$.
+<li class="cdots">
+<li class="np1"> $P(z_n, g_0g_1\cdots g_n)$ gives us an existential witness $z_{n+1}:V$ and an edge $g_{n+1} : E^+[z_n, z_{n+1}]$.
+<li class="cdots">
+</ol>
+
+The $v$ that we provide to satisfy the conclusion of the theorem is $z_0$.<br/>
+The $k$ that we provide is $g_0$. We claim $v$ is $D$-productive.<br/>
+The sequence of edges that witnesses $D$-productivity is
+$g_1, g_2, g_3, \ldots$, because the last pair of universal quantifiers in $P$ guarantees that
+<b>any</b> path out of any of the vertices $z_0, z_1, z_2, \ldots$  belongs to $D$.
+
+<h3>Case:  $P$ is false. </h3>
+We can let $y$ and $f$ be given towards a counterexample, and then we know
+the following proposition, call it $Q$:
+<center><table >
+<tr><td>$Q =$</td ><td>$\forall z:V. \forall g : E^+[y, z].$</td></tr>
+<tr><td></td><td>$\exists w:V. \exists h : E^+[z, w]. h\not\in D$</td></tr>
+</table></center>
+
+Proceed as follows:
+<ol start="0">
+<li> Since $y:V$ is $E$-productive, we know there's some $z_0$ and $g_0 : E[y,z_0]$.
+   $Q(z_0, g_0)$ provides us with $w_0:V$ and $h_0 : E[z_0, w_0]$ with $h_0 \not\in D$.
+<li> $Q(w_0, g_0h_0)$ provides us with $w_1:V$ and $h_1 : E[w_0, w_1]$ with $h_1 \not\in D$.
+<li> $Q(w_1, g_0h_0h_1)$ provides us with $w_2:V$ and $h_2 : E[w_1, w_2]$ with $h_2 \not\in D$.
+<li class="cdots">
+<li class="np1"> $Q(w_n, g_0h_0h_1\cdots h_n)$ provides us with $w_{n+1}:V$ and $h_{n+1} : E[w_n, w_{n+1}]$ with $h_{n+1} \not\in D$.
+<li class="cdots">
+</ol>
+
+The $v$ that we provide to satisfy the conclusion of the theorem is $z_0$.<br/>
+The $k$ that we provide is $fg_0$. We claim $z_0$ is $(E^+∖D)$-productive.<br/>
+The sequence of edges that witness this productivity is $h_0, h_1, h_2, \ldots$.
+$\blacksquare$
+
+<h2>Modal Logic</h2>
+This proof seems ok as far as I can tell, but it smells like the essential structure of it is being obscured by
+a bunch of reasoning with the quantifiers. I have a really strong feeling that this should admit a nice cleaned-up
+proof where the quantifiers are all replaced by modal operators, since they resemble modal box and diamond if you
+think of those as talking about "all future worlds" and "some future world".
+<p/>
+The main difference between what's going on above and the usual Kripke
+semantics for modal logic is that we're making statements not just
+about modal worlds, but <b>about the paths</b> we take between worlds: a word is indecent or not,
+a path belongs to the subset $D$ of "decent paths" or not.
+<p/>
+So I take this to mean that we want to be concerned with at least two different kinds of proposition-like things:
+one, a proposition indexed by a world, and two, a proposition indexed by a pair of worlds, and a path between them.
+Let's call these <i>object-propositions</i> and <i>morphism-propositions</i>, or <i>oprops</i>, typical
+variables $P, Q, \ldots$ and <i>mprops</i> $F, G, \ldots$.
+<p/>
+Suppose we have a category $\C$, with objects $\C_0$ and morphisms $\C_1$. We can give oprops and mprops
+meaning in this category by defining a satisfaction relation
+$C \Vdash P$ for any object $C \in \C_0$, and $f \Vdash F$ for any morphism $f \in \C_1$.
+<p/>
+I can imagine the following propositional connectives that construct these from one another.
+If we have an mprop $F$, then there is an oprop $\I F$, where we define
+\[ (C \Vdash \I F) \ciff (\rid_C \Vdash F) \]
+The object proposition $\I F$ holds at an object when the proposition $F$ holds at the identity arrow at that object.<br/>
+This provides a way of coercing mprops to oprops. With the object proposition we had a notion of 'current Kripke world',
+and to come up with a 'current path we got to the current world by' we choose canonically the identity morphism.
+<p/>
+If we have an oprop $P$, then there is an mprop $\T P$, where we define
+\[ (f \Vdash \T P) \ciff (\cod f \Vdash P) \]
+The morphism proposition $\T P$ holds at a morphism when the proposition $P$ holds at the codomain of that morphism.<br/>
+This provides a ('lossy', 'forgetful') way of coercing oprops to mprops. We forget the path by which we got
+to the 'current Kripke world', and remember only the most recent current world.
+<p/>
+There are two natural modal operators, a box and a diamond, we can define directly on mprops. These
+generalize a more familiar box and diamond that could be defined on oprops, and interact with the definition
+of composition in the category we're taking our semantics in.
+$\bx$ and $\dia$ both take an mprop and yield an mprop. Their semantics are defined by saying
+\[ (f \Vdash \bx F) \ciff \forall g \in \C_1[\cod f, \dash] . (g\circ f \Vdash F) \]
+\[ (f \Vdash \dia F) \ciff \exists g \in \C_1[\cod f, \dash] . (g\circ f \Vdash F) \]
+The morphism proposition $\dia F$ holds at a morphism if $F$ holds at <i>some</i> extension of that morphism. &mdash;
+where by "extension" we mean postcomposition with another morphism in the category.<br/>
+The morphism proposition $\bx F$ holds at a morphism if $F$ holds at <i>every</i> extension of that morphism.
+<h3>Summary</h3>
+<center>
+<table>
+<tr><td style="text-align: right;">Object Propositions $P, Q, \ldots$</td>
+<td>$::=$</td>
+<td>$\I F \celse \cdots$</td>
+</tr>
+<tr><td style="text-align: right;">Morphism Propositions $F, G, \ldots$</td>
+<td>$::= $</td>
+<td>$ \T P \celse \bx F \celse \dia F \celse \cdots$</td>
+</tr>
+</table></center>
+
+<h3>Discussion</h3>
+We can recover the usual Kripke-accessibility $\bx$ and $\dia$ by defining
+\[ \bx_o P := \I \bx \T P \qquad \dia_o P := \I \dia \T P \]
+And then prove:
+<p/><b>Theorem</b>
+<blockquote>
+\[ (C \Vdash \bx_o P) \iff \forall D. \forall f  \in \C_1[C, D] . ( D \Vdash P) \]
+\[ (C \Vdash \dia_o P) \iff \exists D. \exists f  \in \C_1[C, D] . ( D \Vdash P) \]
+</blockquote>
+<b>Proof</b>
+<blockquote>
+We show the case for $\bx$, as $\dia$ is similar.
+\[ (C \Vdash \bx_o P) \iff (C \Vdash \I \bx \T P) \]
+\[  \iff (\rid_C \Vdash  \bx \T P) \]
+\[  \iff \forall f \in \C_1[C, \dash] . (f \circ \rid_C \Vdash   \T P) \]
+\[  \iff \forall D . \forall f \in \C_1[C, D] . (f \circ \rid_C \Vdash   \T P) \]
+\[  \iff \forall D . \forall f \in \C_1[C, D] . (f  \Vdash   \T P) \]
+\[  \iff \forall D . \forall f \in \C_1[C, D] . (\cod f  \Vdash    P) \]
+\[  \iff \forall D . \forall f \in \C_1[C, D] . (D  \Vdash    P) \]
+$\blacksquare$
+</blockquote>
+I'm running out of steam at the moment so I think I'm going to defer tackling the Kolmogorov puzzle in this language
+for another time. As an exercise, it's interesting to observe that associativity of composition in the category
+is required to show the idempotence of the above $\bx$ and $\dia$, i.e. the fact that $\bx \bx F$ is semantically
+equivalent to $\bx F$, and $\dia \dia F$ to $\dia F$.
+  </body>
+  <script>
+
+    renderMathInElement( document.body, { strict: false, trust: true,
+      delimiters: [ {left: "$$", right: "$$", display: true}, {left:
+      "\\[", right: "\\]", display: true}, {left: "$", right: "$",
+      display: false}, {left: "\\(", right: "\\)", display: false} ],
+      macros: {
+		  "\\x": "\\times",
+		  "\\dash": "-",
+		  "\\celse": "\\mathrel{|}",
+		  "\\fib": "\\mathsf{fib}_{\\pi}",
+		  "\\C": "\\mathbb{C}",
+		  "\\I": "\\mathbf{I}",
+		  "\\T": "\\mathbf{T}",
+		  "\\rid": "\\mathrm{id}",
+		  "\\cod": "\\mathrm{cod}",
+		  "\\dia": "◇",
+		  "\\bx": "\\square",
+		  "\\ciff": "\\quad{{:}\\!\\!{\\iff}}\\quad",
+ } } );
+  </script>
+</html>
