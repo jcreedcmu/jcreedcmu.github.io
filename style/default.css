@@ -1,0 +1,19 @@
+body {
+  padding-left: 80px;
+  padding-top: 20px;
+}
+
+td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+tr:nth-child(odd) {
+  background-color: #f0f0e7;
+}

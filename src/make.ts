@@ -1,3 +1,4 @@
+import * as path from 'path';
 import * as fs from 'fs';
 import { Post, getIndex, getRss } from './post';
 import { promisify } from 'util';
@@ -9,9 +10,10 @@ type Meta = {
   description?: string,
 }
 
-function postOfMeta(meta: Meta): Post {
+function postOfMeta(dir: string, meta: Meta): Post {
   return {
-    dir: meta.date,
+    dir,
+    date: meta.date,
     title: meta.title,
     ...(meta.description && { description: meta.description }),
   }
@@ -29,7 +31,7 @@ function postOfMeta(meta: Meta): Post {
   const files = await promisify(glob.glob)('**/meta.json', { ignore });
 
   const posts = files.map(file => {
-    return postOfMeta(JSON.parse(fs.readFileSync(file, 'utf8')) as Meta);
+    return postOfMeta(path.dirname(file), JSON.parse(fs.readFileSync(file, 'utf8')) as Meta);
   });
 
   posts.sort((a, b) => b.dir.localeCompare(a.dir));
