@@ -1,2 +1,2 @@
 all:
-	node scripts/make.js
+	./node_modules/.bin/ts-node src/make.ts
