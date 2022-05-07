@@ -19,7 +19,14 @@ function postOfMeta(meta: Meta): Post {
 
 (async () => {
 
-  const files = await promisify(glob.glob)('**/meta.json');
+  const ignore = [
+    'util',
+    'katex',
+    'katex-0.12.0',
+    'node_modules',
+  ].map(x => `${x}/**`);
+
+  const files = await promisify(glob.glob)('**/meta.json', { ignore });
 
   const posts = files.map(file => {
     return postOfMeta(JSON.parse(fs.readFileSync(file, 'utf8')) as Meta);
