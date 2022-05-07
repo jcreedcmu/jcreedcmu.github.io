@@ -1,28 +1,19 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import { Post, getIndex, getRss } from './post';
+import { Post, getIndex, getRss, Meta } from './post';
 import { promisify } from 'util';
 import * as glob from 'glob';
 
-type Meta = {
-  date: string,
-  title: string,
-  description?: string,
-}
 
 function postOfMeta(dir: string, meta: Meta): Post {
   return {
-    dir,
-    date: meta.date,
-    title: meta.title,
-    ...(meta.description && { description: meta.description }),
+    dir, ...meta
   }
 }
 
 (async () => {
 
   const ignore = [
-    'util',
     'katex',
     'katex-0.12.0',
     'node_modules',
@@ -34,7 +25,7 @@ function postOfMeta(dir: string, meta: Meta): Post {
     return postOfMeta(path.dirname(file), JSON.parse(fs.readFileSync(file, 'utf8')) as Meta);
   });
 
-  posts.sort((a, b) => b.dir.localeCompare(a.dir));
+  posts.sort((a, b) => (a.date && b.date && b.date.localeCompare(a.date)) || b.dir.localeCompare(a.dir));
 
   fs.writeFileSync(__dirname + '/../index.html', getIndex(posts), 'utf8');
   fs.writeFileSync(__dirname + '/../rss.xml', getRss(posts), 'utf8');
