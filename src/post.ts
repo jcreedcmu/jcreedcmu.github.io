@@ -5,7 +5,7 @@ export type Post = {
 }
 
 function tocOfPost(post: Post): string {
-  return `    <li><a href="posts/${post.dir}/index.html">${post.title}</a>`
+  return `    <li><a href="posts/${post.dir}/">${post.title}</a>`
 }
 
 export function getIndex(posts: Post[]): string {
@@ -33,7 +33,7 @@ function rssOfPost(post: Post): string {
   }
   return `    <item>
       <title>${post.title}</title>
-		<link>https://jcreedcmu.github.io/posts/${post.dir}/index.html</link>
+		<link>https://jcreedcmu.github.io/posts/${post.dir}/</link>
       <description>${description}</description>
       <pubDate>${gmtDate(post)}</pubDate>
     </item>`;
@@ -44,7 +44,7 @@ export function getRss(posts: Post[]): string {
 <rss version="2.0">
   <channel>
 	 <title>jcreedcmu.github.io</title>
-	 <description>Occasional blogging about math</description>
+	 <description>Occasional blogging</description>
 	 <link>https://jcreedcmu.github.io/index.html</link>
 	 <pubDate>${gmtDate(posts[0])}</pubDate>
 ${posts.map(rssOfPost).join('\n')}
