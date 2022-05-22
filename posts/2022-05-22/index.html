@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+
+  <head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+
+
+	 <style>
+      .ib { display: inline-block; }
+      center { vertical-align: middle; }
+      body { padding-left: 40px; max-width: 50em; }
+      .code { white-space: pre; display: block; }
+      .tables { display: flex; align-items: center; }
+      .rotate180  {
+        transform: rotate(180deg) translate(0px, 3px);
+        display: inline-block;
+      }
+
+		/* li.cdots makes a cdots */
+		li.cdots {  list-style-type: none; }
+		li.cdots:before {  content: '⋯'; }
+		li.np1 {  list-style-type: none; }
+		li.np1:before {  content: 'n+1.'; margin-left: -35px; margin-right: 5px; }
+
+		pre.indent {
+		  background-color: #eee;
+		  padding: 2em;
+		  margin: 1em;
+		}
+		pre.nobg {
+		  background-color: inherit;
+        padding: 0em 2em;
+		}
+    </style>
+    <title>Thoughts on Braids</title>
+  </head>
+  <body style="width: 800px; margin-left: 5em">
+    <h1>Thoughts on Braids</h1>
+	 Define $G(n)$ to be the free groupoid on the following graph:
+	 <center><img src="groupoid.png"></center>
+	 We have two objects, $\nn$ and $\ss$, and $n+1$ morphisms running between them, $m_0, \ldots, m_n$, as well
+	 as their inverses $m^{-1}_0, \ldots, m^{-1}_n$.
+
+	 <p/>
+	 Let's define a sequence of functors $(\sigma_i : G(n) \to G(n) \st i \in \{1, \ldots, n-1\})$ like so:
+	 \[
+\begin{array}{rcl}
+\sigma_i(\nn) &=& \nn\\
+\sigma_i(\ss) &=& \ss\\
+\sigma_i(m_j) &=& j \qquad (i \ne j)\\
+\sigma_i(m_i) &=& m_{i-1}m_i^{-1} m_{i+1}\\
+\end{array}
+\]
+This maps one of the morphisms in the category into a zig-zag involving the preceding and succeeding morphisms:
+<center><img src="functor.png"></center>
+
+We can define functors $\sigma^{-1}_i$ very similarly:
+	 \[
+\begin{array}{rcl}
+\sigma^{-1}_i(\nn) &=& \nn\\
+\sigma^{-1}_i(\ss) &=& \ss\\
+\sigma^{-1}_i(m_j) &=& j \qquad (i \ne j)\\
+\sigma^{-1}_i(m_i) &=& m_{i+1}m_i^{-1} m_{i-1}\\
+\end{array}
+\]
+<h2>Claim</h2>
+I claim that these functors behave just like the generators of the
+ <a href="https://en.wikipedia.org/wiki/Braid_group">Artin braid group</a> on $n$ strands.
+The functor/generator $\sigma_i$ realizes the crossing of the $i^{th}$ and the $(i+1)^{th}$ strands in one
+direction, and $\sigma_i^{-1}$ the other direction.
+<center><img src="braid.png"></center>
+We have the following properties:
+<ul>
+<li> $\sigma_i \sigma^{-1}_i = \mathsf{id} = \sigma^{-1}_i \sigma_i$. <p/>Let's see why, for example,
+$\sigma_i \sigma^{-1}_i m_i = m_i$.
+\[
+\begin{array}{rcl}
+\sigma_i \sigma^{-1}_i m_i &=& \sigma_i (m_{i+1}m_i^{-1} m_{i-1}) \\
+&=& (\sigma_i m_{i+1})(\sigma_i (m_i^{-1}))(\sigma_i m_{i-1}) \\
+&=&  m_{i+1}(\sigma_i (m_i^{-1})) m_{i-1} \\
+&=&  m_{i+1}(\sigma_i m_i)^{-1} m_{i-1} \\
+&=&  m_{i+1}(m_{i-1}m_i^{-1} m_{i+1})^{-1} m_{i-1} \\
+&=&  m_{i+1}m_{i+1}^{-1} m_i m_{i-1}^{-1} m_{i-1} \\
+&=&  (m_{i+1}m_{i+1}^{-1}) m_i (m_{i-1}^{-1} m_{i-1}) \\
+&=&   m_i  \\
+\end{array}
+\]
+<li> $\sigma_i \sigma_j = \sigma_j \sigma_i$ when $|i-j| > 1$.
+<li> $\sigma_i \sigma_j \sigma_i = \sigma_j \sigma_i \sigma_j$ when $|i-j| = 1$. ("<a href="https://en.wikipedia.org/wiki/Reidemeister_move">the third reidemeister move</a>")<p/>
+     Let's check for example $\sigma_1\sigma_2 \sigma_1 = \sigma_2 \sigma_1 \sigma_2$. <p/>
+     For brevity, we write $\mathsf{0123\cdots}$ for $m_0 m_1 m_2 m_3\cdots$ and $\mathsf{\bar 0\bar1 \bar2 \bar3\cdots}$ for $m_0^{-1}m_1^{-1}m_2^{-1}m_3^{-1}\cdots$.
+\[\begin{array}{rcl}
+\sigma_1\sigma_2 \sigma_1 (\mathsf{1}) &=&\sigma_1\sigma_2 (\mathsf{0 \bar 12}) \\
+&=&\sigma_1 (\mathsf{0 1(1\bar2 3)}) \\
+&=&\sigma_1 (\mathsf{0 \bar2 3}) \\
+&=&\mathsf{0 \bar2 3} \\
+&=&\mathsf{0\bar 1 (1 \bar 2 3)} \\
+&=&\sigma_2  (\mathsf{0\bar 1 2}) \\
+&=&\sigma_2\sigma_1  (\mathsf{1}) \\
+&=&\sigma_2\sigma_1 \sigma_2 (\mathsf{1})
+\end{array}
+\qquad\qquad
+\begin{array}{rcl}
+\sigma_1\sigma_2 \sigma_1 (\mathsf{2}) &=&\sigma_1\sigma_2 (\mathsf{2}) \\
+&=&\sigma_1 (\mathsf{1\bar2 3}) \\
+&=& (\mathsf{(0\bar 1 2) \bar2 3}) \\
+&=&\mathsf{0 \bar1 3} \\
+&=&\sigma_2 \mathsf{0 \bar1 3} \\
+&=&\sigma_2  (\mathsf{(0\bar 1 2) \bar2 3}) \\
+&=&\sigma_2\sigma_1  (\mathsf{1\bar 2 3}) \\
+&=&\sigma_2\sigma_1 \sigma_2 (\mathsf{2})
+\end{array}
+\]
+</ul>
+<h2>Characterizing the Braid Subset</h2>
+The above properties let us map the braid group <i>into</i> the automorphisms of the groupoid $G(n)$, but
+of course there are lots of <i>other</i> functors $G(n) \to G(n)$ that are not generated by the $\sigma_i, \sigma^{-1}(i)$.
+For one thing, we could swap $\nn$ and $\ss$. But let's fix an $n$ and
+try to note some properties that are possessed by all functors
+$F$ that are composites of some sequence of $\sigma_i, \sigma^{-1}(i)$.
+Let's do the easy ones first:
+<ol>
+<li>$F \nn = \nn$
+<li>$F \ss = \ss$
+<li>$F m_0 = m_0$
+<li>$F m_n = m_n$
+</ol>
+Now let's think about some ways that $G(1)$ can map into $G(n)$. The groupoid $G(1)$ is just the circle.
+Define $\mathcal E_i : G(1) \to G(n)$ to be the functor that takes
+	 \[
+\begin{array}{rcl}
+\mathcal E_i(\nn) &=& \nn\\
+\mathcal E_i(\ss) &=& \ss\\
+\mathcal E_i(m_0) &=& m_i\\
+\mathcal E_i(m_1) &=& m_{i+1}\\
+\end{array}
+\]
+<center><img src="embed.png" style="width: 75%; height: 75%"></center>
+A property that we observe holds for any $F$ that arises as a composite of some sequence
+$\sigma_i, \sigma^{-1}(i)$ is:
+<ol start="5">
+<li>There exists a permuation $\pi : \{0,\ldots,n-1\} \to \{0,\ldots,n-1\}$ such that
+for every $i \in \{0,\ldots,n-1\}$
+there is a natural isomorphism $F \circ \mathcal E_i \cong \mathcal E_{\pi i}$
+</ol>
+
+Finally, we guess that these properties are enough to characterize an embedding of the braid group:
+
+<p/>
+<b>Conjecture</b>: The subgroup of automorphisms of $G(n)$ that consist of the $F$ that satisfy properties (1)-(5) above is isomorphic to the Artin braid group $B_n$. If (5) is replaced by the stronger property
+<ul>
+<li>For every $i \in \{0,\ldots,n-1\}$
+there is a natural isomorphism $F \circ \mathcal E_i \cong \mathcal E_i$
+</ul>
+then we obtain instead the pure braid group $P_n$.
+  </body>
+  <script>
+	 function go(body) {
+    renderMathInElement( body, { strict: false, trust: true,
+      delimiters: [ {left: "$$", right: "$$", display: true}, {left:
+      "\\[", right: "\\]", display: true}, {left: "$", right: "$",
+      display: false}, {left: "\\(", right: "\\)", display: false} ],
+      macros: {
+		  "\\x": "\\times",
+		  "\\dash": "-",
+		  "\\celse": "\\mathrel{|}",
+		  "\\st": "\\mathrel{|}",
+		  "\\nn": "\\mathsf{n}",
+		  "\\ss": "\\mathsf{s}",
+		  "\\fib": "\\mathsf{fib}_{\\pi}",
+		  "\\C": "\\mathbb{C}",
+		  "\\I": "\\mathbf{I}",
+		  "\\T": "\\mathbf{T}",
+		  "\\rid": "\\mathrm{id}",
+		  "\\cod": "\\mathrm{cod}",
+		  "\\dia": "◇",
+		  "\\bx": "\\square",
+		  "\\ciff": "\\quad{{:}\\!\\!{\\iff}}\\quad",
+ } } );
+	 }
+  </script>
+</html>
