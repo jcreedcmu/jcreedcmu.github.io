@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+
+    <style>
+      .ib { display: inline-block; }
+      center { vertical-align: middle; }
+      .code { white-space: pre; display: block; }
+      .tables { display: flex; align-items: center; }
+      .rotate180  {
+        transform: rotate(180deg) translate(0px, 3px);
+        display: inline-block;
+      }
+
+		/* li.cdots makes a cdots */
+		li.cdots {  list-style-type: none; }
+		li.cdots:before {  content: '⋯'; }
+		li.np1 {  list-style-type: none; }
+		li.np1:before {  content: 'n+1.'; margin-left: -35px; margin-right: 5px; }
+
+		pre.indent {
+		  background-color: #eee;
+		  padding: 2em;
+		  margin: 1em;
+		}
+		pre.nobg {
+		  background-color: inherit;
+        padding: 0em 2em;
+		}
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Coxeter Groups and Chebyshev Polynomials</title>
+  </head>
+  <body>
+    <h1>Coxeter Groups and Chebyshev Polynomials</h1>
+    A <i>Coxeter group</i> is an abstract group that's meant to behave
+    like a group of reflections in Euclidean space. An important thing
+    to notice about reflections is that whenever you compose two of
+    them in a row, you get a rotation by twice the angle between them.
+<p/>
+    Why is this? Let's restrict our attention to 2 dimensions without
+    loss of generality. Again without loss, suppose $\phi_0$ is reflection about the $x$-axis.
+    Let's call $\phi_\theta$ the operation of reflection about the line that is the $x$-axis rotated by angle $\theta$.
+
+    Say $R_\theta$ is rotation by theta. Notice that $\phi_\theta$ is $\phi_0$ conjugated by $R_\theta$:
+    \[ \phi_\theta = R_\theta \phi_0 R_{-\theta}\]
+    But it's also the case that conjugating a rotation by a reflection inverts the rotation:
+    \[ R_{-\theta} = \phi_0 R_\theta \phi_0\]
+    Therefore
+    \[\phi_a \phi_b = R_a \phi_0 R_{-a}R_b \phi_0 R_{-b}\]
+    \[= R_a \phi_0 R_{b-a} \phi_0 R_{-b}\]
+    \[= R_a \phi_0 R_{b-a}  R_{b} \phi_0\]
+    \[= R_a \phi_0 R_{2b-a}  \phi_0\]
+    \[= R_a  R_{-2b+a} \phi_0 \phi_0\]
+    \[= R_a  R_{-2b+a} \]
+    \[= R_{2(a-b)} \]
+    So the composition of two reflections is a rotation, by twice the angle between the hyperplanes of reflection.
+    If the angle between the reflections' hyperplanes is a rational multiple of a full rotation $2\pi$, then
+    the degree of $\phi_i \phi_j$ is a finite integer.
+
+    <p/>
+      So this is some motivation for the definition of a <i>Coxeter System</i>, some generators
+      and relations that together give a group. You pick $n$ generators $\sigma_1, \ldots, \sigma_n$ that
+      are supposed to be distinct reflections,
+      and you pick a matrix $(m_{ij} \in \N \st 1 \le i,j\le n \land m_{ii} = 1 \land m_{ij} = m_{ji})$
+      of numbers that abstractly describe the angles between the reflections,
+      and you consider the group
+      \[ \langle \sigma_1, \ldots, \sigma_n \st (\sigma_i\sigma_j)^{m_{ij}} = e\rangle\]
+    <p/>
+      The classification of which matrices $m$ lead to finite groups and which lead to infinite groups
+      is really subtle and interesting. One key part of the proof is understanding the relationship
+      between the <i>abstract</I> Coxeter groups as defined by generators and relations, and <i>concrete</i> groups
+      of reflections in $\R^n$.
+    <h2>Linear Representation of Coxeter Groups</h2>
+      One direction of that understanding is the following fact. For
+      any abstract Coxeter group on $n$ generators, we can come up
+      with a linear representation of it as reflections in $\R^n$. Pick a basis $e_1, \ldots, e_n$.
+      Define a bilinear form $\ll v, w\rr$ by
+      \[ \ll e_i, e_j \rr = -\cos \left( \pi / m_{ij}\right)\]
+      and then the action of the generator $\sigma_i$ on a vector $v$ is defined by
+      \[ \sigma_i (v) = v - 2 \ll v, e_i \rr e_i \]
+    <h2>Ring Representation of Coxeter Groups</h2>
+
+    For some reason I wondered whether you could eliminate having to think about real numbers and trigonometric functions,
+    and still do the appropriate representation theory by using
+    just the polynomials in $\Z[x,\ldots]$ that characterize the $\cos(\pi/n)$. The following is as far as I got. I mostly
+    got stuck on trying to translate the Schl&auml;fli criterion about the bilinear form being positive definite, because
+    I don't know how to think about positiveness in $\Z[x,\ldots]$.
+
+    <h3>Defining Some "Chebyshev" Polynomials</h3>
+
+    I claim these are "morally" the Chebyshev polynomials, although they
+    differ by a factor of 2 in the recurrence involved, and the
+    initial conditions.
+
+    Define two $\Z$-indexed sequences of polynomials $P_n$ and $Q_n$, both satisfying the same recurrence for all $n\in \Z$:
+    \[ P_{n+2} = tP_{n+1} - P_n \]
+    \[ Q_{n+2} = tQ_{n+1} - Q_n \]
+    but initialize them differently by setting
+    \[ P_0 = 0 \qquad P_1 = 1\]
+    \[ Q_0 = 2 \qquad Q_1 = t\]
+
+    <h3>Proving Some Lemmas</h3>
+
+    Now we show a bunch of technical and seemingly unmotivated
+    identities involving these polynomials. They turn out to be just
+    what's needed to construct a representation of a Coxeter group in
+    a polynomial ring.<p/>
+
+    <b>Lemma 1</b><em> $P$ is odd and $Q$ is even: $P_{-n} = -P_n$ and $Q_{-n} = Q_n$.</em><br/>
+    <b>Proof</b> By induction. First use the recurrence to see that $P_{-1}=-1$ and $Q_{-1}=t$.
+    Then observe by i.h. that $P_{-n} = kP_{n}$ and $P_{-n-1} = kP_{n+1}$, and we can show
+    \[P_{-n-2} = tP_{-n-1} - P_{-n} =  tkP_{n+1} - kP_{n} = kP_{n+2}\]
+    as required.
+    &#x220e;
+    <p/>
+    <b>Lemma 2</b><em> For any $n,m\in \Z$, we have
+      \[P_n Q_m + P_{m-n} = P_{m+n}\]</em><br/>
+    <b>Proof</b> First observe that it suffices to show for
+    nonnegative $m$, for if $m &lt; 0$, then we can appeal to the fact that
+    \[ P_{-n} Q_{-m} + P_{(-m)-(-n)} = P_{(-m)+(-n)}\]
+    and realize this is equivalent by Lemma 1 to
+    \[ -P_{n} Q_{m}  -P_{m-n} = -P_{m+n}\]
+    which suffices for what we need to show.
+    <p/>
+    Now proceed by induction on $m$. The base cases are
+      \[P_n Q_0 + P_{0-n} = P_{0+n}\qquad P_n Q_1 + P_{1-n} = P_{1+n}\]
+    that is,
+      \[2P_n - P_{n} = P_{n}\qquad tP_n - P_{n-1} = P_{n+1}\]
+    which trivially hold. In the step case, we reason that
+      \[P_n Q_{m+1} + P_{m+1-n} = P_{m+1+n}\]
+    is the same thing as
+      \[P_n (tQ_{m} - Q_{m-1}) + (tP_{m-n}-P_{m-1-n}) = (tP_{m+n}-P_{m-1+n})\]
+    This is just the sum of two equations that we know by i.h., namely
+      \[tP_n Q_{m}  + tP_{m-n} = tP_{m+n}\]
+    and
+      \[-P_n Q_{m-1}   -P_{m-1-n} = -P_{m-1+n}\]
+    &#x220e;
+
+    <p/><b>Lemma 3</b><em> For any $n\in \Z$, $m\in \N$, we have
+      \[(a)\ P_nP_m + P_{m+n+1} = P_{n+1}P_{m+1}\qquad (b)\  P_nP_{m+1} + P_{m-n} = P_{n+1}P_{m}\]
+    </em><br/>
+    <b>Proof</b> By induction on $m$. The base cases are $m=0$ and $m=1$, and we get
+      \[ P_{n+1} = P_{n+1} \qquad P_n + P_{-n} = 0\]
+   \[P_n + P_{n+2} = P_{n+1}t\qquad P_nt - P_{n-1} = P_{n+1}\]
+    and the step case is easy to verify as before.
+    &#x220e;
+    <p/><b>Corollary 4</b><em> For any $n,m\in \Z$, we have
+      \[P_nP_m + P_{m+n+1} = P_{n+1}P_{m+1}\]
+    </em><br/>
+    <b>Proof</b> If $m \ge 0$, we're already done. Otherwise, $m \le -1$ so $-m-1 \ge 0$, and we have
+    (by $(b)$, substituting $m\mapsto -m-1$)
+    \[P_nP_{-m} + P_{-m-1-n} = P_{n+1}P_{-m-1}\]
+    which is equivalent to what we need.
+    &#x220e;
+
+    <p/><b>Lemma 5</b><em> For any $n\in \Z$, $m\in \N$, we have
+      \[P_{m+1} P_{n+m} = \sum_{i=0}^{m} P_{n+2i} \]
+    </em><br/>
+    <b>Proof</b> By induction on $m$. The base case is $m=0$, in which case $P_1 P_n = P_n$.
+    In the step case, we want to show
+      \[P_{m+2} P_{n+m+1} = \sum_{i=0}^{m+1} P_{n+2i} \]
+    but by the induction hypothesis this is the same as showing
+      \[P_{m+2} P_{n+m+1} = P_{m+1} P_{n+m} +  P_{n+2m+2} \]
+    which follows directly from Corollary 4.
+    &#x220e;
+
+
+    <h2>Representation of Coxeter Group in Polynomial Ring</h2>
+    Suppose we have an $n$-generator Coxeter system, so that we have a symmetric matrix $m_{ij}$ for $1 \le i,j \le n$
+    with $m_{ii} = 1$. Define
+    \[X = \{x_{ij} \st 1\le i \le j \le n \}\]
+    \[ P = \{P_{m_{ij}}(x_{ij}) \st 1\le i &lt; j \le n \} \cup \{x_{ii} + 2 \st 1 \le i \le n\}\]
+    where $P_{m_{ij}}(x_{ij})$ means $P_{m_{ij}}$ with the variable $x$ replaced by $x_{ij}$.
+    We treat $x_{ji} = x_{ij}$ as denoting the same variable.
+    The ring we want to work over is $\Z[X]/(P)$:
+    we take the integers $\Z$, and adjoin a variable for every pair of numbers in $1,\ldots,n$,
+    and quotient by some polynomials that are intended to intuitively guarantee that
+    \[x_{ij} \approx 2\cos(\pi / m_{ij})\]
+    <p>
+      We define a representation of our given Coxeter group in $(\Z[X]/P)^n$. We define the action of a reflection
+      $\sigma_i$ on a vector $(v_1, \ldots, v_n) \in (\Z[X]/P)^n$ as follows:
+      \[(\sigma_i(v_1, \ldots, v_n))_j =  v_j +  x_{ij} v_i\]
+
+
+      The fact that we're quotienting by $x_{ii} + 2$ means that $x_{ii} = -1$: so we can equivalently say that
+      $\sigma_i$ flips the sign of the $i^{th}$ position
+      of the vector, and adds $x_{ij} v_i$ everywhere else:
+      \[(\sigma_i(v_1, \ldots, v_n))_j = \begin{cases}
+      -v_i & \text{if } i = j; \\
+      v_j +  x_{ij} v_i & \text{otherwise.} \\
+       \end{cases}\]
+
+      <b>Theorem</b> This actually is a representation: all Coxeter relations are satisfied.<br/>
+      <b>Proof</b> Consider a vector $v$, and focus on only its $i$ and $j$ coordinates, for $i &lt; j$.
+      If we act on it with $\sigma_i$, the result is
+      \[(-v_i, v_j + x_{ij} v_i)\]
+      and if we then act on it with $\sigma_j$, the result is
+      \[((x_{ij}^2 - 1)v_i + x_{ij} v_j, -v_j - x_{ij} v_i)\]
+      Note that this is like we have multiplied our vector by the matrix
+      \[A_1 = \begin{pmatrix}x^2_{ij}-1& x_{ij}\\ -x_{ij}& -1\end{pmatrix}
+= \begin{pmatrix}P_3& P_2\\ -P_2& -P_1\end{pmatrix}(x_{ij})\]
+If we define
+      \[A_k =\begin{pmatrix}P_{2k+1}& P_{2k}\\ -P_{2k}& -P_{2k-1}\end{pmatrix}(x_{ij})\]
+      it is easy to check, using the recurrence that defines $P$, that $A_1 A_k = A_{k+1}$,
+      so that we have $A_k = (A_1)^k$. The Coxeter relations require that $A_{m_{ij}} = I$.
+      But we find that, modulo the polynomial $P_{m_{ij}}(x_{ij})$, that this does hold:
+      using Lemma 2 we can see that
+            \[P_k Q_{k+1} + 1 = P_{2k+1}\]
+            \[P_k Q_k  = P_{2k}\]
+            \[P_k Q_{k-1} -1 = P_{2k-1}\]
+      so indeed $A_{m_{ij}} = I \pmod { P_{m_{ij}}}$.
+
+      <p/>
+      The above reasoning accounts for the effect of iterating $\sigma_j\sigma_i$ on the coordinates $i,j$
+      of the vector $v$. Let's now consider the effect on some other coordinate $\ell \not\in \{i,j\}$. Wlog
+      $i &lt; j &lt; \ell$. We start with
+      \[ v = (\ldots, v_i, \ldots, v_j, \ldots, v_\ell, \ldots)\]
+      We hit this with $\sigma_i$ and get
+      \[  (\ldots, -v_i, \ldots, v_j + x_{ij} v_i, \ldots, v_\ell + x_{i\ell} v_i, \ldots)\]
+      We hit this with $\sigma_j$ and get
+      \[  (\ldots, (x_{ij}^2 - 1)v_i + x_{ij} v_j, \ldots, -v_j - x_{ij} v_i, \ldots, v_\ell + x_{i\ell} v_i + x_{j\ell}(v_j + x_{ij}v_i), \ldots)\]
+      It's easy to see how the pattern continues: after $t$ iterations of $\sigma_j\sigma_i$ the $\ell^{th}$ coordinate picks
+      up a sum of $x_{i\ell}$ times the state of the $i^{th}$ coordinate at every time step, plus $x_{j\ell}$ times the state
+      of the $j^{th}$ coordinate at every time step. That is,
+      \[((\sigma_j\sigma_i)^t v)_\ell = v_\ell + \left(x_{i\ell}\sum_{s = 0}^{t-1} ((\sigma_j\sigma_i)^t v)_i\right)
++ \left(x_{j\ell}\sum_{s = 0}^{t-1} ((\sigma_i\sigma_j)^t \sigma_i v)_j\right)\]
+\[= v_\ell + \left(x_{i\ell}\sum_{s = 0}^{t-1} (P_{2s+1}(x_{ij})v_i + P_{2s}(x_{ij})v_j)\right) + {}\]
+\[ \left(x_{j\ell}\sum_{s = 0}^{t-1} (P_{2s+2}(x_{ij})v_i + P_{2s+1}(x_{ij})v_j)\right)\]
+      By Lemma 5, we see for any $k\in \{0,1,2\}$ that
+      \[P_{t} P_{k+t-1} = \sum_{s=0}^{t-1} P_{2s + k} \]
+      hence
+      \[0 = \sum_{s=0}^{t-1} P_{2s + k} \pmod{P_t} \]
+      and so
+      \[ ((\sigma_j\sigma_i)^{m_{ij}} v)_\ell = v_\ell \pmod{P_{m_{ij}}(x_{ij})}\]
+      as required.     &#x220e;
+  </body>
+  <script>
+	 function go(body) {
+    renderMathInElement( body, { strict: false, trust: true,
+      delimiters: [ {left: "$$", right: "$$", display: true}, {left:
+      "\\[", right: "\\]", display: true}, {left: "$", right: "$",
+      display: false}, {left: "\\(", right: "\\)", display: false} ],
+      macros: {
+		  "\\x": "\\times",
+		  "\\celse": "\\mathrel{|}",
+		  "\\st": "\\mathrel{|}",
+		  "\\rid": "\\mathrm{id}",
+		  "\\ll": "\\langle",
+		  "\\rr": "\\rangle",
+ } } );
+	 }
+  </script>
+
+</html>
