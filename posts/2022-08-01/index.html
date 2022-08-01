@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+
+    <style>
+      .ib { display: inline-block; }
+      center { vertical-align: middle; }
+      .code { white-space: pre; display: block; }
+      .tables { display: flex; align-items: center; }
+      .rotate180  {
+        transform: rotate(180deg) translate(0px, 3px);
+        display: inline-block;
+      }
+
+		/* li.cdots makes a cdots */
+		li.cdots {  list-style-type: none; }
+		li.cdots:before {  content: '⋯'; }
+		li.np1 {  list-style-type: none; }
+		li.np1:before {  content: 'n+1.'; margin-left: -35px; margin-right: 5px; }
+
+		pre.indent {
+		  background-color: #eee;
+		  padding: 2em;
+		  margin: 1em;
+		}
+		pre.nobg {
+		  background-color: inherit;
+        padding: 0em 2em;
+		}
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Jacobi Triple Product Identity</title>
+  </head>
+  <body>
+    <h1>Jacobi Triple Product Identity</h1>
+
+    I really liked <a href="https://andrewodesky.com/res/jtp_v2.1.pdf"> this
+    exposition</a> of a combinatorial &mdash; and very physics-flavored &mdash; proof of the Jacobi Triple
+    Product Identity, so I thought I'd try to tell the story in my own
+    words, with some more pictures.
+
+    <h2>The Dirac Sea</h2>
+    We start by imagining that we have an infinite collection of particles, but with the following
+    constraints:
+    <ul>
+      <li>The particles are indistinguishable except for how much energy each one currently has.
+      <li>No two particles can exist at the same state, i.e. with the same energy.
+      <li>The only energy value a particle is allowed to have is an integer plus 1/2.
+        For example, energies $-7/2, -5/2, -3/2, -1/2, 1/2, 3/2, 5/2, 7/2$ are allowed.
+    </ul>
+    Given these constraints, the state of our whole universe is given by answering the question,
+    for each energy value $E \in \Z + {1\over 2}$, <i>does there exist a particle of energy $E$?</i>
+
+    <p/>
+    We add one more constraint:
+    <ul>
+      <li>The state of the whole collection of particles is only finitely different
+        from the <i>ground state</i>, which we define to be this picture:
+        <center><img src="dirac1.png"></center>
+        That is, the ground state is one where we <i>do</I> have a particle at every negative
+        energy, and we <i>don't</i> have a particle at every positive energy.
+        <p/>
+
+        We say that the total <i>energy</i> of the ground state is
+        zero, and the total <i>particle count</i> is zero. Obviously
+        based on what we just said, it seems like we have infinitely
+        many particles, with infinitely negative energy &mdash; but we
+        take the ground state as a baseline for both statistics.
+
+    </ul>
+
+    We may consider states with more particles at positive energies:
+    <center><img src="dirac2.png"/></center>
+    For example, we say that this state has two particles (because it
+    has two <i>more</i> than the ground state) and it has energy
+    ${1\over 2} + {3 \over 2} = 2$.
+    <p/>
+
+    We may also consider states with <i>fewer</i> particles at negative energies:
+    <center><img src="dirac3.png"/></center>
+    We say that this state has $-2$ particles (because it
+    has two <i>fewer</i> than the ground state) and it has energy
+    ${1\over 2} + {5 \over 2} = 3$. It has positive energy because we've <i>removed</i>
+    particles that had negative energy.
+    <p/>
+
+    We may also add <i>and</i> remove particles, as long as we only add and remove finitely many:
+    <center><img src="dirac4.png"/></center>
+    We say that this state has particle count zero (because it
+    has just as many as the ground state &mdash; one particle and one 'hole'/'antiparticle')
+    and it has energy
+    ${7\over 2} + {3 \over 2} = 5$.
+
+    <h2>First Generating Function</h2>
+    Now we want to try writing a generating function for the set of all allowable
+    states, indexed by their particle count and energy. Recall that a state is
+    a way of answering the question,
+    <blockquote>
+    For every energy value $E \in \Z + {1\over 2}$, does there exist a particle of energy $E$?
+    </blockquote>
+    We can interpret the <I>For every</I> as a product, and the two possibilities &mdash;
+    that either there does or does not exist a particle of energy $E$ &mdash; as a sum.
+    Specifically, we might try to consider the product
+    \[\prod_{E \in \Z + {1\over 2}} (1 + q^E z)\]
+    which gives us a polynomial in $q$ and $z$, where we might try to interpret the coefficient
+    of $q^E z^n$ as being the number of states with energy $E$ and particle count $n$.
+    <p/>
+
+    The problem with this expression is it effectively asserts that
+    our ground state is having no particles at all: it allows for states with negative energies,
+    whereas our examples above, with the ground state including occupants for all negative energy levels, all state energies are positive.
+
+    <p/>Therefore we do the following not-quite-formal reasoning
+    \[\prod_{E \in \Z + {1\over 2}} (1 + q^E z) = \prod_{m \ge 0} (1 + q^{m+{1\over 2}} z)(1 + q^{-m-{1\over 2}} z)\]
+    \[ = \left(\prod_{m \ge 0} (1 + q^{m+{1\over 2}} z)\right)\left(\prod_{m\ge 0}(1 + q^{-m-{1\over 2}} z)\right)\]
+    \[ = \left(\prod_{m \ge 0} (1 + q^{m+{1\over 2}} z)\right)\left(\prod_{m\ge 0}( q^{m+{1\over 2}} z^{-1} + 1)q^{-m-{1\over 2}} z\right)\]
+    \[ = \left(\prod_{m \ge 0} (1 + q^{m+{1\over 2}} z)\right)\left(\prod_{m\ge 0}( q^{m+{1\over 2}} z^{-1} + 1)\right) \left(\prod_{m \ge 0} q^{-m-{1\over 2}} z\right)\]
+    and renormalize by dropping the factor of $\left(\prod_{m \ge 0} q^{-m-{1\over 2}} z\right)$ (in other words: taking for granted that we do have infinitely many negative-energy particles) to obtain
+    \[\left(\prod_{m \ge 0} (1 + q^{m + {1\over 2}} z)\right)\left(\prod_{m \ge 0} (1 + q^{m + {1\over 2}} z^{-1})\right)\]
+
+    The coefficient of $q^E z^n$ in this infinite product is in fact the number of states finitely different from our chosen ground state with energy $E$ and particle count $n$.
+    For each positive energy $m + {1\over 2}$, we can choose either to have a particle there (contributing $q^{m+{1\over 2}} z$ to the product, increasing total energy by $m+{1\over 2}$ and increasing particle
+    count by 1) or not (trivially contributing 1 to the product).
+    For each negative energy level, we can choose either to leave our ground state particle alone (trivially contributing 1), or to remove a particle of that energy, i.e.
+    add an antiparticle at that energy, contributing $q^{m+{1\over 2}}z^{-1}$, increasing energy by $m+{1\over 2}$, and decreasing particle count by 1.
+
+    <h2>Second Generating Function</h2> Another way we can account for
+    how many states there are at each energy is by observing that for
+    a chosen particle count (relative to the ground state), there is a
+    minimum energy (relative to the ground state) that can be
+    obtained: we just push all particles leftward until we can push them
+    no farther. Consider the following example:
+    <center><img src="dirac5.png"/></center>
+    The particle that had energy $-{1\over 2}$ drops 1 spot to fill the $-{3\over 2}$ level.
+    The particle that had energy ${5\over 2}$ drops 3 spots to fill the $-{1\over 2}$ level.
+    The particle that had energy ${7\over 2}$ drops 3 spots to fill the ${1\over 2}$ level.
+    <p/>
+
+    This process effectively "standardizes" any state by mapping it to
+    a state that looks just like the ground state, but perhaps shifted
+    left or right on the energy scale. The information that is lost by
+    this standardization process is exactly a <i>partition</i> of the
+    number that counts how much total energy was lost. In this case, we lost a total of 7 units of energy, and the partition is $(3,3,1)$.
+
+    <p/>
+    What is the energy and particle count of the ground state shifted to the right $N$ spots?
+    Since the sum of the first $N$ odd numbers is $N^2$, we see its energy is $N^2/2$,
+    and the particle count is $N$. So in generating-function language, the "almost ground" states form the sum
+    \[\sum_{N = -\infty}^\infty q^{N^2/2}z^N \]
+    But we also have to consider the choice of partition with which we 'excite' particles from one of these states. Let $p(n)$ be the number of partitions of $n$. We
+    now claim that an expression for the generating function of all possible states is:
+    \[\sum_{n=0}^\infty p(n)q^n \sum_{N = -\infty}^\infty q^{N^2/2}z^N \]
+    We first choose how much energy (i.e. $n$) is tied up in exciting particles above the almost-ground state. Then we choose a partition to describe how it is allocated,
+    and choose which almost-ground state we're working from.
+    <h2>Putting These Together</h2>
+    We have two generating-function expressions that both purport to describe all possible states of our system. We set them equal:
+       \[\left(\prod_{m \ge 0} (1 + q^{m + {1\over 2}} z)\right)\left(\prod_{m \ge 0} (1 + q^{m + {1\over 2}} z^{-1})\right)= \sum_{n=0}^\infty p(n)q^n \sum_{N = -\infty}^\infty q^{N^2/2}z^N \]
+    Recall the product expression of the partition generating function:
+       \[\left(\prod_{m \ge 0} (1 + q^{m + {1\over 2}} z)\right)\left(\prod_{m \ge 0} (1 + q^{m + {1\over 2}} z^{-1})\right)= \left(1\over \prod_{m=1}^\infty (1-q^m)\right)  \sum_{N = -\infty}^\infty q^{N^2/2}z^N \]
+    And recall the standard $q$-Pochhammer notation:
+    \[(a;q)_\infty = \prod_{m = 0}^\infty (1-aq^m)\]
+    This lets us rewrite the above as
+       \[(q^{1\over 2}z;q)_\infty (q^{1\over 2}z^{-1};q)_\infty = {1\over (q;q)_\infty} \sum_{N = -\infty}^\infty q^{N^2/2}z^N \]
+    Finally, substituting $q = ab$ and $z = -\sqrt{a/b}$, we can obtain the pleasantly symmetric form
+       \[(-a;ab)_\infty (-b;ab)_\infty (ab;ab)_\infty =  \sum_{N = -\infty}^\infty a^{N(N+1)/2}b^{N(N-1)/2} \]
+  </body>
+  <script>
+	 function go(body) {
+    renderMathInElement( body, { strict: false, trust: true,
+      delimiters: [ {left: "$$", right: "$$", display: true}, {left:
+      "\\[", right: "\\]", display: true}, {left: "$", right: "$",
+      display: false}, {left: "\\(", right: "\\)", display: false} ],
+      macros: {
+		  "\\x": "\\times",
+		  "\\celse": "\\mathrel{|}",
+		  "\\st": "\\mathrel{|}",
+		  "\\rid": "\\mathrm{id}",
+		  "\\ll": "\\langle",
+		  "\\rr": "\\rangle",
+ } } );
+	 }
+  </script>
+
+</html>
