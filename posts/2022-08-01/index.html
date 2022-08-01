@@ -174,6 +174,29 @@
        \[(-q^{1\over 2}z;q)_\infty (-q^{1\over 2}z^{-1};q)_\infty = {1\over (q;q)_\infty} \sum_{N = -\infty}^\infty q^{N^2/2}z^N \]
     Finally, substituting $q = ab$ and $z = \sqrt{a/b}$, we can obtain the pleasantly symmetric form
        \[(-a;ab)_\infty (-b;ab)_\infty (ab;ab)_\infty =  \sum_{N = -\infty}^\infty a^{N(N+1)/2}b^{N(N-1)/2} \]
+
+    <h2>A Direct Combinatorial Interpretation of the $ab$-expression</h2>
+    Say a <i>unique off-diagonal partition</i> of the pair $(\ell, k)$ is a finite set of pairs $(\ell_i, k_i)$ such that $\ell = \sum_i\ell_i$ and $k = \sum_i k_i$
+    and $|\ell_i - k_i| = 1$. Then the $a^\ell b^k$ coefficient of
+    \[(-a;ab)_\infty (-b;ab)_\infty = \prod_{m=0}^\infty (1+a^{m+1}b^m)(1+a^mb^{m+1})\] is exactly the number of unique off-diagonal partitions
+    of $(\ell, k)$.
+    Consider what the equation
+      \[(-a;ab)_\infty (-b;ab)_\infty (ab;ab)_\infty =  \sum_{N = -\infty}^\infty a^{N(N+1)/2}b^{N(N-1)/2} \]
+      is effectively saying, if we move the $(ab;ab)_\infty$ back to the right hand side:
+      \[\prod_{m=0}^\infty (1+a^{m+1}b^m)(1+a^mb^{m+1}) = \left(\sum_{n = 0}^\infty p(n)a^nb^n\right)  \left(\sum_{N = -\infty}^\infty a^{N(N+1)/2}b^{N(N-1)/2}\right) \]
+    We should be able to bijectively  transform a unique off-diagonal partition of $(\ell, k)$ into a choice of $n$, an ordinary partition $\lambda$ of $n$, and a choice of $N$,
+    such that
+\[n + N(N+1)/2 = \ell\]
+\[n + N(N-1)/2 = k\]
+    <p/>
+    Here is how we can do it. The parts of a unique off-diagonal partition are particles and anti-particles.
+    Specifically, $a^{m+1}b^{m}$ plays the role of a particle of energy $m+1/2$, and $a^{m}b^{m+1}$ plays the role of an antiparticle of energy $m+1/2$.
+    We set
+\[n = {\ell + k - (\ell - k)^2 \over 2}\]
+\[N = \ell - k \]
+And extracting the partition works analogously: we can see that a $a^mb^{m+1}$ actually does behave like a 'missing' $a^{m+1}b^m$, as long as we have
+a big enough $a^{N(N+1)/2}b^{N(N-1)/2}$ 'sea' to borrow from.
+<center><img src="dirac6.png"></center>
   </body>
   <script>
 	 function go(body) {
