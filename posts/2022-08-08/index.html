@@ -75,9 +75,10 @@
     of types:
     \[(\alpha(\tau), (1+\tau), (1+\tau)) \cong \tau + (4, \alpha(\tau, \tau), (1+\tau), (1+\tau)) \]
     Let's write $\tau?$ for the Maybe-type $(1 + \tau)$, and expand the definition of $\alpha$:
+    Now our claim is that
     \[(\tau, [\tau], [\tau], \tau?, \tau?) \cong \tau + (4, \tau, \tau, [\tau, \tau], [\tau, \tau], \tau?, \tau?) \]
     <p/>
-    We can in fact realize this isomorphism as a functional.
+    We can in fact realize this isomorphism as a simple functional program.
     Let $\binl$ and $\binr$ be the injections into general sum types, and
     $\bnone$ and $\bjust$ be injections into the type $\tau?$, and let
     the elements of the four-element type be $4 = \{\ms 0, \ms 1, \ms 2, \ms 3\}$.
