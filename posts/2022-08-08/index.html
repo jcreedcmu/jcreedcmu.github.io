@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+
+    <style>
+      .ib { display: inline-block; }
+      center { vertical-align: middle; }
+      .code { white-space: pre; display: block; }
+      .tables { display: flex; align-items: center; }
+      .rotate180  {
+        transform: rotate(180deg) translate(0px, 3px);
+        display: inline-block;
+      }
+
+		/* li.cdots makes a cdots */
+		li.cdots {  list-style-type: none; }
+		li.cdots:before {  content: '⋯'; }
+		li.np1 {  list-style-type: none; }
+		li.np1:before {  content: 'n+1.'; margin-left: -35px; margin-right: 5px; }
+
+		pre.indent {
+		  background-color: #eee;
+		  padding: 2em;
+		  margin: 1em;
+		}
+		pre.nobg {
+		  background-color: inherit;
+        padding: 0em 2em;
+		}
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>The Functional Programmer's -1/12</title>
+  </head>
+  <body>
+    <h1>The Functional Programmer's -1/12</h1>
+
+    I wanted to go through the usual heuristic argument that
+    \[1+2+3+\cdots = -1/12\]
+    and see what about it I can believe in.
+    <p/>
+    <h3>Manipulating Power Series</h3>
+    Here's a version of the story that starts with a power series in a variable $q$.
+    Define the function (thinking of $q$ as a real number, and $\alpha$ as a function $\R \to \R$)
+    \[\alpha(q) = {q\over (1-q)^2}\]
+    and observe it has a power series
+    \[\alpha(q) = q + 2q^2 + 3q^3 + 4q^4 + \cdots\]
+    Now try to compute $\alpha(q) + \alpha(-q)$. We find
+    \[\alpha(q) + \alpha(-q) = (q + 2q^2 + 3q^3 + 4q^4 + \cdots) + (-q + 2q^2 - 3q^3 + 4q^4 - \cdots)\]
+    \[ = 4q^2 + 8q^4 + 12q^3 + 16q^4 + \cdots\]
+    \[ = 4\alpha(q^2) \]
+    But now let's expand out $\alpha(-q)$ according to its definition:
+    \[\alpha(q) + {-q\over (1+q)^2} = 4\alpha(q^2)\]
+    Now multiply both sides by $(1+q)^2$:
+     \[\alpha(q)(1+q)^2 - {q} = 4\alpha(q^2)(1+q)^2\]
+    And move the $q$ to the right-hand side:
+     \[\alpha(q)(1+q)^2  = q + 4\alpha(q^2)(1+q)^2 \tag{\dag}\]
+    <h3>Interpreting as a Functional Program</h3>
+    Notice that we have completely gotten rid of any minus signs or divisions outside of $\alpha$.
+    This means we can Curry-Howard everything in sight: interpret multiplication as product types, addition as sum types,
+    1 as the unit type, 4 as a four-element type, and $\alpha$ as the type operator
+    \[\alpha(\tau) = (\tau, [\tau], [\tau])\]
+    using Haskell notation $[\tau]$ for the type of lists of $\tau$, and $(\tau_1, \tau_2, \ldots)$ for tuple types.
+    The equation $(\dag)$ becomes an (alleged!) isomorphism
+    of types:
+    \[(\alpha(\tau), (1+\tau), (1+\tau)) \cong \tau + (4, \alpha(\tau, \tau), (1+\tau), (1+\tau)) \]
+    Let's write $\tau?$ for the Maybe-type $(1 + \tau)$, and expand the definition of $\alpha$:
+    \[(\tau, [\tau], [\tau], \tau?, \tau?) \cong \tau + (4, \tau, \tau, [\tau, \tau], [\tau, \tau], \tau?, \tau?) \]
+    <p/>
+    We can in fact realize this isomorphism as a functional.
+    Let $\binl$ and $\binr$ be the injections into general sum types, and
+    $\bnone$ and $\bjust$ be injections into the type $\tau?$, and let
+    the elements of the four-element type be $4 = \{\ms 0, \ms 1, \ms 2, \ms 3\}$.
+    Define the following function:
+\[\iso : (\tau, [\tau], [\tau], \tau?, \tau?) \to \tau + (4, \tau, \tau, [\tau], [\tau])\]
+\[\begin{align*}
+\iso(z, [], [], \bnone, \bnone) &= \binl z\\
+\iso(z, xs, ys, \bjust u, \bnone) &= \binr (\ms0, z, u, xs, ys)\\
+\iso(z, xs, ys, \bnone, \bjust u) &= \binr (\ms1, z, u, xs, ys)\\
+\iso(z, xs, ys, \bjust x, \bjust u) &= \binr (\ms2, z, u, x \cc xs, ys)\\
+\iso(z, [], y \cc ys, \bnone, \bnone) &= \binr (\ms2, z, y, [], ys)\\
+\iso(z, x \cc xs, ys, \bnone, \bnone) &= \binr (\ms3, z, x, xs, ys)\\
+\end{align*}\]
+    Notice that the definition $\iso$ covers all input cases uniquely. If
+    at least one of the two $\tau?$ arguments is $\bjust$, then the other variables
+    $z,xs,ys$ are consumed uniformly without further pattern matching. If both are
+    $\bnone$, then we can split cases first on whether the first $[\tau]$ argument is empty,
+    then on whether the second $[\tau]$ argument is empty.
+    <p/>
+    Moreover, we can define the inverse of $\iso$ by simply reversing the left and right-hand sides
+    of each defining clause. Coverage checking of the right-hand sides of $\iso$ is also easy.
+    If we have an $\binl$, then no further pattern-matching of $z$ is required. If we have an $\binr$,
+    then we split cases on the (non)emptiness of the first $[\tau]$ only if the $4$ argument is $\ms 2$.
+    <p/>
+<h3>Another Way</h3>
+Another way of writing the same program
+ is by composing the isomorphisms $\tau ? = 1 + \tau$ and $[\tau] = 1 + (\tau,[\tau])$.
+\[\begin{align*}
+(\tau, [\tau], [\tau], \tau?, {\color{blue}\tau?})
+&= (\tau, [\tau], [\tau], {\color{green}\tau?}, {\color{blue}1}) + (\tau, [\tau], [\tau], \tau?, {\color{blue}\tau})\\
+&= (\tau, [\tau], [\tau], {\color{green}1}, {1}) + (\tau, [\tau], [\tau], {\color{green}\tau}, {1}) + (\tau, [\tau], [\tau], {\color{red}\tau?}, {\tau})\\
+&= (\tau, {\color{blue}[\tau]}, [\tau], {1}, {1}) + (\tau, [\tau], [\tau], {\tau}, {1}) + (\tau, [\tau], [\tau], {\color{red}1}, {\tau})
++ (\tau, [\tau], [\tau], {\color{red}\tau}, {\tau})\\
+&= (\tau, {\color{blue}1}, {\color{green}[\tau]}, {1}, {1}) + (\tau, {\color{blue}(\tau, [\tau])}, [\tau], {1}, {1}) + (\tau, [\tau], [\tau], {\tau}, {1}) + {}\\
+& \qquad\qquad (\tau, [\tau], [\tau], {1}, {\tau}) + (\tau, [\tau], [\tau], {\tau}, {\tau})\\
+&= (\tau, {1}, {\color{green}1}, {1}, {1}) + (\tau, {1}, {\color{green}(\tau, [\tau])}, {1}, {1}) + (\tau, {(\tau, [\tau])}, [\tau], {1}, {1}) + (\tau, [\tau], [\tau], {\tau}, {1}) + {}\\
+& \qquad\qquad (\tau, [\tau], [\tau], {1}, {\tau}) + (\tau, [\tau], [\tau], {\tau}, {\tau})\\
+&= {\color{gray}(\tau, {1}, {1}, {1}, {1})} + {\color{blue}(\tau, {1}, {(\tau, [\tau])}, {1}, {1})} + {\color{red}(\tau, {(\tau, [\tau])}, [\tau], {1}, {1})} + {\color{red}(\tau, [\tau], [\tau], {\tau}, {1})} + {}\\
+& \qquad\qquad {\color{red}(\tau, [\tau], [\tau], {1}, {\tau})} + {\color{orange}(\tau, [\tau], [\tau], {\tau}, {\tau})}\\
+&={\color{gray}\tau} + {\color{red}(3,\tau, \tau, [\tau], [\tau])} +  {\color{blue}(\tau, \tau, {1}, [\tau])} + {\color{orange}(\tau, \tau, {(\tau, [\tau])}, [\tau])}\\
+&=\tau + (3, \tau, \tau, [\tau], [\tau]) + (\tau, \tau, {\color{green}1}, [\tau]) + (\tau, \tau, {\color{green}(\tau, [\tau])}, [\tau])\\
+&=\tau + (3, \tau, \tau, [\tau], [\tau]) + (\tau, \tau, {\color{green}[\tau]}, [\tau])\\
+&=\tau + (4, \tau, \tau, [\tau], [\tau])\\
+\end{align*}\]
+<h3>Even List and Maybe Element is List</h3>
+    Note that $\iso$ isn't quite what we originally wanted to prove &mdash; its codomain is
+\[\tau + (4, \tau, \tau, [\tau], [\tau])\] rather than
+\[\tau + (4, \tau, \tau, [\tau, \tau], [\tau, \tau], \tau?, \tau?)\]
+But we can observe that $[\tau]$ is easily seen to be isomorphic to $([\tau, \tau], \tau?)$, for any list
+consists of an even-length list, together with maybe one remaining element if the original list happened to be of odd length.
+<p/>
+This completes the proof that there is an isomorphism of types
+\[(\tau, [\tau], [\tau], \tau?, \tau?) \cong \tau + (4, \tau, \tau, [\tau, \tau], [\tau, \tau], \tau?, \tau?) \]
+<h3>Interpreting -1/12</h3>
+The previous section is an actual definite truth about types and functions. If we switch our mindset
+back to "heuristic suggestive informal real-number arguments" mode, and look again at
+     \[\alpha(q)(1+q)^2  = q + 4\alpha(q^2)(1+q)^2 \]
+We notice that if we plug in $q=1$, we get
+     \[\alpha(1)\cdot 2^2  = 1 + 4\alpha(1)\cdot 2^2 \]
+     \[4\alpha(1)  = 1 + 16\alpha(1) \]
+     \[(-12)\alpha(1)  = 1  \]
+     \[\alpha(1)  = -1/12  \]
+So if we look at $\iso$ and substitute $\tau = 1$, we find we have exhibited an isomorphism
+\[(1, [1], [1], 1?, 1?) \cong 1 + (4, 1, 1, [1, 1], [1, 1], 1?, 1?) \]
+The analog of $\alpha(1)$ here is the type $(1,[1],[1]) = ([1],[1])$ of pairs of lists of unit.
+But a list of unit is just a natural number, really, so in what sense is
+\[(\N,\N) = 1 + 2 + 3 + \cdots\]
+true? The interpretation goes that each summand $n$ on right-hand side collects together the pairs of numbers
+that add up to $n-1$. Thus we're imagining that:
+\[ 1 = \{(0,0)\}\qquad 2 = \{(0,1),(1,0)\} \qquad 3 = \{(0,2),(1,1),(2,0)\} \qquad \cdots\]
+and then we claim
+\[(1, [1], [1], 1?, 1?) \cong 1 + (4, 1, 1, [1, 1], [1, 1], 1?, 1?) \]
+which is really the same thing as
+\[((\N, \N), (1?, 1?)) \cong  1 + (4, (\N, \N), (1?, 1?))\]
+which is also the same thing as
+\[((\N, \N), (1?, 1?)) \cong  ((\N, \N), (1?, 1?)) + 1 + ((3, 1?, 1?), (\N, \N))\]
+So between the left-hand side and the right-hand side of this bijection, we have added
+\[1 + ((3, 1?, 1?), (\N, \N))\]
+So in some sense this type "behaves like zero" in this context, and it is one plus 12 (i.e. $(3, 1?, 1?)$)
+times $(\N, \N)$. So that is the sense in which
+\[1 + 2 + 3 + \cdots \cong (\N, \N) \approx -1/12\]
+</body>
+  <script>
+	 function go(body) {
+    renderMathInElement( body, { strict: false, trust: true,
+      delimiters: [ {left: "$$", right: "$$", display: true}, {left:
+      "\\[", right: "\\]", display: true}, {left: "$", right: "$",
+      display: false}, {left: "\\(", right: "\\)", display: false} ],
+      macros: {
+		  "\\cc": "\\mathop{::}",
+		  "\\ms": "\\mathsf",
+		  "\\iso": "\\mathsf{iso}",
+		  "\\bnone": "\\mathsf{None}",
+		  "\\bjust": "\\mathsf{Just}\\,",
+		  "\\binl": "\\mathbf{inl}\\,",
+		  "\\binr": "\\mathbf{inr}\\,",
+		  "\\x": "\\times",
+		  "\\celse": "\\mathrel{|}",
+		  "\\st": "\\mathrel{|}",
+		  "\\rid": "\\mathrm{id}",
+		  "\\ll": "\\langle",
+		  "\\rr": "\\rangle",
+ } } );
+	 }
+  </script>
+
+</html>

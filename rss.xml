@@ -4,7 +4,13 @@
 	 <title>jcreedcmu.github.io</title>
 	 <description>Occasional blogging</description>
 	 <link>https://jcreedcmu.github.io/index.html</link>
-	 <pubDate>Mon, 01 Aug 2022 00:00:00 GMT</pubDate>
+	 <pubDate>Mon, 08 Aug 2022 00:00:00 GMT</pubDate>
+    <item>
+      <title>The Functional Programmer's -1/12</title>
+		<link>https://jcreedcmu.github.io/posts/2022-08-08/</link>
+      <description></description>
+      <pubDate>Mon, 08 Aug 2022 00:00:00 GMT</pubDate>
+    </item>
     <item>
       <title>Jacobi Triple Product Identity</title>
 		<link>https://jcreedcmu.github.io/posts/2022-08-01/</link>
