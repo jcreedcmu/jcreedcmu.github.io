@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+
+    <style>
+      .ib { display: inline-block; }
+      center { vertical-align: middle; }
+      .code { white-space: pre; display: block; }
+      .tables { display: flex; align-items: center; }
+      .rotate180  {
+        transform: rotate(180deg) translate(0px, 3px);
+        display: inline-block;
+      }
+
+		/* li.cdots makes a cdots */
+		li.cdots {  list-style-type: none; }
+		li.cdots:before {  content: '⋯'; }
+		li.np1 {  list-style-type: none; }
+		li.np1:before {  content: 'n+1.'; margin-left: -35px; margin-right: 5px; }
+
+		pre.indent {
+		  background-color: #eee;
+		  padding: 2em;
+		  margin: 1em;
+		}
+		pre.nobg {
+		  background-color: inherit;
+        padding: 0em 2em;
+		}
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>The Functional Programmer's -1/12 (2)</title>
+  </head>
+  <body>
+    <h1>The Functional Programmer's -1/12 (2)</h1>
+
+    I realize there's a sequence of other derivations you can go through to still obtain
+    \[1+2+3+\cdots = -1/12\]
+    Instead of computing $\alpha(q) + \alpha(-q)$, we can compute
+    \[\sum_{i=0}^{n-1} \alpha(\zeta^i q)\]
+    for $\zeta$ an $n^{th}$ root of unity. First let's just do the $n=3$ case:
+    <p/>
+    <h3>Multiples of 3</h3>
+    Recall we start with
+    \[\alpha(q) = {q\over (1-q)^2} = q + 2q^2 + 3q^3 + 4q^4 + \cdots\]
+    Instead of computing $\alpha(q) + \alpha(-q)$, let's pick a cube root of unity, $\omega = e^{2\pi i/3}$,
+    and compute (using the facts that $\omega^3 = 1$ and $1 + \omega + \omega^2 = 0$)
+    \[\alpha(q) + \alpha(\omega q) + \alpha(\omega^2 q) = {}\]
+    \[ (q + 2q^2 + 3q^3 + 4q^4 + \cdots) + {}\]
+\[ (\omega q + 2\omega^2q^2 + 3q^3 + 4\omega q^4 + \cdots) + {}\]
+\[ (\omega^2 q + 2\omega q^2 + 3q^3 + 4\omega^2 q^4 + \cdots)\]
+    \[ = (1 + \omega + \omega^2)q + (1+\omega^2+\omega)2q^2 + (1+1+1)3q^3 +  \cdots\]
+    \[ = 9q^3 + 18q^6 + 27q^9 + \cdots\]
+    \[ = 9\alpha(q^3) \]
+    But now let's expand out $\alpha(\omega q)$ and $\alpha(\omega^w q)$ according to their definition:
+    \[\alpha(q) + {\omega q \over (1-\omega q)^2} + {\omega^2 q \over (1-\omega^2 q)^2} = 9\alpha(q^3) \tag{*}\]
+    Now observe that $(q-1)(q-\omega)(q-\omega^2) = q^3 - 1$ means
+    \[(1-q)(1-\omega q)(1-\omega^2 q) = 1 - q^3\]
+ and dividing both sides by $(1-q)$ we get
+    \[(1-\omega q)(1-\omega^2 q) = 1 + q + q^2\]
+    So now let's multiply both sides of $(*)$ by $(1-\omega q)^2(1-\omega^2 q)^2 = (1 + q + q^2)^2$ to clear denominators.
+     \[\alpha(q)(1+q+q^2)^2 + \omega q (1 - \omega^2 q)^2 +  \omega^2 q (1 - \omega q)^2  = 9\alpha(q^3)(1+q+q^2)^2\]
+    We have to do a little more reasoning about $\omega$: observe that
+    \[\omega q (1 - \omega^2 q)^2 +  \omega^2 q (1 - \omega q)^2
+ =\omega q (1 - 2\omega^2 q + \omega q^2) +  \omega^2 q (1 - 2\omega q + \omega^2 q^2)\]
+\[ = (\omega q - 2 q^2 + \omega^2 q^3) +   (\omega^2 q - 2 q^2 + \omega q^3)\]
+\[ = (\omega+\omega^2) q - 4 q^2 + (\omega +\omega^2) q^3\]
+\[ = -(q + 4q^2 + q^3)\]
+Somewhat surprisingly, all appearances of $\omega$ can be eliminated. So now we know
+     \[\alpha(q)(1+q+q^2)^2 - (q + 4q^2 + q^3) = 9\alpha(q^3)(1+q+q^2)^2\]
+Moving the negative polynomial in $q$ to the right, we get
+     \[\alpha(q)(1+q+q^2)^2  = (q + 4q^2 + q^3) + 9\alpha(q^3)(1+q+q^2)^2\]
+    And so we guess that there is a simple functional program realizing this isomorphism.
+    <p/>
+    Already we can see that if we substitute $q=1$, we obtain
+     \[9\alpha(1)  = 6 + 81\alpha(1)\]
+    which also tells us that $\alpha(1) = 6/(9-81) = -1/12$.
+    <h2>Multiples of $n$</h2>
+    Before trying to write that program, let's try to go through the argument for arbitrary $n$.
+    We start with $\alpha(q)$, and compute from the sum
+        \[\sum_{i=0}^{n-1} \alpha(\zeta^i q) = \sum_{i=0}^{n-1} \sum_{t=0}^\infty t (\zeta^i q)^t\]
+\[= \sum_{i=0}^{n-1} \sum_{t=0}^\infty t \zeta^{it} q^t\]
+\[=\sum_{t=0}^\infty t q^t \sum_{i=0}^{n-1}   \zeta^{it} \]
+\[=\sum_{t=0}^\infty t q^t \left(\begin{cases}n & \hbox{if $t\equiv 0\pmod n$;} \\ 0 &\hbox{otherwise.}\end{cases} \right)\]
+\[=\sum_{t=0}^\infty n^2t q^{nt} \]
+\[=n^2 \alpha(q^n) \]
+Now we single out the summand where $i=0$:
+\[\alpha(q) + \sum_{i=1}^{n-1} \alpha(\zeta^i q) = n^2 \alpha(q^n)\]
+and expand the definition of $\alpha$ in all summands <i>except</i> for $i=0$:
+\[\alpha(q) + \sum_{i=1}^{n-1} \left(\zeta^i q\over (1-\zeta^i q)^2\right) = n^2 \alpha(q^n) \tag{\dag}\]
+Let's now define
+\[P = \prod_{i=1}^{n-1} (1 - \zeta^i q) \qquad P_j = P / (1 - \zeta^j q)\]
+and multiply both sides of $(\dag)$ by $P^2$, to obtain
+\[\alpha(q) P^2 + q \sum_{i=1}^{n-1} \zeta^i  P_i^2  = n^2 P^2 \alpha(q^n) \tag{\ddag}\]
+It is perhaps somewhat surprising that both $P^2$ and $-\sum_{i=1}^{n-1} \zeta^i P^2_i$
+turn out to be polynomials in $q$ with positive integer coefficients.
+<h3>Lemmas about $P$</h3>
+The fact that $P^2$ is such a polynomial is not that difficult.
+<p/><b>Lemma 1</b> \[(1-q)P = \prod_{i=0}^{n-1} (1-\zeta^i q) = 1 - q^n\]
+<p/><b>Proof</b>: Easily derived from $\prod_{i=0}^{n-1} (q-\zeta^i) = q^n - 1$. &#x220e;
+<p/><b>Corollary</b> \[P = {1-q^n\over 1-q} = \sum_{i=0}^{n-1} q^i\]
+
+Now let's think about
+\[\sum_{i=1}^{n-1} \zeta^i P^2_i\]
+First we claim that
+<p/><b>Lemma 2</b>
+\[P_i(1-q) = \prod_{j=1}^{n-1} (1-\zeta^{i+j} q)\]
+<p/><b>Proof</b>:
+\[P_i(1-q) = (1-q){\prod_{j=1}^{n-1} (1 - \zeta^j q)   \over (1 - \zeta^i q)}\]
+\[= {\prod_{j=0}^{n-1} (1 - \zeta^j q)   \over (1 - \zeta^i q)}\]
+\[= {\prod_{j=i}^{n+i-1} (1 - \zeta^j q)   \over (1 - \zeta^i q)}\]
+\[= {\prod_{j=i+1}^{n+i-1} (1 - \zeta^j q) }\]
+\[= {\prod_{j=1}^{n-1} (1 - \zeta^{i+j} q) }\]
+&#x220e;
+
+<p/>
+So now we realize that
+\[\sum_{i=1}^{n-1} \zeta^i P^2_i = {\sum_{i=1}^{n-1} \zeta^i \prod_{j = 1}^{n-1}(1- \zeta^{i+j}q)^2\over (1-q)^2}\]
+\[ =  {-\left(\prod_{j=1}^{n-1} (1-\zeta^jq)^2\right) + \sum_{i=0}^{n-1} \zeta^i \prod_{j = 1}^{n-1}(1- \zeta^{i+j}q)^2\over (1-q)^2}\]
+\[ =  {-P^2 + \sum_{i=0}^{n-1} \zeta^i \prod_{j = 1}^{n-1}(1- \zeta^{i+j}q)^2\over (1-q)^2}\]
+
+
+
+
+</body>
+  <script>
+	 function go(body) {
+    renderMathInElement( body, { strict: false, trust: true,
+      delimiters: [ {left: "$$", right: "$$", display: true}, {left:
+      "\\[", right: "\\]", display: true}, {left: "$", right: "$",
+      display: false}, {left: "\\(", right: "\\)", display: false} ],
+      macros: {
+		  "\\cc": "\\mathop{::}",
+		  "\\ms": "\\mathsf",
+		  "\\iso": "\\mathsf{iso}",
+		  "\\bnone": "\\mathsf{None}",
+		  "\\bjust": "\\mathsf{Just}\\,",
+		  "\\binl": "\\mathbf{inl}\\,",
+		  "\\binr": "\\mathbf{inr}\\,",
+		  "\\x": "\\times",
+		  "\\celse": "\\mathrel{|}",
+		  "\\st": "\\mathrel{|}",
+		  "\\rid": "\\mathrm{id}",
+		  "\\ll": "\\langle",
+		  "\\rr": "\\rangle",
+ } } );
+	 }
+  </script>
+
+</html>
