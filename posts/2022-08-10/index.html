@@ -11,6 +11,11 @@
         onload="go(document.body);"></script>
 
     <style>
+.display {
+  border: 1px solid #bbc;
+  padding: 1em;
+  background-color: #f7f7ff;
+}
 .example-table {
   border-collapse: collapse;
 }
@@ -147,7 +152,9 @@ but $[n]_q = (1-q^n)/(1-q)$ so
 which means
 \[{q\over (1-q)^2} [n]_q^2 = qM_n + n^2 {q^{n} [n]_q^2 \over (1-q^n)^2}\]
 that is,
+<div class="display">
 \[\alpha(q)  [n]_q^2 = qM_n + n^2 \alpha(q^n) [n]_q^2 \]
+</div>
 <!-- <p/> <a id="mark" style="color: red;">DEBUG</a> -->
 
 <p/><b>Conjecture</b>: For all $n$, there is a functional program that
