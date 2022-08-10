@@ -12,8 +12,9 @@
 
     <style>
 .display {
+  margin: 1em;
   border: 1px solid #bbc;
-  padding: 1em;
+  padding: 0.5em;
   background-color: #f7f7ff;
 }
 .example-table {
@@ -108,8 +109,8 @@ Moving the negative polynomial in $q$ to the right, we get
 <h3>Multiples of $n$</h3>
 To get the general case, we're going to engage in some generating-function shenanigans.
 
-Notice that we can define (and I'm silently omitting a lot of details of how I arrived at these
-particular rational functions!)
+Notice that we can define (See <a href="#epilog">Epilog</a> for how I obtained these apparently
+magical guesses!)
 \[\begin{align*}
 \beta(z, q) &= {z (1+zq)\over (1-zq)(1-zq^2)(1-z)}\\
 \mu(z, q) &= {z^2 (1+zq)\over (1-zq)^3(1-zq^2)(1-z)}\\
@@ -153,7 +154,7 @@ which means
 \[{q\over (1-q)^2} [n]_q^2 = qM_n + n^2 {q^{n} [n]_q^2 \over (1-q^n)^2}\]
 that is,
 <div class="display">
-\[\alpha(q)  [n]_q^2 = qM_n + n^2 \alpha(q^n) [n]_q^2 \]
+\[\alpha(q)  [n]_q^2 = qM_n + n^2 [n]_q^2 \alpha(q^n)  \tag{**}\]
 </div>
 <!-- <p/> <a id="mark" style="color: red;">DEBUG</a> -->
 
@@ -172,6 +173,171 @@ which are given by $n^2(n^2-1)/12$. So we find
 \[\alpha(1) (n^2-n^4)    = n^2(n^2-1)/12 \]
 \[\alpha(1) n^2(1-n^2)    = n^2(n^2-1)/12 \]
 \[\alpha(1)     = -1/12 \]
+
+<a id="epilog"><h2>Epilog: Multiples of $n$, the Hard Way</h2></a>
+Okay, but how the heck did I come up with those magic generating functions?
+I arrived at them after already figuring out that $(**)$ was the equation I wanted by
+doing a bunch of experiments with complex-coefficient polynomials.
+<p/>
+    We start with $\alpha(q)$, and compute from the sum
+        \[\sum_{i=0}^{n-1} \alpha(\zeta^i q) = \sum_{i=0}^{n-1} \sum_{t=0}^\infty t (\zeta^i q)^t\]
+\[= \sum_{i=0}^{n-1} \sum_{t=0}^\infty t \zeta^{it} q^t\]
+\[=\sum_{t=0}^\infty t q^t \sum_{i=0}^{n-1}   \zeta^{it} \]
+\[=\sum_{t=0}^\infty t q^t \left(\begin{cases}n & \hbox{if $t\equiv 0\pmod n$;} \\ 0 &\hbox{otherwise.}\end{cases} \right)\]
+\[=\sum_{t=0}^\infty n^2t q^{nt} \]
+\[=n^2 \alpha(q^n) \]
+Now we single out the summand where $i=0$:
+\[\alpha(q) + \sum_{i=1}^{n-1} \alpha(\zeta^i q) = n^2 \alpha(q^n)\]
+and expand the definition of $\alpha$ in all summands <i>except</i> for $i=0$:
+\[\alpha(q) + \sum_{i=1}^{n-1} \left(\zeta^i q\over (1-\zeta^i q)^2\right) = n^2 \alpha(q^n) \tag{\dag}\]
+Let's now define
+\[ P_{ab\ldots}(n) = { 1-q^n \over (1-\zeta^{a}q)(1-\zeta^{b}q)\cdots }\]
+<!-- Observe that $1-q^n = \prod_{i=0}^{n-1} (1-\zeta^i q)$ so that in particular -->
+<!-- \[P_0 = \prod_{i=1}^{n-1} (1 - \zeta^i q) \qquad P_{0j} = P / (1 - \zeta^j q)\] -->
+We will drop the $(n)$ when it is clear from context.
+Now multiply both sides of $(\dag)$ by $P_0^2$, to obtain
+\[\alpha(q) P_0^2 + q \sum_{i=1}^{n-1} \zeta^i  P_{0i}^2  = n^2 P_0^2 \alpha(q^n) \tag{\ddag}\]
+Both $P_0^2$ and $-\sum_{i=1}^{n-1} \zeta^i P^2_{0i}$
+turn out to be polynomials in $q$ with positive integer coefficients.
+
+<!-- <p/><b>Lemma 1</b> \[(1-q)P = \prod_{i=0}^{n-1} (1-\zeta^i q) = 1 - q^n\] -->
+<!-- <p/><b>Proof</b>: Easily derived from $\prod_{i=0}^{n-1} (q-\zeta^i) = q^n - 1$. &#x220e; -->
+<!-- <p/><b>Corollary</b> \[P = {1-q^n\over 1-q} = \sum_{i=0}^{n-1} q^i\] -->
+
+
+
+<!-- <p/><b>Lemma 2</b> -->
+<!-- \[P_i(1-q) = \sum_{j=0}^{n-1} {\zeta^{ij}}q^j\] -->
+<!-- <p/><b>Proof</b>: -->
+<!-- \[P_i(1-q) = (1-q){\prod_{j=1}^{n-1} (1 - \zeta^j q)   \over (1 - \zeta^i q)}\] -->
+<!-- \[= {\prod_{j=0}^{n-1} (1 - \zeta^j q)   \over (1 - \zeta^i q)}\] -->
+<!-- \[={ 1-q^n  \over (1 - \zeta^i q)}\] -->
+<!-- \[= \sum_{j=0}^{n-1} {\zeta^{ij}}q^j\] -->
+<!-- &#x220e; -->
+
+<p/><b>Lemma</b>\[P_i = \sum_{j=0}^{n-1} q^j \zeta^{ij} \]
+<p/><b>Proof</b>:
+\[\left(\sum_{j=0}^{n-1} q^j \zeta^{ij}\right)(1-\zeta^i q) = \left(\sum_{j=0}^{n-1} q^j \zeta^{ij}\right) - \left(\sum_{j=0}^{n-1} q^{j+1} \zeta^{i(j+1)}\right)\]
+\[= \left(\sum_{j=0}^{n-1} q^j \zeta^{ij}\right) - \left(\sum_{j=1}^{n} q^j \zeta^{ij}\right)
+= 1 - q^n\zeta^{in} = 1- q^n\]
+&#x220e;
+<p/>
+In particular this means $P_0(n)$ is the $q$-integer  $[n]_q = \sum_{j=0}^{n-1} q^j$.
+<p/><b>Lemma</b>
+\[ \sum_{j=0}^{n-1} \zeta^j P_j^2  = n^2 q^{n-1}\]
+<p/><b>Proof</b>:
+\[ \sum_{j=0}^{n-1} \zeta^j P_j^2  =
+ \sum_{j=0}^{n-1} \zeta^j \left(\sum_{k=0}^{n-1} q^k \zeta^{jk} \right)^2\]
+\[= \sum_{j=0}^{n-1} \zeta^j \sum_{k_1=0}^{n-1} \sum_{k_2=0}^{n-1} q^{k_1+k_2} \zeta^{j(k_1 + k_2)} \]
+\[= \sum_{j=0}^{n-1} \zeta^j \left(
+  \left(\sum_{p=0}^{n-2} (p+1)q^p\zeta^{jp} \right)  +
+  nq^{n-1}\zeta^{j(n-1)} +
+  \left(\sum_{p=n}^{2n-2} (2n-p-1)q^p \zeta^{jp}\right)
+\right)\]
+\[= \left(\sum_{j=0}^{n-1}
+  \sum_{p=0}^{n-2} (p+1)q^p\zeta^{j(p+1)} \right)  +
+  n^2q^{n-1} +
+  \left(\sum_{j=0}^{n-1}\sum_{p=n}^{2n-2} (2n-p-1)q^p \zeta^{j(p+1)}
+\right)\]
+\[= \left( \sum_{p=0}^{n-2} (p+1)q^p\sum_{j=0}^{n-1}
+  \zeta^{j(p+1)} \right)  +
+  n^2q^{n-1} +
+  \left(\sum_{p=n}^{2n-2} (2n-p-1)q^p\sum_{j=0}^{n-1} \zeta^{j(p+1)}
+\right)\]
+\[ = n^2q^{n-1}\]
+&#x220e;
+<p/><b>Lemma</b>
+\[\sum_{j=1}^{n-1} \zeta^j P^2_{0j} =  {- [n]_q^2 + n^2q^{n-1} \over (1-q)^2} \]
+<p/><b>Proof</b>:
+\[\sum_{j=1}^{n-1} \zeta^j P^2_j =\sum_{j=1}^{n-1} \zeta^i P_{0j}^2
+ = {\sum_{j=1}^{n-1} \zeta^j P_j^2 \over (1-q)^2}
+ = {- [n]_q^2 + \sum_{j=0}^{n-1} \zeta^j P_j^2 \over (1-q)^2}
+ = {- [n]_q^2 + n^2q^{n-1} \over (1-q)^2}\]
+&#x220e;
+
+<h3>Recap</h3>
+We've proven enough to show that $(\ddag)$ above, namely
+<div class="display">
+\[\alpha(q) [n]_q^2 + q \sum_{i=1}^{n-1} \zeta^i  P_{0i}^2  = n^2 [n]_q^2 \alpha(q^n) \]
+</div>
+is the same as
+\[\alpha(q) [n]_q^2    = q\left( [n]_q^2 - n^2q^{n-1} \over (1-q)^2\right) + n^2 [n]_q^2 \alpha(q^n) \]
+
+<p/>
+We've eliminated all appearances of $\zeta$, but we still need
+to check that we actually get positive integer coefficients when we divide by $(1-q)^2$ in order
+to even conjecture that there is an implementable bijection between types.
+If we define
+\[M_n = { [n]_q^2(n) - n^2q^{n-1} \over (1-q)^2}\]
+ and inspect a few small examples, and their consecutive differences, we see:
+<center><table class="example-table">
+<tr><td>$n$</td><td>\(M_n\)</td><td>\(M_n - M_{n-1}\)</td></tr>
+<tr><td>$1$</td><td>$0$</td></tr>
+<tr><td>$2$</td><td>$1$</td><td>$1$</td></tr>
+<tr><td>$3$</td><td>$1 + 4q + q^2$</td>
+<td>$4q + q^2$</td></tr>
+<tr><td>$4$</td><td>$1 + 4q + 10q^2 + 4q^3 + q^4$</td>
+<td>$9q^2 + 4q^3 + q^4$</td></tr>
+<tr><td>$5$</td><td>$1 + 4q + 10q^2 + 20q^3 + 10q^4 + 4q^5 + q^6$</td>
+<td>$16q^3 + 9q^4 + 4q^5 + q^6$</td></tr>
+</table></center>
+<p/>Looks like a clear pattern. The consecutive differences
+involve sums of consecutive square numbers.
+
+<h3>Deriving the generating function $\mu$</h3>
+This was the point at which I started trying to think in terms of generating functions,
+trying to find a nice expression for $\sum_{n} z^n M_n$.
+So if we wanted to find a $\mu$ such that
+\[z^{-2}\mu(z,q) = 1 + z(1 + 4q + q^2) + z^2(1 + 4q + 10q^2 + 4q^3 + q^4)+ \cdots\]
+then we could take differences by multiplying both sides by $(1-z)$:
+\[ (1-z)z^{-2}\mu(z,q)  =  1 + z(4q + q^2) + z^2(9q^2 + 4q^3 + q^4) + \cdots\]
+and do some substitutions ($z \gets ab^2, q \gets b^{-1}$) to rearrange more
+perspicuously
+\[ (1-ab^2)a^{-2}b^{-4} \mu(ab^2,b^{-1})  =  1 + a(4b + 1) + a^2(9b^2 + 4b + 1) + \cdots\]
+Taking differences again by multiplying $(1-a)$, we get
+\[ (1-ab^2)(1-a)a^{-2}b^{-4}\mu(ab^2,b^{-1})  =  1 + 4ab + 9a^2b^2+ 16a^3b^3 + \cdots\]
+And we recognize the right-hand side as  $h(ab)$ for
+\[ h(x) = 1 + 4x + 9x^2+ 16x^3 + \cdots\]
+for which it is easy to see (by hitting both sides
+of $1/(1-x) = 1 + x + x^2 + \cdots$ with the operator $D_x x D_x$) that
+\[ h(x) = {x+1\over (1-x)^3}\]
+therefore
+\[(1-ab^2)(1-a)a^{-2}b^{-4}\mu(ab^2, b^{-1}) = {1 + ab\over (1-ab)^3}\]
+and, reversing our substitutions $a \gets zq^2$ and $b \gets q^{-1}$, we find
+\[(1-z)(1-zq^2)\mu(z, q) = {1 + zq\over (1-zq)^3}\]
+so
+\[\mu(z, q) = {z^2(1 + zq)\over (1-zq^2)(1-zq)^3(1-z)}\]
+
+
+<h3>Deriving the generating function $\beta$</h3>
+I went through a similar process for $\beta(z,q)$. So my goal
+is to find a nice expression for
+\[\beta(z,q) = \sum_{n} z^n [n]_q^2 \]
+So I stare at
+\[\beta(z, q) = z + z^2(1 + q)^2 + z^3(1 + q + q^2)^2 + \cdots\]
+\[z^{-1}\beta(z, q) = 1 + z(1 + q)^2 + z^2(1 + q + q^2)^2 + \cdots\]
+\[ = 1 + z(1 + 2q + q^2) + z^2(1 + 2q + 3q^2 + 2q^3 + q^4) + \cdots\]
+Now take differences by multiplying $(1-z)$:
+\[z^{-1}(1-z)\beta(z, q)  = 1 + z(2q + q^2) + z^2(2q^2 + 2q^3 + q^4) + z^3(2q^3 + 2q^4 + 2q^5 + q^6)+ \cdots\]
+\[= 1 + zq(2 + q) + (zq)^2(1 + 2q + q^2) + (zq)^3(2 + 2q + 2q^2 + q^3)+ \cdots\]
+Now do the substitution $z \gets a q^{-1}$:
+\[a^{-1}q(1-aq^{-1})\beta(aq^{-1}, q) = 1 + a(2 + q) + a^2(2 + 2q + q^2) + a^3(2 + 2q + 2q^2 + q^3)+ \cdots\]
+Take differences again, multiplying $(1-a)$:
+\[a^{-1}q(1-aq^{-1})(1-a)\beta(aq^{-1}, q) = 1 + a(1 + q) + a^2(q + q^2) + a^3(q^2 + q^3)+ \cdots\]
+Subtract 1 and divide by $a(1+q)$:
+\[{a^{-1}q(1-aq^{-1})(1-a)\beta(aq^{-1}, q)-1\over a(1+q)} = 1 + aq + a^2q^2 + a^3q^3+ \cdots\]
+Now this is recognizably
+\[{a^{-1}q(1-aq^{-1})(1-a)\beta(aq^{-1}, q)-1\over a(1+q)} = {1\over (1-aq)}\]
+So reverse the substitution, $a \gets zq$:
+\[{z^{-1}(1-z)(1-zq)\beta(z, q)-1\over zq(1+q)} = {1\over (1-zq^2)}\]
+The remainder is mere algebra:
+\[{z^{-1}(1-z)(1-zq)\beta(z, q)-1 } = {zq(1+q)\over (1-zq^2)}\]
+\[{z^{-1}(1-z)(1-zq)\beta(z, q) } = {zq(1+q) + (1-zq^2)\over (1-zq^2)}\]
+\[{\beta(z, q) } = {z^2q(1+q) + z(1-zq^2)\over (1-zq^2)(1-z)(1-zq)}\]
+\[ = {z^2q + z^2q^2 + z-z^2q^2\over (1-zq^2)(1-z)(1-zq)}\]
+\[ = {z^2q + z\over (1-zq^2)(1-z)(1-zq)}\]
+\[\beta(z,q) = {z(1+zq)\over (1-zq)(1-zq^2)(1-z)}\]
+
 
 
 </body>
