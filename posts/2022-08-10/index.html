@@ -11,6 +11,19 @@
         onload="go(document.body);"></script>
 
     <style>
+.example-table {
+  border-collapse: collapse;
+}
+
+.example-table td {
+  border: 1px solid #bbc;
+  padding: 1em;
+  text-align: center;
+}
+
+.example-table tr:first-child td {
+  background-color: #f7f7ff;
+}
       .ib { display: inline-block; }
       center { vertical-align: middle; }
       .code { white-space: pre; display: block; }
@@ -45,11 +58,11 @@
   <body>
     <h1>The Functional Programmer's -1/12 (2)</h1>
 
-    I realize there's a sequence of other derivations you can go through to still obtain
+    I notice there's a family of different derivations you can go through to still obtain
     \[1+2+3+\cdots = -1/12\]
     Instead of computing $\alpha(q) + \alpha(-q)$, we can compute
     \[\sum_{i=0}^{n-1} \alpha(\zeta^i q)\]
-    for $\zeta$ an $n^{th}$ root of unity. First let's just do the $n=3$ case:
+    for $\zeta$ an $n^{th}$ root of unity. First let's just do the $n=3$ case as a warm-up:
     <p/>
     <h3>Multiples of 3</h3>
     Recall we start with
@@ -86,51 +99,72 @@ Moving the negative polynomial in $q$ to the right, we get
     Already we can see that if we substitute $q=1$, we obtain
      \[9\alpha(1)  = 6 + 81\alpha(1)\]
     which also tells us that $\alpha(1) = 6/(9-81) = -1/12$.
-    <h2>Multiples of $n$</h2>
-    Before trying to write that program, let's try to go through the argument for arbitrary $n$.
-    We start with $\alpha(q)$, and compute from the sum
-        \[\sum_{i=0}^{n-1} \alpha(\zeta^i q) = \sum_{i=0}^{n-1} \sum_{t=0}^\infty t (\zeta^i q)^t\]
-\[= \sum_{i=0}^{n-1} \sum_{t=0}^\infty t \zeta^{it} q^t\]
-\[=\sum_{t=0}^\infty t q^t \sum_{i=0}^{n-1}   \zeta^{it} \]
-\[=\sum_{t=0}^\infty t q^t \left(\begin{cases}n & \hbox{if $t\equiv 0\pmod n$;} \\ 0 &\hbox{otherwise.}\end{cases} \right)\]
-\[=\sum_{t=0}^\infty n^2t q^{nt} \]
-\[=n^2 \alpha(q^n) \]
-Now we single out the summand where $i=0$:
-\[\alpha(q) + \sum_{i=1}^{n-1} \alpha(\zeta^i q) = n^2 \alpha(q^n)\]
-and expand the definition of $\alpha$ in all summands <i>except</i> for $i=0$:
-\[\alpha(q) + \sum_{i=1}^{n-1} \left(\zeta^i q\over (1-\zeta^i q)^2\right) = n^2 \alpha(q^n) \tag{\dag}\]
-Let's now define
-\[P = \prod_{i=1}^{n-1} (1 - \zeta^i q) \qquad P_j = P / (1 - \zeta^j q)\]
-and multiply both sides of $(\dag)$ by $P^2$, to obtain
-\[\alpha(q) P^2 + q \sum_{i=1}^{n-1} \zeta^i  P_i^2  = n^2 P^2 \alpha(q^n) \tag{\ddag}\]
-It is perhaps somewhat surprising that both $P^2$ and $-\sum_{i=1}^{n-1} \zeta^i P^2_i$
-turn out to be polynomials in $q$ with positive integer coefficients.
-<h3>Lemmas about $P$</h3>
-The fact that $P^2$ is such a polynomial is not that difficult.
-<p/><b>Lemma 1</b> \[(1-q)P = \prod_{i=0}^{n-1} (1-\zeta^i q) = 1 - q^n\]
-<p/><b>Proof</b>: Easily derived from $\prod_{i=0}^{n-1} (q-\zeta^i) = q^n - 1$. &#x220e;
-<p/><b>Corollary</b> \[P = {1-q^n\over 1-q} = \sum_{i=0}^{n-1} q^i\]
 
-Now let's think about
-\[\sum_{i=1}^{n-1} \zeta^i P^2_i\]
-First we claim that
-<p/><b>Lemma 2</b>
-\[P_i(1-q) = \prod_{j=1}^{n-1} (1-\zeta^{i+j} q)\]
+<h3>Multiples of $n$</h3>
+To get the general case, we're going to engage in some generating-function shenanigans.
+
+Notice that we can define (and I'm silently omitting a lot of details of how I arrived at these
+particular rational functions!)
+\[\begin{align*}
+\beta(z, q) &= {z (1+zq)\over (1-zq)(1-zq^2)(1-z)}\\
+\mu(z, q) &= {z^2 (1+zq)\over (1-zq)^3(1-zq^2)(1-z)}\\
+\rho(z, q) &= {z(1+zq)\over (1-zq)^3}
+\end{align*} \]
+And expand $\mu, \beta, \rho$ as power series in $z$, yielding a sequence of finite polynomials in $q$:
+<center><table class="example-table">
+<tr><td>\(\mu = \)</td><td>\(\beta =\)</td><td>\(\rho =\)</td></tr>
+<tr><td></td><td>$z+{}$</td><td>$z+{}$</td></tr>
+<tr><td>$z^2 +{}$</td><td>$z^2(1 + q)^2+{}$</td><td>$4z^2q+{}$</td></tr>
+<tr><td>$z^3(1 + 4q + q^2)+{}$</td><td>$z^3(1 + q + q^2)^2+{}$</td><td>$9z^3q^2+{}$</td></tr>
+<tr><td>$z^4(1 + 4q + 10q^2 + 4q^3 + q^4)+{}$</td><td>$z^4(1 + q + q^2 + q^3 )^2+{}$</td><td>$16z^4q^3+{}$</td></tr>
+<tr><td>$\cdots$</td><td>$\cdots$</td><td>$\cdots$</td></tr>
+</table></center>
+<p/>Notice that
+<ul>
+<li>The $z^n$ term of $\mu$ is a polynomial in $q$ that has rising then falling coefficients,
+all of the form ${k+3 \choose k}$. Let's call this polynomial $M_n$.
+ Notice we recover the $1 + 4q + q^2$ polynomial that appeared in the $n=3$ case.
+<li>The $z^n$ term of $\beta$ is the square of the $q$-integer $[n]_q = 1 + q + \cdots q^{n-1}$.
+<li>The $z^n$ term of $\rho$ is $n^2 q^{n-1}$.
+</ul>
+
+Now we'll prove an easy identity that holds between these functions.
+<p/><b>Lemma</b> \[ \beta = (1-q)^2\mu + \rho\]
 <p/><b>Proof</b>:
-\[P_i(1-q) = (1-q){\prod_{j=1}^{n-1} (1 - \zeta^j q)   \over (1 - \zeta^i q)}\]
-\[= {\prod_{j=0}^{n-1} (1 - \zeta^j q)   \over (1 - \zeta^i q)}\]
-\[= {\prod_{j=i}^{n+i-1} (1 - \zeta^j q)   \over (1 - \zeta^i q)}\]
-\[= {\prod_{j=i+1}^{n+i-1} (1 - \zeta^j q) }\]
-\[= {\prod_{j=1}^{n-1} (1 - \zeta^{i+j} q) }\]
+\[ \beta - (1-q)^2\mu = {z (1+zq)\over (1-zq)(1-zq^2)(1-z)} - {z^2 (1+zq)(1-q)^2 \over (1-zq)^3(1-zq^2)(1-z)}\]
+\[= {z (1+zq)(1-zq)^2 - z^2 (1+zq)(1-q)^2 \over (1-zq)^3(1-zq^2)(1-z)}\]
+\[= {z(1+zq)(  (1-zq)^2 - z (1-q)^2) \over (1-zq)^3(1-zq^2)(1-z)}\]
+\[= {z(1+zq)(1-zq^2)(1-z) \over (1-zq)^3(1-zq^2)(1-z)}\]
+\[= {z(1+zq) \over (1-zq)^3}\]
 &#x220e;
-
 <p/>
-So now we realize that
-\[\sum_{i=1}^{n-1} \zeta^i P^2_i = {\sum_{i=1}^{n-1} \zeta^i \prod_{j = 1}^{n-1}(1- \zeta^{i+j}q)^2\over (1-q)^2}\]
-\[ =  {-\left(\prod_{j=1}^{n-1} (1-\zeta^jq)^2\right) + \sum_{i=0}^{n-1} \zeta^i \prod_{j = 1}^{n-1}(1- \zeta^{i+j}q)^2\over (1-q)^2}\]
-\[ =  {-P^2 + \sum_{i=0}^{n-1} \zeta^i \prod_{j = 1}^{n-1}(1- \zeta^{i+j}q)^2\over (1-q)^2}\]
+Now let's see what this equation tells us at the $z^n$ coefficient in particular. We have
+\[ [n]_q^2 = (1-q)^2M_n + n^2 q^{n-1}\]
+Multiply both sides by  $q/(1-q)^2$:
+\[{q\over (1-q)^2} [n]_q^2 = qM_n + n^2 {q^{n}\over (1-q)^2}\]
+but $[n]_q = (1-q^n)/(1-q)$ so
+\[{1\over (1-q)^2} = {[n]_q^2\over (1-q^n)^2}\]
+which means
+\[{q\over (1-q)^2} [n]_q^2 = qM_n + n^2 {q^{n} [n]_q^2 \over (1-q^n)^2}\]
+that is,
+\[\alpha(q)  [n]_q^2 = qM_n + n^2 \alpha(q^n) [n]_q^2 \]
+<!-- <p/> <a id="mark" style="color: red;">DEBUG</a> -->
 
+<p/><b>Conjecture</b>: For all $n$, there is a functional program that
+realizes this equality as an isomorphism of types.
 
+<h3>Getting -1/12 Again</h3>
+We now want to set $q=1$. The $q$-deformed integer $[n]_q^2$ just becomes the regular integer
+$n^2$, but we need to evaluate $M_n$ at $q=1$.
+We look to its generating function, and find that we get $\mu(z,1) = z^2(1+z)/(1-z)^5$.
+This produces the sequence
+\[z^2 + 6z^3 + 20z^4 + 50z^5 + 105z^6 + 196z^7 + 336z^8 +\cdots\]
+which is <a href="https://oeis.org/A002415">A002415</a>, the 4-d square pyramidal numbers,
+which are given by $n^2(n^2-1)/12$. So we find
+\[\alpha(1) n^2    = n^2(n^2-1)/12 + n^4 \alpha(1) \]
+\[\alpha(1) (n^2-n^4)    = n^2(n^2-1)/12 \]
+\[\alpha(1) n^2(1-n^2)    = n^2(n^2-1)/12 \]
+\[\alpha(1)     = -1/12 \]
 
 
 </body>
@@ -155,7 +189,15 @@ So now we realize that
 		  "\\ll": "\\langle",
 		  "\\rr": "\\rangle",
  } } );
+//      setTimeout(() => jump('mark'), 400);
 	 }
+
+function jump(h){
+    var url = location.href;
+    location.href = "#"+h;
+    history.replaceState(null,null,url);
+}
+
   </script>
 
 </html>
