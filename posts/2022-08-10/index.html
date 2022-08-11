@@ -337,7 +337,32 @@ The remainder is mere algebra:
 \[ = {z^2q + z\over (1-zq^2)(1-z)(1-zq)}\]
 \[\beta(z,q) = {z(1+zq)\over (1-zq)(1-zq^2)(1-z)}\]
 
+<h2>Appendix: One More 12-ish Phenomenon</h2>
 
+Let's take another look at
+\[ x^2(1+x)/(1-x)^5 = x^2 + 6x^3 + 20x^4 + 50x^5 + 105x^6 + 196x^7 + 336x^8 +\cdots\]
+This is allegedly $\sum_n x^n (n^4 - n^2)/12$, so we should find that
+\[{12x^2(1+x)\over (1-x)^5} + \sum_n x^n n^2 = \sum_n x^n n^4\]
+We can mechanically find that
+\[\sum_n x^n n^2 = (xD)^2 {1\over 1-x} = {x(x+1) \over (1-x)^3}\]
+\[\sum_n x^n n^4 = (xD)^2 {1\over 1-x} = {x(x^3+11x^2+11x+1) \over (1-x)^5}\]
+So it should be the case that
+\[{12x^2(1+x)\over (1-x)^5} + {x(1+x)\over (1-x)^3} = {x(1+11x+11x^2+x^3) \over (1-x)^5}\]
+And indeed it is:
+\[{12x^2(1+x)\over (1-x)^5} + {x(1+x)\over (1-x)^3}
+= {12x^2(1+x) + x(1+x)(1-x)^2\over (1-x)^5}\]
+\[= {12x^2+12x^3 + x-x^2-x^3+x^4\over (1-x)^5}\]
+\[= {x(1+11x+11x^2+x^3) \over (1-x)^5}\]
+
+<h3>Another Interpretation</h3>
+For any number $p$ and type $\tau$, let $R_p(\tau)$
+be the dependent sum type $(n:\N) \x \tau^n \x n^p$. That is, an element of $R_p(\tau)$ consists of a tuple of
+$\tau$s of some finite length,
+ and a choice of $p$ pointers into that tuple. <b>Claim</b>: there is an isomorphism
+<div class="display">
+\[(12, \tau,\tau?, [\tau], [\tau], [\tau], [\tau], [\tau]) + R_2(\tau) \cong R_4(\tau)\]
+</div>
+where $\tau?$ is $\tau + 1$ and $[\tau]$ is lists of $\tau$ and $(\cdots,\cdots)$ is tuple formation.
 
 </body>
   <script>
