@@ -10,13 +10,13 @@ const f = 880;
 const AVG = 28;
 
 let sQ = {
-  v: 0.5, min: 0, max: 20, range: "Qrange", text: "Q",
+  v: 0.5, min: 0, max: 20, range: 'Qrange', text: 'Q',
 }
 let sf = {
-  v: 300, min: 10, max: 1500, range: "frange", text: "f",
+  v: 300, min: 10, max: 1500, range: 'frange', text: 'f',
 }
 let sgain = {
-  v: 0.5, min: 0, max: 1, range: "gainrange", text: "gain",
+  v: 0.5, min: 0, max: 1, range: 'gainrange', text: 'gain',
 }
 let sliders = [sQ, sf, sgain];
 
@@ -62,7 +62,7 @@ function make() {
   sgain.callback = v => gain.gain.value = v;
 
   const low = d.createBiquadFilter();
-  low.type = "lowpass";
+  low.type = 'lowpass';
   low.frequency.value = sf.v;
   sf.callback = v => low.frequency.value = v;
   low.Q.value = sQ.v;
@@ -77,6 +77,7 @@ function make() {
 let src = null;
 
 function go() {
+  document.getElementById('controls').className = 'controls running';
   if (src == null) {
 	 src = make();
 	 src.loop = true;
@@ -85,6 +86,7 @@ function go() {
 }
 
 function stop() {
+  document.getElementById('controls').className = 'controls';
   if (src != null) {
 	 src.stop();
 	 src = null;
@@ -97,13 +99,22 @@ function toggle() {
 
 window.onmousedown = toggle;
 
-document.getElementById("controls").onmousedown = (e) => { e.stopPropagation(); }
+document.getElementById('controls').onmousedown = (e) => { e.stopPropagation(); }
 
 window.onkeydown = (e) => {
-  if (e.keyCode == 32) {
+  let block = true;
+  switch (e.key) {
+  case 'f': document.getElementById('frange').focus(); break;
+  case 'q': document.getElementById('Qrange').focus(); break;
+  case 'g': document.getElementById('gainrange').focus(); break;
+  case 'Escape': document.activeElement.blur(); break;
+  case ' ': toggle(); break;
+  default:
+    block = false;
+  }
+  if (block) {
 	 e.preventDefault();
 	 e.stopPropagation();
-	 toggle();
   }
 };
 
