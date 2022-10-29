@@ -4,10 +4,11 @@ export type Post = Meta & {
 
 export type Meta = {
   date?: string,
-  tag: string,
+  tags?: string[],
   title: string,
   description?: string,
   url?: string,
+  category?: string,
 }
 
 function urlOfPost(post: Post): string {
@@ -15,12 +16,17 @@ function urlOfPost(post: Post): string {
 }
 
 function tocOfPost(post: Post): string {
-  return `    <tr><td>${post.date ?? ''}</td><td><a href="${urlOfPost(post)}">${post.title}</a></td></tr>`
+  let classDecl = '';
+  const makeTag = (x: string) => `tag-${x}`;
+  if ((post.tags !== undefined)) {
+    classDecl = ` class="${post.tags.map(makeTag).join(' ')}"`;
+  }
+  return `    <tr${classDecl}><td>${post.date ?? ''}</td><td><a href="${urlOfPost(post)}">${post.title}</a></td></tr>`
 }
 
 export function getIndex(posts: Post[]): string {
-  const untaggedPosts = posts.filter(p => p.tag === undefined);
-  const taggedPosts = posts.filter(p => p.tag !== undefined);
+  const uncategorizedPosts = posts.filter(p => p.category === undefined);
+  const categorizedPosts = posts.filter(p => p.category !== undefined);
   return `<!DOCTYPE html>
 <html>
 	 <head>
@@ -33,13 +39,13 @@ export function getIndex(posts: Post[]): string {
     <div>
     <div class="header">POSTS</div>
   	   <table>
-${untaggedPosts.map(tocOfPost).join('\n')}
+${uncategorizedPosts.map(tocOfPost).join('\n')}
       </table>
     </div>
     <div>
     <div class="header">OTHER</div>
     <table>
-${taggedPosts.map(tocOfPost).join('\n')}
+${categorizedPosts.map(tocOfPost).join('\n')}
     </table>
     </div>
   </div>

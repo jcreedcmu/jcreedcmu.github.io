@@ -20,6 +20,9 @@ td {
   border-top: 1px solid #aaa;
 }
 
+.tag-art td {  background-color: #f0fff0; }
+.tag-meta td {  background-color: #fff0f0; }
+
 .horiz {
   display: flex;
   align-items: flex-start;
