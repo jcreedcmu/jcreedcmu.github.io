@@ -1,8 +1,9 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import { Post, getIndex, getRss, Meta } from './post';
+import { Post, getIndex, getRss, Meta, postsOfJournalItems, renderJournal } from './post';
 import { promisify } from 'util';
 import * as glob from 'glob';
+import { struct_of_notes } from './sections';
 
 
 function postOfMeta(dir: string, meta: Meta): Post {
@@ -21,13 +22,21 @@ function postOfMeta(dir: string, meta: Meta): Post {
 
   const files = await promisify(glob.glob)('**/meta.json', { ignore });
 
-  const posts = files.map(file => {
+  const metaposts = files.map(file => {
     return postOfMeta(path.dirname(file), JSON.parse(fs.readFileSync(file, 'utf8')) as Meta);
   });
 
-  posts.sort((a, b) => (a.date && b.date && b.date.localeCompare(a.date)) || b.dir.localeCompare(a.dir));
+  const journalItems = struct_of_notes('JOURNAL', fs.readFileSync(path.join(__dirname, '../JOURNAL'), 'utf8'));
+  journalItems.sort((a, b) => b.item.date.localeCompare(a.item.date));
 
-  fs.writeFileSync(__dirname + '/../index.html', getIndex(posts), 'utf8');
-  fs.writeFileSync(__dirname + '/../rss.xml', getRss(posts), 'utf8');
+  const journalPosts = postsOfJournalItems(journalItems);
+  const posts = [...metaposts, ...journalPosts];
+
+
+
+  fs.writeFileSync(path.join(__dirname, '../index.html'), getIndex(posts), 'utf8');
+  fs.mkdirSync(path.join(__dirname, '../journal'), { recursive: true });
+  fs.writeFileSync(path.join(__dirname, '../journal/index.html'), renderJournal(journalItems), 'utf8');
+  fs.writeFileSync(path.join(__dirname, '../rss.xml'), getRss(posts), 'utf8');
 
 })();

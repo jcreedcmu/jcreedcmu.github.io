@@ -1,3 +1,5 @@
+import { Item, RichItem, struct_of_notes } from "./sections";
+
 export type Post = Meta & {
   dir: string,
 }
@@ -26,31 +28,41 @@ function tocOfPost(post: Post): string {
 
 export function getIndex(posts: Post[]): string {
   const uncategorizedPosts = posts.filter(p => p.category === undefined);
-  const categorizedPosts = posts.filter(p => p.category !== undefined);
+  const otherPosts = posts.filter(p => p.category === 'other');
+  const journalPosts = posts.filter(p => p.category === 'journal');
   return `<!DOCTYPE html>
 <html>
-	 <head>
+  <head>
     <meta charset="UTF-8">
-	 <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/rss.xml"/>
+    <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="/rss.xml"/>
     <link rel="stylesheet" href="style/default.css">
-	 </head>
+  </head>
   <body>
-  <div class="horiz">
-    <div>
-    <div class="header">POSTS</div>
-  	   <table>
-${uncategorizedPosts.map(tocOfPost).join('\n')}
-      </table>
+    <div class="horiz">
+      <div>
+        <div class="header">POSTS</div>
+        <table>
+          ${uncategorizedPosts.map(tocOfPost).join('\n')}
+        </table>
+      </div>
+      <div class="vert">
+        <div>
+          <div class="header">OTHER</div>
+          <table>
+            ${otherPosts.map(tocOfPost).join('\n')}
+          </table>
+        </div>
+        <div>
+          <div class="header">JOURNAL</div>
+          <table>
+            ${journalPosts.map(tocOfPost).join('\n')}
+          </table>
+        </div>
+      </div>
     </div>
-    <div>
-    <div class="header">OTHER</div>
-    <table>
-${categorizedPosts.map(tocOfPost).join('\n')}
-    </table>
-    </div>
-  </div>
-  </body>
-</html>`;
+</body>
+</html>
+`;
 }
 
 function gmtDate(p: Post) {
@@ -82,4 +94,52 @@ export function getRss(posts: Post[]): string {
 ${datedPosts.map(rssOfPost).join('\n')}
   </channel>
 </rss>\n`;
+}
+
+function entryIdOfRichItem(richItem: RichItem): string {
+  return richItem.item.date.replace(/\./g, '_'); // Thought about using canonicalId
+}
+
+export function postsOfJournalItems(richItems: RichItem[]): Post[] {
+  return richItems.map(richItem => {
+    const { item } = richItem;
+    const date = item.date.replace(/\./g, '-');
+    const entryId = entryIdOfRichItem(richItem);
+    const post: Post = {
+      dir: 'journal', date: date,
+      title: item.attrs.title ?? '[ untitled entry ]',
+      category: 'journal',
+      url: `journal/index.html#${entryId}`
+    }
+    return post;
+  });
+}
+
+// takes in pseudo-markdown, outputs html
+function renderBody(input: string): string {
+  return input.replace(/\n\n/g, '<p>\n');
+}
+
+export function renderJournal(richItems: RichItem[]): string {
+  const content = richItems.map(richItem => {
+    const { item } = richItem;
+    const entryId = entryIdOfRichItem(richItem);
+    return `
+<h2 id="${entryId}" class="journal-header"><a href="#${entryId}">${item.date}</a></h2>
+<div class="journal-entry">
+${renderBody(item.body)}
+</div>
+`;
+  }).join('\n');
+  return `<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../style/default.css">
+  </head>
+  <body>
+${content}
+  </body>
+</html>
+`;
 }
