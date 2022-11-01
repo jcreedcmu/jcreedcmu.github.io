@@ -31,8 +31,7 @@ function postOfMeta(dir: string, meta: Meta): Post {
 
   const journalPosts = postsOfJournalItems(journalItems);
   const posts = [...metaposts, ...journalPosts];
-
-
+  posts.sort((a, b) => (a.date && b.date && b.date.localeCompare(a.date)) || b.dir.localeCompare(a.dir));
 
   fs.writeFileSync(path.join(__dirname, '../index.html'), getIndex(posts), 'utf8');
   fs.mkdirSync(path.join(__dirname, '../journal'), { recursive: true });
