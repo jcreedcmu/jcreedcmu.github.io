@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+
+    <style>
+      table.first td:nth-child(1) {
+        width: 4em;
+      }
+      table.second td:nth-child(2) {
+        width: 4em;
+      }
+      table.both td:nth-child(2) {
+        width: 4em;
+      }
+      table.both td:nth-child(1) {
+        width: 5.5em;
+      }
+
+      td {
+        vertical-align: top;
+      }
+      .dan {
+        font-weight: bold;
+        color: #b10;
+      }
+      .eliza {
+        font-weight: bold;
+        color: #05b;
+      }
+
+      .quote {
+        font-style: italic;
+      }
+
+		pre.indent {
+		  background-color: #eee;
+		  padding: 2em;
+		  margin: 1em;
+		}
+		pre.nobg {
+		  background-color: inherit;
+        padding: 0em 2em;
+		}
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>The Higher-Dimensional Graph Game</title>
+  </head>
+  <body>
+    <h1>The Higher-Dimensional Graph Game</h1>
+
+<h2>The Game</h2>
+When thinking about what shapes to allow in the definition of higher-dimensional graphs, there is an interesting sequence of alternating quantifiers.
+    As is always the case with alternating quantifiers, it's possible to understand it as the playing of a game between two players; or,
+    to say the same thing a different way, a dialogue where the two parties alternate making choices.
+
+    <p/>
+    Let's imagine such a game between <span class="dan">Dan</span> and <span class="eliza">Eliza</span>. The outcome of the game is meant to comprise, at the same time, a
+    <ol>
+      <li>A <span class="dan">definition</span> of some higher-dimensional object, which will have vertices, and (something like) edges, and (something like) faces, and volumes, and so on.
+      <li>An <span class="eliza">example</span> of such an object: an instance of the definition
+    </ol>
+    <span class="dan">Dan</span>'s choices determine the <span class="dan">definition</span>, and <span class="eliza">Eliza</span>'s choices the <span class="eliza">example</span>.
+
+    <p>
+      Here's a imaginary dialog of one way they could choose to play the game:
+
+<table class="first">
+<tr><td><span class="dan">$\ $Dan</span>:</td><td class="quote">What's the set of vertices? Let's call it $\mathsf \C_0$, the $0$-dimensional cells.</td></tr>
+
+<tr><td><span class="eliza">$\ $Eliza</span>:</td><td class="quote">I'll decide $\C_0$ is the set $\{A, B, C\}$. We want there to be morphisms, $1$-dimensional cells,
+in our structure, but I can't decide what they are until I know what their <b>boundary</b> is allowed to be in terms of the $\C_0$ I just decided on.
+Let's call this $\B_0$, the $0$-dimensional boundaries. What's in that set?</td></tr>
+
+<tr><td><span class="dan">$\ $Dan</span>:</td><td class="quote">I'll decide that $\B_0 = \C_0 \x \C_0$. Every $1$-cell will need a domain and codomain.
+What's the set $\C_1$ of morphisms, then? I also want to know how to assign boundaries to all of them: I'll need a function $\partial : \C_1 \to \B_0$</td></tr>
+
+<tr><td><span class="eliza">$\ $Eliza</span>:</td><td class="quote">I'll decide $\C_1$ is the set $\{f, g, h\}$, and I'll say that
+$\partial f = \< A, B \>$ and $\partial g = \< B,C \>$ and $\partial h = \< A, C\>$. Now what's the set $\B_1$ of 1-dimensional shapes
+that serve as boundaries for $2$-cells? I'll also need to know $\partial : \B_1 \to \B_0$ to know how these boundaries relate to lower-dimensional
+ones. Hope you don't mind that I'm overloading $\partial$. </td></tr>
+
+<tr><td><span class="dan">$\ $Dan</span>:</td><td class="quote">No
+problem. As for $\B_1$, let me introduce an auxiliary concept.
+Say $\P_1$ is the set of paths over $\C_1$. That is, an
+element of $\P_1$ is a list $[f_1, \ldots, f_n]$ of elements of
+$\C_1$, such that the codomain of $f_i$ (that is, $\pi_2 \partial
+f_i$) is equal to the domain of $f_{i+1}$ (that is, $\pi_1 \partial f_{i+1}$). And I can define
+$\partial : \P_1 \to \B_0$ by saying that the domain of $[f_1, \ldots, f_n]$ is the
+domain of $f_1$, and its codomain is that of $f_n$. <p>
+Now I can say that $\B_1$ is a <b>pair</b> of paths in $\P_1$, with the same boundary.
+That means $\partial :\B_1 : \B_0$ has an obvious definition: just take either path, and return its boundary.
+<p>
+Now what's $\C_2$ and $\partial : \C_2 \to \B_1$?
+</td></tr>
+
+<tr><td><span class="eliza">$\ $Eliza</span>:</td><td class="quote">Ok, I'll decide $\C_2$ is the set $\{\alpha, \beta\}$, and I'll say that
+$\partial \alpha = \< [f,g], h \>$ and $\partial \beta = \< h,[f,g] \>$. Now what's the set $\B_2$ of 2-dimensional shapes
+that serve as boundaries for $3$-cells, and what's $\partial : \B_2 \to \B_1$?
+ </td></tr>
+
+<tr><td><span class="dan">$\ $Dan</span>:</td><td class="quote">To define $\B_2$, let me again introduce a notion of "path".
+Say $\P_2$ is the set of pasting diagrams made up of cells from $\C_2$. [...]
+</td></tr>
+
+</table>
+
+<h2>The Rules</h2>
+
+The rules that Dan and Eliza are supposed to follow are these. There is an infinite number of turns, and
+the sequence of them is the same in every game.
+<table class="second">
+<tr><td>$E_0$)</td><td><span class="eliza">$\ $Eliza</span></td><td>chooses a set $\C_0$.</td></tr>
+
+<tr><td>$D_0$)</td><td><span class="dan">$\ $Dan</span></td><td>chooses a set $\B_0$.</td></tr>
+
+<tr><td>$E_1$)</td><td><span class="eliza">$\ $Eliza</span></td><td>chooses a set $\C_1$, and a map $\partial : \C_1 \to \B_0$.</td></tr>
+
+<tr><td>$D_1$)</td><td><span class="dan">$\ $Dan</span></td><td>chooses a set $\B_1$, and a map $\partial : \B_1 \to \B_0$.</td></tr>
+
+<tr><td>$E_2$)</td><td><span class="eliza">$\ $Eliza</span></td><td>chooses a set $\C_2$, and a map $\partial : \C_2 \to \B_1$.</td></tr>
+
+<tr><td>$D_2$)</td><td><span class="dan">$\ $Dan</span></td><td>chooses a set $\B_2$, and a map $\partial : \B_2 \to \B_1$.</td></tr>
+
+<tr><td>$\vdots$</td></tr>
+
+<tr><td>$E_n)$</td><td><span class="eliza">$\ $Eliza</span></td><td>chooses a set $\C_n$, and a map $\partial : \C_n \to \B_{n-1}$.</td></tr>
+
+<tr><td>$D_n)$</td><td><span class="dan">$\ $Dan</span></td><td>chooses a set $\B_n$, and a map $\partial : \B_n \to \B_{n-1}$.</td></tr>
+
+</table>
+(For uniformity we could set $\B_{-1} = \top$, and have Dan and Eliza choose degenerate maps into $\top$ on turns $E_0$ and $D_0$)
+
+
+
+<h2>Strategies</h2>
+The thing I want to take away from the example play above is that everything Dan says still makes sense even if we change the particulars of what Eliza says.
+That is, Dan's portion of the dialog hints at a description of a <B>strategy</b> for play for the entire game. The strategy is something like:
+
+<table class="both">
+
+<tr><td>On turn $D_0$,</td><td><span class="dan">$\ $Dan</span></td><td>sets $\B_0$ to be pairs of cells in $\C_0$.</td></tr>
+
+<tr><td>On turn $D_1$,</td><td><span class="dan">$\ $Dan</span></td><td>sets $\B_1$ to be pairs of composable paths in $\C_1$, with $\partial$ being
+the boundary of the overall path.</td></tr>
+
+<tr><td>On turn $D_2$,</td><td><span class="dan">$\ $Dan</span></td><td>sets $\B_2$ to be pairs of composable 2-dimensional pasting diagrams constructed from cells in $\C_2$, with $\partial$ being
+the boundary of the overall diagram.</td></tr>
+
+<tr><td>$\vdots$</td></tr>
+
+<tr><td>On turn $D_n$,</td><td><span class="dan">$\ $Dan</span></td><td>sets $\B_n$ to be pairs of composable $n$-dimensional pasting diagrams constructed from cells in $\C_n$, with $\partial$ being
+the boundary of the overall diagram.</td></tr>
+</table>
+
+Even though I haven't been very clear about the exact choices Dan is making &mdash; I'm handwaving about what exactly an $n$-dimensional pasting diagram means,
+and therefore I'm handwaving about what a higher-dimensional graph is &mdash;
+I still think it's reasonably clear that
+
+<blockquote>
+A strategy for Dan in the above game in some sense is a particular definition of higher-dimensional graph
+</blockquote>
+
+Why is this? Because having a strategy in a game means having a witness for a proposition of the form
+<blockquote>
+<em>
+"For every move Eliza makes, there exists a move Dan can make, so that for every move Eliza makes, there exists a move Dan can make, etc."
+</em>
+</blockquote>
+More specifically, if we actually have a constructive witness
+
+<table>
+<tr><td>$\delta : {}$</td></tr>
+<tr><td>$\forall (\C_0 : \rset).\exist (\B_0 : \rset).$</td></tr>
+<tr><td>$\forall (\C_1 : \rset)(\partial : \C_1 \to \B_0).\exist (\B_1 : \rset)(\partial : \B_1 \to \B_0).$</td></tr>
+<tr><td>$\forall (\C_2 : \rset)(\partial : \C_2 \to \B_1).\exist (\B_2 : \rset)(\partial : \B_2 \to \B_1).$</td></tr>
+<tr><td>$\vdots$</td></tr>
+
+</table>
+(interpreting all the quantifiers as dependent types) then $\delta$ is
+able to tells us what all the boundary shapes are for its notion of
+graph, provided all the cells of lower dimensions with the appropriate
+boundaries.
+
+Furthermore the outcome of Eliza playing with Dan when Dan employs
+some particular strategy amounts to describing a particular object
+that satisfies that definition. We can think of Eliza's play as a term $\epsilon$ of type
+<table>
+<tr><td>$\epsilon : {}$</td></tr>
+<tr><td>$\exists (\C_0 : \rset). \blet (B_0, \delta_0) = \delta\ \C_0 \bin$</td></tr>
+<tr><td>$\exist (\C_1 : \rset)(\partial : \C_1 \to \B_0). \blet (\B_1,\partial,\delta_1) = \delta_0\ \C_1\ \partial \bin$</td></tr>
+<tr><td>$\exist (\C_2 : \rset)(\partial : \C_2 \to \B_1). \blet (\B_2,\partial,\delta_2) = \delta_1\ \C_2\ \partial \bin$</td></tr>
+<tr><td>$\vdots$</td></tr>
+
+</table>
+
+Since this is an infinite game, there is no moment when one wins and one loses, but the existence of a strategy $\delta$ for Dan
+and a particular play $\epsilon$ by Eliza that is tailored to $\delta$ together imply that both players
+<b>can</b> keep playing indefinitely.
+
+<h2>Another Example Strategy for Dan</h2>
+The example sketched above feels reminiscent of arbitrary pasting diagrams from category theory. We could give a different example strategy
+for Dan where the result is instead more like semisimplicial types:
+
+<table class="both">
+
+<tr><td>On turn $D_0$,</td><td><span class="dan">$\ $Dan</span></td><td>sets $\B_0$ to be pairs of cells in $\C_0$.</td></tr>
+
+<tr><td>On turn $D_1$,</td><td><span class="dan">$\ $Dan</span></td><td>sets $\B_1$ to be oriented triangles that have two composable arrows on one side, and a parallel arrow on the other, made out of "arrows" in $\C_1$, with $\partial$ being
+the boundary of the overall path.</td></tr>
+
+<tr><td>On turn $D_2$,</td><td><span class="dan">$\ $Dan</span></td><td>sets $\B_2$ to be oriented tetrahedra made from "triangle fillers" in $\C_2$, with $\partial$ being
+the triangle at the base of the tetrahedron.</td></tr>
+
+<tr><td>$\vdots$</td></tr>
+
+<tr><td>On turn $D_n$,</td><td><span class="dan">$\ $Dan</span></td><td>sets $\B_n$ to be boundaries of ($n+1$)-simplices constructed from cells in $\C_n$.</td></tr>
+</table>
+
+<h2>Comparing Structures</h2>
+We should have a way of talking about morphisms between structures. Suppose Eliza and Eve both play the game against the same Dan-strategy.
+Suppose Eliza and Dan's game results in sets $\C_0, \B_0, \C_1, \B_1, \ldots$, and
+Eve and Dan's game results in $\C'_0, \B'_0, \C'_1, \B'_1, \ldots$.
+<p>
+A morphism from Eliza's "graph" to Eve's should surely at least involve maps of cells $f_i : \C_i \to \C'_i$,
+and we'd like to be able to assert that boundaries are preserved. But problematically, the boundaries
+don't have the same types:
+\[\begin{CD}
+     \C_1 @>\partial>> \B_0 \\
+      @V{f_1}VV  @VV{???}V\\
+      \C'_1 @>>{\partial}> \B'_0
+\end{CD}\]
+I think we need to assume that Dan's strategy is suitably <b>functorial</b>, so that we can write
+something like
+\[\begin{CD}
+     \C_1 @>\partial>> \beta_0(C_0) \\
+      @V{f_1}VV  @VV{\beta_0(f_0)}V\\
+      \C'_1 @>>{\partial}> \beta_0(C'_0)
+\end{CD}\]
+with  $\beta_0$ being a functor $\rset \to \rset$ such that $\B_0 = \beta(C_0)$ and $\B'_0 = \beta(C'_0)$.
+<h2>Generalizing to a Category</h2>
+This suggests that we needn't focus on $\rset$. Let's instead pick a category $\CC$ with a terminal object $\top$.
+Set $\B_{-1} = \top$.
+The rules of the game are now the following: at time $n$,
+<table class="second">
+
+<tr><td>$E_n)$</td><td><span class="eliza">$\ $Eliza</span></td><td>chooses a object $\C_n$, and a map $\partial : \C_n \to \B_{n-1}$.</td></tr>
+
+<tr><td>$D_n)$</td><td><span class="dan">$\ $Dan</span></td><td>chooses a object $\B_n$, and a map $\partial : \B_n \to \B_{n-1}$.</td></tr>
+
+</table>
+
+What does it mean for Dan to have a <b>functorial</b> winning strategy for this game? To have a winning strategy
+is a sort of liveness property.
+<p/>
+Dan has a strategy full stop iff there exists a "liveness" predicate on states such that
+<ul>
+<li> The initial state of the game is live.
+<li> For every live state where it's Dan's turn, there exists a move to a live state.
+<li> For every live state where it's Elizas's turn, for all moves, the result is a live state.
+</ul>
+To have a functorial strategy requires a kind of "lateral" Kripke condition in addition to these.
+I'm not sure what it is, exactly but the intuition is that
+<ul>
+<li> For every live state where it's Dan's turn, if Eliza changes her mind about any of her past moves,
+we can somehow fill in 2-cells to smoothly/functorially accomodate this time-travel/retrodiction/parallel-universe-slide.
+</ul>
+Anyway that thought sure went off the deep end! Maybe should think more about this later.
+</body>
+  <script>
+	 function go(body) {
+    renderMathInElement( body, { strict: false, trust: true,
+      delimiters: [ {left: "$$", right: "$$", display: true}, {left:
+      "\\[", right: "\\]", display: true}, {left: "$", right: "$",
+      display: false}, {left: "\\(", right: "\\)", display: false} ],
+      macros: {
+		  "\\<": "\\langle",
+		  "\\>": "\\rangle",
+		  "\\rset": "\\mathsf {Set}",
+		  "\\P": "{\\mathsf P}",
+		  "\\CC": "{\\mathbb C}",
+		  "\\C": "{\\mathsf C}",
+
+		  "\\B": "{\\mathsf B}",
+		  "\\cc": "\\mathop{::}",
+		  "\\ms": "\\mathsf",
+		  "\\iso": "\\mathsf{iso}",
+		  "\\blet": "\\mathrel\\mathbf{unpack}",
+		  "\\bin": "\\mathrel\\mathbf{in}\\,",
+		  "\\binl": "\\mathbf{inl}\\,",
+		  "\\binr": "\\mathbf{inr}\\,",
+		  "\\x": "\\times",
+		  "\\celse": "\\mathrel{|}",
+		  "\\st": "\\mathrel{|}",
+		  "\\rid": "\\mathrm{id}",
+		  "\\ll": "\\langle",
+		  "\\rr": "\\rangle",
+ } } );
+//      setTimeout(() => jump('mark'), 400);
+	 }
+
+function jump(h){
+    var url = location.href;
+    location.href = "#"+h;
+    history.replaceState(null,null,url);
+}
+
+  </script>
+
+</html>
