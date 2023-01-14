@@ -83,7 +83,7 @@ and $\beta : 1_E \to H \o J$.
        We claim that this is actually a linear subspace of $\R^n$. So we need to show closure
        under scaling by <i>arbitrary</i> (not just positive) constants, and closure under addition.
 
-<a id="mark">...</a>
+
        <p><b>Lemma 1</b> <i>If $v \in \ker(c)$ and $\lambda \in \R$, then $\lambda v \in \ker(c)$.</i>
        <p><b>Proof</b>
          If $\lambda = 0$, appeal to axiom 1. If $\lambda > 0$, appeal to axiom 2.
@@ -102,7 +102,108 @@ Then we know
 </table>
 </center>
 <p>
-hence $\lambda v \in \ker(c)$. $\ $ &#x25a0;
+hence $\lambda v \in \ker(c)$. $\cqed$
+
+
+<p><b>Lemma 2</b> <i>If $v,w  \in \ker(c)$, then $v+w \in \ker(c)$.</i>
+<p><b>Proof</b>
+         <center><img src="lemma-2.png"></center>
+By (3), pick an open neighborhood $U \ni 0$ such that
+for all $u \in U$ we have
+\[c \wat (v + u) = (c \wat v) \wat u\]
+Now pick $\ee > 0$  small enough such that $\ee (v+w) \in U$ and $(\ee /(1+\ee ))w \in U$,
+and observe:
+<table class="proof">
+<tr><td>$ c \wat (v + w) = c \wat (\ee v + \ee w) $</td><td>     (2)</td>
+<tr><td>$   = (c \wat v) \wat (\ee v + \ee w) $</td><td>   ($v \in \ker(c)$)</td>
+<tr><td>$   = c \wat (v + \ee v + \ee w) $</td><td>       (3)</td>
+<tr><td>$   = c \wat ((1+\ee )v + \ee w)$</td><td></td>
+<tr><td>$   = c \wat (v + (\ee /(1+\ee ))w)$</td><td>           (2)</td>
+<tr><td>$   = (c \wat v) \wat (\ee /(1+\ee ))w)$</td><td>          (3)</td>
+<tr><td>$   = c \wat (\ee /(1+\ee ))w $</td><td>     ($v \in \ker(c)$)</td>
+<tr><td>$   = c \wat w $</td><td> (2)</td>
+<tr><td>$   = c $</td><td> ($w \in \ker(c)$)</td>
+</table>
+$\cqed$
+
+<p>
+The kernel of any cell $c$ is a linear subspace of $\R^n$, so it has a
+dimension. From this we can define a notion of dimension of the cell itself.
+We say
+
+   \[ \dim(c) = n - \dim(\ker(c))\]
+
+So that the 0-dimensional "objects" are the cells $c$ whose kernel is all of $\R^n$:
+the boundary-diagram consists only of $c$. The 1-dimensional "morphisms" are
+the cells $c$ whose boundary-diagram has a codimension-1 kernel,
+partitioning $\R^n$ into two halves.
+
+<p>
+We can show that every other cell occurring in the boundary diagram of $c$ must have
+strictly lower dimension.
+
+<p><b>Lemma 3</b> <i>If $c \wat v = d$, then $\ker(c) \subseteq \ker(d)$</i>.
+<p><b>Proof</b>: Let $c, v, d$, and $w \in \ker(c)$ be given, and suppose $c \wat v = d$.
+We know $c \wat w = c$, and we want to show $d \wat w = d$.
+         <center><img src="lemma-3a.png"></center>
+<p>
+Apply to (3) to $w$ to find $U_w$ such that
+\[ \forall (u_w : U_w).\  c \wat (w + u_w) = (c \wat w) \wat u_w\]
+
+Pick $\ee$  small enough such that $\ee v \in U_w$. Let $x = (w + \ee v)$.
+Note that
+
+\[      c \wat x\]
+\[    = c \wat (w + \ee v)\]
+\[    = (c \wat w) \wat \ee v\]
+\[    = c \wat \ee v\]
+\[    = c \wat v\]
+\[    = d\]
+
+         <center><img src="lemma-3b.png"></center>
+
+Now apply (3) to $x$. That is, pick $U_x$ such that
+\[    \forall (u_x : U_x) . c \wat (x + u_x) = (c \wat x) \wat u_x\]
+
+Now pick $\delta > 0$ small enough that $\delta w \in U_x$. Observe that on the one hand
+
+\[      c \wat (x + \delta w)\]
+\[    = c \wat (w + \ee v + \delta w)\]
+\[    = c \wat ((1 + \delta )w + \ee v)\]
+\[    = c \wat (w + v (\ee  / (1 + \delta )))\]
+\[    = (c \wat w) \wat (v (\ee  / (1 + \delta )))\]
+\[    = (c \wat w) \wat v\]
+\[    = c \wat v\]
+\[    = d\]
+
+But on the other hand
+
+\[      c \wat (x + \delta w)\]
+\[    = (c \wat x) \wat \delta w\]
+\[    = d \wat \delta w\]
+\[    = d \wat w\]
+
+which is as required. $\cqed$
+
+
+<p><b>Corollary</b> <i>If $c \wat v = d$ and $c \ne d$, then $\dim(d) \lt \dim(c)$</i>.
+<p><b>Proof</b>
+We immediately know $v \ne \ker(c)$ since $c \ne d$. Choose $U$ by (3) for $v$, and
+pick $\ee > 0$ small enough so that $\ee v \in U$. Then
+\[  d \wat v = d \wat \ee v = \]
+\[ = (c \wat v) \wat \ee v = c \wat (v + \ee v)\]
+\[= c \wat v(1+\ee) = c \wat v  = d\]
+so $v \in \ker(d) - \ker(c)$. That is $v$, is a witness that we must have a
+<b>strict</b> containment
+\[    \ker(d) \supsetneq \ker(c)\]
+hence
+\[    \dim(\ker(d)) > \dim(\ker(c))\]
+hence
+    \[\dim(d) \lt \dim(c)\]
+$\cqed$
+
+
+<!-- <a id="mark">...</a> -->
   </body>
   <script>
 	 function go(body) { renderMathInElement( body, { strict: false,
@@ -132,8 +233,9 @@ hence $\lambda v \in \ker(c)$. $\ $ &#x25a0;
 		        "\\rid": "\\mathrm{id}",
 		        "\\ll": "\\langle",
 		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
             } } );
-                              setTimeout(() => jump('mark'), 400);
+                        // setTimeout(() => jump('mark'), 400);
 	                   }
 
     function jump(h){
