@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+
+    <style>
+table.proof td {
+  padding-left: 50px;
+}
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Rigid String Diagrams</title>
+  </head>
+  <body>
+    <h1>Rigid String Diagrams</h1>
+
+    <h2>Goal</h2>
+    We aim to define a 'rigid space'
+    to be something kind of like an $n$-category, except instead of being able
+    to draw ordinary string diagrams where the lines are "flexible", we're going
+    to define it in such a way that they're rather rigid.
+
+    Here's an example of an ordinary string diagram in 2 dimensions:
+    <center><img src="diagram.png"></center>
+    We have objects $C, D, E$, some morphisms $F: C \to D$, $G : D \to E$,
+    $H : C \to E$, $J : E \to C$, and some $2$-cells $\alpha : G \o F \to H$
+and $\beta : 1_E \to H \o J$.
+    <p>
+      Now here's a "rigid string diagram":
+    <center><img src="rigid-diagram.png"></center> The constraint we
+    mean to impose is that every 1-cell has a fixed slope everywhere
+    it occurs in the diagram, and every 2-cell has exactly the same
+    1-cells emerging from it at the same angles. In the general
+    $n$-dimensional case, every $m$-cell would occupy a finite subset
+    of an $(n-m)$-dimensional hyperplane, again of a fixed slope.
+
+    <h2>Colors and Diagrams</h2>
+
+    Fix a natural number $n$ for what dimension we're working in.
+    Choose a set $C$ to be a set of 'colors', or alternatively the
+    'cells' of the category or space that we're describing.
+    <p>
+    A 'diagram' is a map $\R^n \to C$.
+    <p>
+      An <i>$n$-dimensional rigid space</i> is a set $C$ together with an
+      action
+      \[\wat : C \to \R^n \to C\]
+      The action can also be thought of as a map from cells to diagrams, describing
+      what the neighborhood of that cell must locally resemble, wherever it occurs.
+      Three properties are required, for any $(c : C) (v : \R^n) (\lambda: \R^+)$,
+      where $\R^+ = \{x \in \R \st x > 0\}$.
+      <ol>
+        <li> $c \wat 0 = c$
+        <li> $ c \wat \lambda v = c \wat v$
+        <li> $\exists U . (0 \in U \subseteq \R^n) \land U \hbox { open} \land {}$
+             $\forall (u : U).\ c \wat (v + u) = (c \wat v) \wat u$
+      </ol>
+      The first axiom says that the required neighborhood for cell $c$ must actually
+      have $c$ at its origin. The second axiom says that scaling a point $v$ in the domain
+      of the diagram by any positive factor $\lambda$ doesn't change what cell is assigned to it.
+      The third axiom says that the "neighborhood diagrams" themselves have to respect
+      the neighborhood diagrams of all the cells that occur in them: for any point $v$,
+      there is some neighborhood of $v$ that exactly resembles the neighborhood
+      diagram of the cell $c \wat v$, except translated so that the origin coincides with $v$.
+
+      <h2>Dimension</h2>
+      Despite the fact that we have said nothing about the dimensions of the cells themselves,
+      it turns out a notion of dimension falls out of the axioms above.
+
+     <p>
+       First we fix a rigid space, and define the "kernel" of a cell to be the subset of $\R^n$ as follows:
+       \[ \ker(c) = \{v \in \R^n \st c \wat v = c\} \]
+       We claim that this is actually a linear subspace of $\R^n$. So we need to show closure
+       under scaling by <i>arbitrary</i> (not just positive) constants, and closure under addition.
+
+<a id="mark">...</a>
+       <p><b>Lemma 1</b> <i>If $v \in \ker(c)$ and $\lambda \in \R$, then $\lambda v \in \ker(c)$.</i>
+       <p><b>Proof</b>
+         If $\lambda = 0$, appeal to axiom 1. If $\lambda > 0$, appeal to axiom 2.
+         The remaining case is $\lambda \lt 0$.
+         <center><img src="lemma-1.png"></center>
+         By axiom 3, let $U$ be given. Choose $\ee > 0$
+         small enough such that $-\ee v \in U$ and $\ee < 1$.
+Then we know
+<center>
+<table class="proof">
+<tr><td>$c \wat (v - \ee v) = (c \wat v) \wat (-\ee v)$</td><td>(by (3))</td></tr>
+<tr><td>$c \wat (1-\ee )v = c \wat (-\ee v)$</td><td> (by assumption $v \in \ker(c)$)</td></tr>
+<tr><td>$c \wat v = c \wat (-\ee v) $</td><td>(by (2) and $\ee < 1$)</td></tr>
+<tr><td>$c = c \wat (-\ee v)$</td><td>  (by assumption $v \in \ker(c)$)</td></tr>
+<tr><td>$c = c \wat \lambda v$</td><td>  (b.c. $\ee > 0, \lambda < 0$ and (2))</td></tr>
+</table>
+</center>
+<p>
+hence $\lambda v \in \ker(c)$. $\ $ &#x25a0;
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\rset": "\\mathsf {Set}",
+              "\\P": "{\\mathsf P}",
+              "\\CC": "{\\mathbb C}",
+              "\\C": "{\\mathsf C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+            } } );
+                              setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
