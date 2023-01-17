@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Somewhat-Topology-Preserving Hex Map Reduction</title>
+  </head>
+  <body>
+    <h1>Somewhat-Topology-Preserving Hex Map Reduction</h1>
+
+    Given a tiling of the plane with hexagons, there is a way of grouping together
+    groups of seven hexes, and thinking of it as its own hex tiling:
+    <p>
+      <center><img src="diagram1.png"></center>
+    <p>
+      This rotates the tiling clockwise by a small angle, but there's
+      a mirror-version of this grouping which rotates
+      counter-clockwise by the same angle, so we can alternate them if
+      we want to iterate and preserve the orientation of the overall
+      picture. (in the limit this
+      yields <a href="https://www.researchgate.net/publication/2417258_Recursive_Subdivisions_of_the_Plane_Yielding_Nearly_Hexagonal_Regions">roughly
+      hexagonal fractals called Gosper regions</a>)
+    <p>
+      If we have some information stored on the hex map like, for
+      example, which cells are land and which have water, there's a
+      slight annoyance that naturally arises from the fact that we're
+      downsampling, which is that some connectivity information is wrecked.
+    <p>
+      Imagine that during downsampling we look at the center hex of each group of 7, and let
+      that determine whether the hex in the smaller map is land or water:
+    <p>
+      <center><img src="diagram2.png"></center>
+    <p>
+      The snakey peninsula in the original map, which doesn't connect to the
+      northwest landmass in the original map, now incorrectly does in the smaller map.
+    <p>
+      A common thing in board games on hex grids is to allow features that exist on the
+      <b>edges</b> of hexes as well as their interior. So let's
+
+      <ol>
+        <li>Allow there to optionally be a <b>river</b> on any edge between land hexes, and
+          an <b>isthmus</b> on any edge between two water hexes.
+        <li> During map reduction, place a river (or isthmus) whenever
+          we attempt to create adjacent land (or water) hexes in the
+          small map, but observe that there is no actual land-only (or
+          water-only) path between the centers of the two adjacent
+          7-hex groups in the original large map that stays within the
+          interiors and boundaries of the 14 hexes in the union of
+          those two original groups.
+      </ol>
+
+      Here's an example:
+    <p>
+      <center><img src="diagram3.png"></center>
+    <p>
+
+      I think this reduction step makes good sense even when the large
+      map itself has rivers and isthmuses in it, because step 2's
+      notion of connectivity between 7-hex group centers can take
+      advantage of rivers and isthmuses.
+    <p>
+      <b>Question</b>: are there any nice lemmas one can prove about
+      this preserving the topology of the original map in some sense?
+      Clearly it's able to delete islands and small lakes, so it can't
+      preserve all topological information, but maybe you can prove that
+      it will <b>only</b> delete islands and lakes, rather than merging
+      two islands or two lakes.
+
+  </body>
+</html>
