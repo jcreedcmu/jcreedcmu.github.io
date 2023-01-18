@@ -70,5 +70,18 @@
       it will <b>only</b> delete islands and lakes, rather than merging
       two islands or two lakes.
 
+      <h2>Maybe a Counterexample</h2>
+      This example doesn't behave like I hoped it would:
+    <p>
+      <center><img src="diagram4.png"></center>
+    <p>
+      It's because I stipulated in step 2 above that the connectivity
+      between two 7-hex regions has to be witnessed by a path that
+      lies <i>inside those two regions</i>. If I allowed arbitrary
+      paths, that would have both the disadvantage of it being
+      somewhat slower to compute (but probably not too bad) and also
+      that a big ocean might obliterate an isthmus that inuitively it
+      shouldn't, just because one side of the isthmus is connected to
+      the other allll the way around the world.
   </body>
 </html>
