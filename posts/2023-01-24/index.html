@@ -62,6 +62,8 @@ table.proof td {
         <li> <b>What is the type of outputs?</b><br>
           It is $\R^c$.
         <li> <b>What is the function that computes from inputs to outputs?</b><br>
+          It's essentially a softmax weighted sum over all the "values" where
+          the weights are dot products between each "key" and the "query".
           \[\mathsf{compute} : \{ q : \R^a, k : \R^{b \x m}, v : \R^{c \x m} \}  \to
            \R^c \]
 \[ \mathsf{compute} \{q, k, v\} = {\sum_{i=1}^m e^{q\cdot k_i} v_i \over \sum_{i=1}^m e^{q\cdot k_i}}\]
@@ -70,14 +72,17 @@ table.proof td {
       <h2>Wait, Where are the Parameters?</h2>
       When I refer to "query" and "keys" and "values" above, I'm referring to things
       that are already in the appropriate linear spaces where I can take dot products
-      of $q$ against each $k_i$, and use them as softmax weights.
+      of $q$ against each $k_i$, and use them as the softmax weights.
       <p>
         In practice, (as far as I understand!) these inputs aren't
-        wired up directly to other parts of the neural net, but rather
-        you throw a whole matrix worth of parameters in front of them,
-        letting the network <b>learn</b> what "queries" it should be
+        wired up <b>directly</b> to other parts of the neural net, but rather
+        you throw a whole matrix worth of parameters in front of them: the "raw"
+        data is in some other linear space, and the parameters say how to smash
+        them into the right linear space to do the dot products.
+      <p>
+        By doing this we let the network <b>learn</b> what "queries" it should be
         making, and what "keys" and "values" other data should
-        correspond to.
+        produce.
 
       <h2>What's the Intuition for How This is Used?</h2>
 
