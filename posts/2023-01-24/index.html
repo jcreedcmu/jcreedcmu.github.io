@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+
+    <style>
+table.proof td {
+  padding-left: 50px;
+}
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Attention for Type Theorists</title>
+  </head>
+  <body>
+    <h1>Attention for Type Theorists</h1>
+
+    I don't think I have enough patience or motivation to <i>actually</i>
+    jump on the big NN bandwagon and actually get any GPU computations
+    working, but I was curious about what exactly "attention
+    mechanisms" were --- i.e.
+    what <a href="https://arxiv.org/abs/1706.03762">Attention is All
+    You Need</a> is even talking about.
+    <p>
+      Because my general feeling about neural nets is: well, I
+      understand gradient descent. If you can tell me what function
+      you're computing from what inputs and what parameters, then
+      maybe I'm slow at actually reinventing backprop from scratch,
+      but I'm confident that I <i>could</I> reinvent backprop from
+      scratch if I needed to. And if I'm lazy I can just ask pytorch
+      to do it for me.
+    <p>
+      What I really wanted was a compact description of
+      <ol>
+        <li> What is the type of inputs?
+        <li> What is the type of outputs?
+        <li> What is the function that computes outputs from inputs and parameters?
+      </ol>
+
+      <h2>So what is an attention block?</h2>
+      You the NN-architecture-designer get to choose numbers $c, d, m : \N$.
+      Then:
+      <ol>
+        <li><b>What is the type of inputs?</b><br>
+          It is the record type
+          \[ \{ q : \R^d, k : \R^{d \x m}, v : \R^{c \x m} \} \]
+          In more detail, this record type consists of:
+          <ul>
+            <li> a "query" $q : \R^d$
+            <li> a tuple of m "keys" $k_1 : \R^d, \ldots, k_m : \R^d$,
+            <li> a tuple of m "values" $v_1 : \R^c, \ldots, v_m : \R^c$,
+          </ul>
+        <li> <b>What is the type of outputs?</b><br>
+          It is $\R^c$.
+        <li> <b>What is the function that computes from inputs to outputs?</b><br>
+          \[\mathsf{compute} : \{ q : \R^a, k : \R^{b \x m}, v : \R^{c \x m} \}  \to
+           \R^c \]
+\[ \mathsf{compute} \{q, k, v\} = {\sum_{i=1}^m e^{q\cdot k_i} p_i \over \sum_{i=1}^m e^{q\cdot k_i}}\]
+
+      </ol>
+      <h2>Wait, Where are the Parameters?</h2>
+      When I refer to "query" and "keys" and "values" above, I'm referring to things
+      that are already in the appropriate linear spaces where I can take dot products
+      of $q$ against each $k_i$, and use them as softmax weights.
+      <p>
+        In practice, (as far as I understand!) these inputs aren't
+        wired up directly to other parts of the neural net, but rather
+        you throw a whole matrix worth of parameters in front of them,
+        letting the network <b>learn</b> what "queries" it should be
+        making, and what "keys" and "values" other data should
+        correspond to.
+
+      <h2>What's the Intuition for How This is Used?</h2>
+
+      Any ol' differentiable function <i>could</I> be chucked into the
+      neural net stew. Why is this one useful in practice?
+      <p>
+        Here I'm less confident I understand what's going on, but
+      of <a href="https://karpathy.ai/zero-to-hero.html">Karpathy's
+      videos</a> (especially "Let's build GPT") gave me some sense of it.
+    <p>
+      I think the important thing is that the transformer architecture
+      is an alternative to RNNs: instead of your forward function
+      being a whole lot of recursive applications of the net to its
+      own hidden-state output, you put some attention units in, and
+      let individual tokens in your stream dictate (via "query") what
+      sort of past data they're interested in, and you let the past
+      data itself (via "key") figure out how to advertise itself
+      as interesting to future data, and (via "value") how to contribute
+      some signal to be used by it.
+      <p>
+        None of anything above says anything about position of tokens
+        in a stream: I understand trigonometric positional encodings
+        are typically concatenated on to feature vectors so that the
+        computation of query/key/value can depend usefully on that.
+<!-- <a id="mark">...</a> -->
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\rset": "\\mathsf {Set}",
+              "\\P": "{\\mathsf P}",
+              "\\CC": "{\\mathbb C}",
+              "\\C": "{\\mathsf C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+                        // setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
