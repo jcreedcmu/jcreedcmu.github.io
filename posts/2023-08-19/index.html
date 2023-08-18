@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+canvas {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  display: block; width: 100%;
+  border: 1px solid black;
+}
+
+
+table.proof td {
+  padding-left: 50px;
+}
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Understanding the Hook Length Formula</title>
+  </head>
+  <body>
+    <h1>Understanding the Hook Length Formula</h1>
+
+    <h2>Some Definitions</h2>
+    <p>
+       A <a href="https://en.wikipedia.org/wiki/Young_tableau">Young
+       diagram</a> is a collection of boxes (or
+       "cells") arranged in left-justified rows, with the row lengths
+       in non-increasing order. We use $\lambda$ as a variable Young diagrams,
+       and write $|\lambda|$ for the number of boxes in $\lambda$.
+
+       <canvas  id="diagram1"></canvas>
+
+       A <a href="https://en.wikipedia.org/wiki/Young_tableau">standard
+       tableau</a> on $\lambda$ is a way of putting
+       the numbers $1,\ldots,|\lambda|$ in all the cells of $\lambda$, such that the numbers
+       always decrease when we move down or to the right. We write $T(\lambda)$ for the set
+       of standard tableaux on $\lambda$.
+
+       <canvas  id="diagram2"></canvas>
+
+       A <i>corner</i> in $\lambda$ is a cell that has no
+       neighbors down or to the right. We write $C(\lambda)$ for the set
+       of corners in $\lambda$.
+
+       <canvas  id="diagram.corners"></canvas>
+
+       The <i>hook</i> of a cell is the set of cells to the right and
+       down from that cell, including the cell itself.
+
+       <canvas  id="diagram.hook"></canvas>
+
+       A <i>pointer tableau</i> on a Young diagram is a way of
+       assigning each cell a "pointer" to some cell in its hook. In
+       other words, a way of assigning numbers and a direction
+       ("right" or "down") in some cells, such that if we move that
+       many cells in that direction, we stay inside the diagram.
+       Alternatively, we may leave a cell blank to mean that it points
+       to itself --- and we <i>must</i> do so for corner cells, since
+       they are the only cell in their hook. We write $P(\lambda)$ for
+       the set of pointer tableaux on $\lambda$.
+
+       <canvas  id="diagram.pointer"></canvas>
+
+       An <i>strict pointer tableau</i> is a pointer tableau where
+       all of the non-corner cells points to a <i>different</i> cell, not to themselves. We write
+       $P^\x(\lambda)$ for the set of pointer tableaux on $\lambda$.
+
+       <canvas  id="diagram.strict.pointer"></canvas>
+
+       If $c$ is some particular corner of a Young diagram, then
+       a <i>pointer tableau strict away from $c$</i> is a pointer tableau that is
+       strict outside of $c$'s row and $c$'s column.
+       We write $P_c^\x(\lambda)$ for the set
+       of pointer tableaux on $\lambda$ that are strict away from $c$.
+
+       <canvas  id="diagram.c.optional.recipe"></canvas>
+
+       The
+       "<a href="https://en.wikipedia.org/wiki/Hook_length_formula">Hook-Length
+       Formula</a>" is a way of counting how many Young tableaux on a
+       diagram $\lambda$ there are. It asserts:
+
+       \[ |T(\lambda)| = {|\lambda|!\over |P(\lambda)| }\]
+
+       Ideally, we'd like to prove this by a well-behaved
+       ("combinatorial", "bijective") proof. That is, we expect there
+       to be an explanation of the above identity between numbers by
+       way of showing the existence of a bijection between sets:
+
+       \[ T(\lambda) \x P(\lambda) \cong S_{|\lambda|}\]
+
+       where $S_n$ is
+       the set of permutations of $n$ things.
+    <p>
+       However, this is a bit hard to obtain. It seems to have been achieved in
+       "A Direct Bijective Proof of the Hook-Length
+       formula" [<a href="https://www.emis.de/journals/DMTCS/volumes/abstracts/pdfpapers/dm010104.pdf">Novelli, Pak, Stoyanovskii, 1997</a>] but I don't understand their paper yet.
+    <p>I read "A Probabilistic Proof of a Formula for the Number of Young
+       Tableaux of a Given Shape " [<a href="https://www2.math.upenn.edu/~wilf/website/Probabilistic%20proof.pdf">Greene, Nijenhuis, Wilf, 1979</a>] and tried to "bijectionify" it,
+      and I found I was able to get a bijection
+
+       \[ T(\lambda) \x P(\lambda) \x \Delta \cong S_{|\lambda|} \x \Delta\]
+
+       for an 'auxiliary' set $\Delta$. I think in doing so I have recapitulated
+       the algorithm in "A short hook-lengths bijection inspired by the Greene-Nijenhuis-Wilf proof" [<a href="https://www.sciencedirect.com/science/article/pii/0012365X8490027X?via%3Dihub">D. Zeilberger, 1984</a>].
+
+      <h2>Lemmas</h2>
+
+      There are two key bijective lemmas we need to establish. One is
+      pretty trivial, and the other is arguably the central idea of [Greene,
+      Nijenhuis, Wilf, 1979].
+
+    <p>
+      <b>Lemma 1</b>
+      <em>For any $\lambda$ and $c \in C(\lambda)$, we have $P(\lambda) P^\x(\lambda) \cong P(\lambda - c) P^\x_c(\lambda)$</em>. <br>
+      <b>Proof:</b>
+      Given a pointer tableau $t_1$ and a strict pointer tableau $t_2$ and a choice of corner $c$:
+       <canvas id="diagram.lemma1.before"></canvas> we swap
+       some data between the two tableaux, namely all data
+      in the row and column of the corner.  The only subtlety
+       is that when we introduce strict pointer tableau data into the
+       smaller diagram $\lambda - c$, we must remove any pointer that
+       points to $c$, replacing it with a self-pointer, as shown in the red cells in
+       the example below.
+       <canvas id="diagram.lemma1.after"></canvas>
+       This yields a pointer tableau $t_1'$ on $\lambda - c$, and a
+       pointer tableau $t_2'$ that is strict away from $c$.
+       This process is reversible. $\cqed$
+    <p>
+      <b>Lemma 2</b> <em>For any $\lambda$ with $|\lambda| = n$,</em>
+      \[n  P^\x(\lambda) \cong \sum_{c \in C(\lambda)} P^\x_c(\lambda)\]
+      <b>Proof:</b>
+      An element of $n P^\x(\lambda)$ is a choice of "starting cell" in the diagram ($n$)
+      together with a pointer tableau $P^\x(\lambda)$. We must produce a choice
+      of corner $c$ and a pointer tableau that is strict away from $c$.
+    <p>
+      To determine the corner $c$, we take the starting cell and
+      iteratively move according to the pointer tableau. This will
+      inevitably lead to some corner.
+       <canvas  id="diagram.lemma2.moves"></canvas>
+
+       Now erase every number that occurs along the path taken, and flip the direction.
+       If a path cell is in the row or column of the final corner, erase its direction as well.
+       <canvas  id="diagram.lemma2.erased"></canvas>
+
+       For each direction path cell left, follow its direction until
+       you reach the row or column of the corner.
+
+       <canvas  id="diagram.lemma2.selected"></canvas>
+
+       We are going to "steal" from these cells in the row or column
+       of the selected corner. If the "stolen" cell is pointing in the
+       same direction as the path cell, we keep the same target cell
+       that the pointer used to have, which means increasing its
+       number. If it points in the opposite direction as the path
+       cell, we simply move the "stolen" cell to the path cell's
+       position, keeping its offset and direction intact.
+
+     <canvas  id="diagram.lemma2.moved"></canvas>
+
+     Here is the final state: we have produced a pointer tableau that is strict away from
+     the corner $c$.
+     <canvas  id="diagram.lemma2.final"></canvas>
+
+     The reader can check that the procedure above is reversible,
+     establishing that we have a bijection
+      \[n  P^\x(\lambda) \cong \sum_{c \in C(\lambda)} P^\x_c(\lambda)\]
+     as required. $\cqed$
+    <h2>Main Theorem</h2>
+      Now we can prove the main theorem. We write $\mu < \lambda$ when
+    $\mu$ is a strict subdiagram of the Young diagram $\lambda$, and $\mu \le \lambda$ when it is a maybe equal subdiagram.
+
+    <p>
+      <b>Theorem</b>
+      <em>For any $\lambda$, we have
+    \[ T(\lambda) \x P(\lambda) \x \prod_{\mu \le \lambda} P^\x(\mu)\cong S_{|\lambda|} \x \prod_{\mu \le \lambda} P^\x(\mu)\]</em>
+      <b>Proof:</b> By induction on the size $|\lambda|=n$ of $\lambda$. Observe that any
+      standard tableau arises from a standard tableau with one chosen
+      corner removed, so that
+      \[T(\lambda) = \sum_{c \in C(\lambda)} T(\lambda - c)\]
+      This means
+\[T(\lambda) \x P(\lambda) \x \prod_{\mu \le \lambda} P^\x(\mu)
+\cong \sum_{c \in C(\lambda)} T(\lambda - c) \x P(\lambda) \x \prod_{\mu \le \lambda} P^\x(\mu)\]
+\[\cong \sum_{c \in C(\lambda)} T(\lambda - c) \x P(\lambda) \x P^\x(\lambda) \x \prod_{ \mu < \lambda} P^\x(\mu)\]
+which by Lemma 1 is
+\[\cong \sum_{c \in C(\lambda)} T(\lambda - c) \x P(\lambda - c) \x P^\x_c(\lambda) \x \prod_{ \mu < \lambda} P^\x(\mu)\]
+\[\cong \sum_{c \in C(\lambda)} T(\lambda - c) \x P(\lambda - c) \x \left(\prod_{ \mu < \lambda -c} P^\x(\mu)\right) \x P^\x_c(\lambda) \x \prod_{ \mu < \lambda, \mu \not\le \lambda - c} P^\x(\mu)\]
+which by the induction hypothesis is
+\[\cong \sum_{c \in C(\lambda)} S_{n-1} \x \left(\prod_{ \mu \le \lambda -c} P^\x(\mu)\right) \x P^\x_c(\lambda) \x \prod_{ \mu < \lambda, \mu \not\le \lambda - c} P^\x(\mu)\]
+\[\cong \left(\sum_{c \in C(\lambda)}  P^\x_c(\lambda)\right) \x S_{n-1} \x \prod_{ \mu < \lambda} P^\x(\mu)\]
+which by Lemma 2 is
+\[\cong n \x P^\x(\lambda) \x S_{n-1} \x \prod_{ \mu < \lambda} P^\x(\mu)\]
+\[\cong S_{n} \x \prod_{ \mu \le \lambda} P^\x(\mu)\]
+as required. $\cqed$
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\rset": "\\mathsf {Set}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+
+                        renderDiagrams();
+                        // setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
