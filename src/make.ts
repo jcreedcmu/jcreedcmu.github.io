@@ -49,4 +49,19 @@ function postOfMeta(dir: string, meta: Meta): Post {
   fs.writeFileSync(path.join(distDir, 'journal/index.html'), renderJournal(journalItems), 'utf8');
   fs.writeFileSync(path.join(distDir, 'rss.xml'), getRss(posts), 'utf8');
 
+  metaposts.forEach(post => {
+    if (post.dir.match(/posts/)) {
+      const indexPath = path.join(distDir, post.dir, 'index.html');
+      if (!fs.existsSync(indexPath)) {
+        throw new Error(`${indexPath} does not exist`);
+      }
+      const indexFile = fs.readFileSync(indexPath, 'utf8');
+      let outFile = indexFile;
+      outFile = outFile.replace(/(<head.*>)/, '$1\n<link rel="stylesheet" href="/style/default.css">');
+      outFile = outFile.replace(/(<body.*>)/, `$1\n<div class="topbar"><a href="/">jcreed blog</a> &gt; ${post.title}</div>`);
+      fs.writeFileSync(indexPath, outFile, 'utf8');
+    }
+  });
+
+
 })();

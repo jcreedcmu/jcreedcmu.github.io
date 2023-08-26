@@ -101,4 +101,13 @@ h2:target::before  {
   top: 0;
   left: 0;
   font-family: sans-serif;
+  z-index: 1000;
+}
+
+.topbar a {
+  color: #fff;
+}
+
+.topbar a:visited {
+  color: #fff;
 }
