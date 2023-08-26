@@ -28,4 +28,5 @@ cp -rv demo \
  rss.xml \
  self \
  link-svgrepo-com.svg \
+ katex-0.12.0 \
  dist/
