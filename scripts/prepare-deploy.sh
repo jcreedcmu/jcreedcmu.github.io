@@ -29,4 +29,5 @@ cp -rv demo \
  self \
  link-svgrepo-com.svg \
  katex-0.12.0 \
+ katex \
  dist/
