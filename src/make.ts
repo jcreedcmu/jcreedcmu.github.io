@@ -5,6 +5,7 @@ import { promisify } from 'util';
 import * as glob from 'glob';
 import { struct_of_notes } from './sections';
 
+// This script generates some html files for the blog
 
 function postOfMeta(dir: string, meta: Meta): Post {
   return {

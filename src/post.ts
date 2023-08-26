@@ -38,6 +38,7 @@ export function getIndex(posts: Post[]): string {
     <link rel="stylesheet" href="style/default.css">
   </head>
   <body>
+    <div class="topbar">jcreed blog</div>
     <div class="horiz">
       <div>
         <div class="header">POSTS</div>
