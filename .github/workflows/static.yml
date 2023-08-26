@@ -42,15 +42,15 @@ jobs:
         run: npm i
 
       - name: Build index
-        run: ./node_modules/.bin/ts-node src/make.ts
+        run: ./scripts/prepare-deploy.sh
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          # Upload entire repository
-          path: '.'
+          # Upload dist repository
+          path: 'dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1

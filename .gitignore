@@ -1,5 +1,3 @@
 out
 node_modules
-/rss.xml
-/index.html
-/journal/index.html
+dist

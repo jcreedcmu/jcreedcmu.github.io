@@ -1,5 +1,5 @@
 all:
-	./node_modules/.bin/ts-node src/make.ts
+	./scripts/prepare-deploy.sh
 
 serve:
-	python3 -m http.server
+	python3 -m http.server --directory dist
