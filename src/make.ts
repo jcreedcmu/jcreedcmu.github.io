@@ -5,6 +5,15 @@ import { promisify } from 'util';
 import * as glob from 'glob';
 import { struct_of_notes } from './sections';
 
+const args = process.argv.slice(2);
+
+if (args.length != 1) {
+  console.error(`Usage: ${process.argv.slice(0, 2).join(" ")} $DIST_DIR`);
+  process.exit(1);
+}
+
+const distDir = args[0];
+
 // This script generates some html files for the blog
 
 function postOfMeta(dir: string, meta: Meta): Post {
@@ -19,6 +28,7 @@ function postOfMeta(dir: string, meta: Meta): Post {
     'katex',
     'katex-0.12.0',
     'node_modules',
+    'dist',
   ].map(x => `${x}/**`);
 
   const files = await promisify(glob.glob)('**/meta.json', { ignore });
@@ -34,9 +44,9 @@ function postOfMeta(dir: string, meta: Meta): Post {
   const posts = [...metaposts, ...journalPosts];
   posts.sort((a, b) => (a.date && b.date && b.date.localeCompare(a.date)) || b.dir.localeCompare(a.dir));
 
-  fs.writeFileSync(path.join(__dirname, '../index.html'), getIndex(posts), 'utf8');
-  fs.mkdirSync(path.join(__dirname, '../journal'), { recursive: true });
-  fs.writeFileSync(path.join(__dirname, '../journal/index.html'), renderJournal(journalItems), 'utf8');
-  fs.writeFileSync(path.join(__dirname, '../rss.xml'), getRss(posts), 'utf8');
+  fs.writeFileSync(path.join(distDir, 'index.html'), getIndex(posts), 'utf8');
+  fs.mkdirSync(path.join(distDir, 'journal'), { recursive: true });
+  fs.writeFileSync(path.join(distDir, 'journal/index.html'), renderJournal(journalItems), 'utf8');
+  fs.writeFileSync(path.join(distDir, 'rss.xml'), getRss(posts), 'utf8');
 
 })();

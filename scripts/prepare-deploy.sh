@@ -10,10 +10,6 @@ fi
 rm -rf dist
 mkdir dist
 
-# TODO: pass the dist dir to make.ts so it knows where to put things
-# directly
-./node_modules/.bin/ts-node src/make.ts
-
 # Explicit allow-list of things we want in the tarball
 cp -rv demo \
  lib \
@@ -31,3 +27,5 @@ cp -rv demo \
  katex-0.12.0 \
  katex \
  dist/
+
+./node_modules/.bin/ts-node src/make.ts "$(pwd)/dist"
