@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+canvas {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  display: block; width: 100%;
+  border: 1px solid black;
+}
+
+
+table.proof td {
+  padding-left: 50px;
+}
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Type Manifolds</title>
+  </head>
+  <body>
+    <h1>Type Manifolds</h1>
+
+    The point of this note is to ask: are there things in type theory
+    that play the same role as differentiable manifolds in analysis?
+    The latter are constructed as things that locally look like $\R^n$, and we know how
+    to differentiate nice (i.e. smooth) maps $\R^n \to \R$.
+    <p>
+      Well, in type theory, we know how to differentiate nice (i.e. polynomial functor) maps from $\rset^n \to \rset$.
+      Can we do something with that intuition? Are there exotic objects that look like multiple copies of $\rset^n$
+      patched together, in the same way that manifolds are like copies of $\R^n$ patched together, or how schemes are affine
+      schemes patched together?
+    <p>
+      First I'm going to review how we can talk about manifolds, tangent spaces, etc. in some easy warm-up cases
+      so that the notation is already a familiar melody when I come to talk about types.
+    <h2>The Euclidean Plane</h2>
+    <center><img src="plane.png"></center>
+    Let $M$ be $\R^2$. Let $C$ be the set of all smooth functions $M \to \R$. Note that
+    $C$ is a semiring: we can add and multiply functions $M \to \R$ pointwise.
+    <p>
+    We define a tangent vector $v$ at a point $m \in \R^2$ to be a <i>derivation</i>, a thing that
+    eats up a scalar function $\R^2 \to \R$ and outputs a scalar, and which behaves like a directional derivative.
+    That is, we have
+    \[v : C \to \R\]
+    and we require that $v$ is linear, (e.g. $v(f + g) = v(f) + v(g)$ for all $f,g \in C$) and satisfies a product rule, namely
+    \[v(f\cdot g) = f(m) v(g) + v(f) g(m)\]
+    for all $f, g \in C$.
+
+    This product rule is a critical piece of information that captures
+    what it means for $v$ to "behave like a directional derivative".
+    <p>
+      It turns out that any $v$ satisfying these properties is of the form
+     \[f \mapsto c_1 {\partial f\over \partial x_1}(m) + c_2 {\partial f\over \partial x_2}(m)\]
+      for some parameters $c_1, c_2 \in \R$, where $x_1, x_2$ are the coordinates of the plane.
+      That is, every $v$ is a linear combination of directional derivatives evaluated at the point $m$.
+
+ <h2>The 2-Sphere</h2>
+    <center><img src="sphere.png"></center>
+    Let $M$ be $S^2$, the 2-dimensional sphere. Let $C$ be the set of all smooth functions $M \to \R$. Again
+    $C$ is a semiring.
+    <p>
+    We define a tangent vector $v$ at a point $m \in S^2$ to be a derivation, a map
+    \[v : C \to \R\]
+    and we require that is linear, and satisfies the same product rule,
+    \[v(f\cdot g) = f(m) v(g) + v(f) g(m)\]
+    for all $f, g \in C$.
+
+    <p>
+     Now for any point $m$, there do exist two tangent vectors $D_1, D_2$ such that every tangent vector at $m$
+     is uniquely of the form
+     \[f \mapsto c_1 (D_1 f) + c_2 (D_2 f) \]
+      for some parameters $c_1, c_2 \in \R$, but there is no longer a
+     canonical choice of $D_1, D_2$! The possible choices vary from
+     point to point, and there's no globally coherent way of choosing
+     a basis of the tangent space for every point on the sphere.
+     <p>
+       That is: the sphere is an interesting, nontrivial manifold, as opposed to just being a boring, trivial euclidean manifold like the plane is.
+
+       <h2>Type Manifolds</h2>
+       Let $M$ be some type. Notice that $M \to \rset$ is a semiring: we have $0, 1, {+}, {\x}$ for types, and they satisfy
+       all the axioms we expect them to. So let $C$ be some subsemiring of $M \to \rset$, the maps that we consider
+       "smooth" or otherwise "nice".
+     <p>
+       We define a tangent vector $v$ at a point $m \in M$ to be a derivation, a map
+       \[v : C \to \rset\]
+       such that $v$ is linear, and it satisfies
+       \[v(f\x g) \cong f(m) \x v(g) + v(f) \x g(m)\]
+       for any $f, g \in C$, and
+       \[v(f) = 0\]
+       if there exists $K : \rset$ such that $f(m') = K$ for all $m' \in M$, i.e. the derivative
+       of a constant function must be zero.
+     <p>
+       Let's take a moment to confirm that these requirements actually make sense.
+       Both $C$ and $\rset$ are semirings, so $v$ being linear is a sensible thing to ask for.
+       The argument $f\x g$ of $v$ is sensible: we take product types pointwise, for $f$ and $g$ being "nice"
+       functions in $C \subseteq M \to \rset$. Since $C$ is a subsemiring, it's still the case that $f \x g$ is
+       in $C$, so we can apply $v$ to it, yielding a type. This type is required to be isomorphic to
+       the sum of two product types $f(m) \x v(g) + v(f) \x g(m)$.
+       <h2>The $n$-dimensional Euclidean Type Manifold</h2>
+
+       We can construct a simple example where the differential
+       structure is globally uniform, which is the type-theoretic
+       analogue of the $n$-dimensional Euclidean space. Choose $n$,
+       and set:
+       <ul>
+         <li>$M = \N^n$
+         <li>$C = $ the set of formal polynomials in $n$ variables $x_1, \ldots, x_n$ with nonnegative integer coefficients.
+         <li>To construe $C$ as a subsemiring of $M \to \rset$, we say that evaluation of
+           an element $f \in C$ at an argument $(m_1, \ldots, m_n) \in M$ works by
+           substitution of $m_1$ for $x_1$, $m_2$ for $x_2$, $\ldots$ etc. and interpreting the result as a type.
+           For example, if $n=3$, and we consider $f = x_3^4 + 2x_2 \in C$ and $m = (9,13,2) \in M$,
+           then the function application $f(m)$ evaluates to the type $2^4 + 2\cdot 13 = 42$.
+       </ul>
+       In this case for each $i \in 1,\ldots,n$ and every point $m \in M$, there is a tangent vector $D_{m,i}$ at $m$,
+       which arises from the fact that there is an operation $(\partial/\partial x_i) : C \to C$ which formally
+       differentiates a polynomial in $C$ with respect to the variable $x_i$. We define:
+       \[D_{m,i} : C \to \rset \]
+       \[D_{m,i} (f) = ((\partial/\partial x_i) f)(m)\]
+       We can observe that $D$ is linear and has the product property, directly because $\partial/\partial x_i$ has these properties:
+       We see that
+       \[D_{m,i} (f + g) = ((\partial/\partial x_i) (f + g))(m)\]
+       \[= ((\partial/\partial x_i) f)(m) + ((\partial/\partial x_i) g)(m)\]
+       \[= D_{m,i} (f) + D_{m,i} (g) \]
+and
+       \[D_{m,i} (f \x g) = ((\partial/\partial x_i) (f \x g))(m)\]
+       \[= (g \x (\partial/\partial x_i) f )(m)  + (f \x (\partial/\partial x_i) g)(m)\]
+       \[= ((\partial/\partial x_i) f)(m) \x g(m) + ((\partial/\partial x_i) g)(m) \x f(m)\]
+       \[= D_{m,i} (f) \x g(m) + D_{m,i} (g) \x f(m)\]
+
+Furthermore we can prove that these tangent vectors form a basis of every tangent space of $M$:
+
+     <p><b>Lemma</b>: <em> For any $m\in M$, if $v$ is a tangent vector at $m$, then there exist
+         coefficients $c_1, \ldots, c_n : \rset$ such that
+\[v = \sum_{i=1}^n c_i D_{m,i}\]
+       </em><br>
+       <b>Proof</b>: Set $c_i = v(x_i)$. To show two tangent vectors $v, w$ are equal, it suffices
+       to show $v(0) = w(0)$, $v(1) = w(1)$, $v(x_i) = w(x_i)$ for all $i$, and that equality is preserved under
+       sums and products. We proceed to prove the required isomorphism by resorting to these cases:
+       <ul>
+         <li>Goal: $v(0) = \sum_{i=1}^n c_i D_{m,i}(0)$
+           Easy because both sides are zero.
+         <li>Goal: $v(1) = \sum_{i=1}^n c_i D_{m,i}(1)$
+           Easy because both sides are zero.
+         <li>Goal: $v(x_j) = \sum_{i=1}^n c_i D_{m,i}(x_j)$
+           Compute:
+           \[ v(x_j) = c_j = \sum_{i=1}^n c_i D_{m,i}(x_j) \]
+         <li> Goal: $v(f + g) = \sum_{i=1}^n c_i D_{m,i}(f + g)$. Assume by induction hypothesis
+           that
+           \[v(f) = \sum_{i=1}^n c_i D_{m,i}(f)\]
+           \[v(g) = \sum_{i=1}^n c_i D_{m,i}(g)\]
+           Then compute:
+           \[v(f + g) = v(f) + v(g)\]
+           \[ =\left(\sum_{i=1}^n c_i D_{m,i}(f)\right) + \left(\sum_{i=1}^n c_i D_{m,i}(g)\right)\]
+           \[= \sum_{i=1}^n c_i D_{m,i}(f + g)\]
+         <li> Goal: $v(f \x g) = \sum_{i=1}^n c_i D_{m,i}(f \x g)$. Assume by induction hypothesis
+           that
+           \[v(f) = \sum_{i=1}^n c_i D_{m,i}(f)\]
+           \[v(g) = \sum_{i=1}^n c_i D_{m,i}(g)\]
+           Then compute:
+           \[v(f \x g) = v(f) \x g(m) + v(g) \x f(m) \]
+           \[ =\left(\sum_{i=1}^n c_i D_{m,i}(f) \x g(m)\right) + \left(\sum_{i=1}^n c_i D_{m,i}(g) \x f(m)\right)\]
+           \[= \sum_{i=1}^n c_i (D_{m,i}(f) \x g(m) + D_{m,i}(g) \x f(m))\]
+           \[= \sum_{i=1}^n c_i D_{m,i}(f \x g)\]
+       </ul>
+           $\cqed$
+
+       <h2>Nontrivial Type Manifolds</h2>
+
+       <blockquote>
+         <b>Question</b>: We've defined a trivial type manifold, but are there interesting nontrivial examples?
+       </blockquote>
+
+       I suspect that if these exist, they might be constructed by gluing together copies of $\N^n$ as above, but I
+       haven't been able to make a construction work yet. I'd be really interested if you could get something working
+       where $M = \Z^n$, or with the carrier being some kind of one-dimensional circle that loops back on itself somehow.
+      <br>
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+
+                        renderDiagrams();
+                        // setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
