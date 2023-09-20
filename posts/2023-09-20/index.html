@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+canvas {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  display: block; width: 100%;
+  border: 1px solid black;
+}
+
+
+table.proof td {
+  padding-left: 50px;
+}
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>A Bernoulli Number Identity</title>
+  </head>
+  <body>
+    <h1>A Bernoulli Number Identity</h1>
+
+    The point of this note is to record a little observation
+    about the $\zeta$ function and bernoulli numbers that I found to
+    empirically hold by playing around with various expressions. I
+    have no particular expectation that it's novel, but I haven't been
+    able to find it in exactly this form after searching around a little
+    bit. So maybe it's interesting! But I am no expert on analytic number theory or zeta-stuff
+    or whatever so who knows. Maybe it's so elementary nobody bothers mentioning it.
+    I would like to have a proof of it at least, which I don't presently.
+
+    <h2>Multiplying the $\zeta$ function</h2>
+    If I have as usual
+    \[ \zeta(s) = \sum_{0 &lt; i} {1\over i^s} = 1 + {1\over 2^s} + {1\over 3^s} +  {1\over 4^s} + \cdots\]
+    Then observe
+    \[ \zeta(s)\zeta(t) = \left( \green {1\over 1^{s+t}} + \red{{1\over2^s 1^t } + {1\over  3^s1^t} + {1\over 4^s1^t } + \cdots} \right.\]
+\[ \qquad\qquad\qquad\qquad  +  \blue{1\over 1^s 2^t} + \green{1\over 2^{s+t}} + \red{{1\over3^s 2^t } + {1\over4^s 2^t} + \cdots}  \]
+\[ \qquad\qquad\qquad\qquad  +  \blue{{1\over 1^s 3^t} + {1\over 2^s 3^t }} + \green{1\over 3^{s+t}} + \red{{1\over 4^s3^t} + \cdots}  \]
+\[ \qquad\qquad\qquad\qquad \left.  +  \blue{{1\over 1^s 4^t} + {1\over 2^s 4^t } + {1\over 3^s 4^t}} + \green{1\over 4^{s+t}} + \red \cdots \right)\]
+    could be written
+    \[ \zeta(s)\zeta(t) = \blue{ \sum_{0 &lt; i &lt; j} {1\over i^s j^t}} + \green{\sum_{0 &lt; i} {1\over i^{s+t}}} + \red{ \sum_{0 &lt; j &lt; i} {1\over i^s j^t}} \tag {*}\]
+    This suggests a generalization of the $\zeta$ function to
+    \[\zeta(s, t) = \sum_{0 &lt; i &lt; j} {1\over i^s j^t}\]
+    in which case we can massage $(*)$ into
+    \[ \zeta(s)\zeta(t) = \zeta(t,s) + \zeta(s+t) + \zeta(s,t) = 2\zeta(s,t) + \zeta(s+t) \]
+    Knowing that $\zeta(2) = \pi^2/6$ and $\zeta(4) = \pi^4 = 90$, we might try plugging in $2$ for $s$ and $t$, to get
+    \[ \zeta(2)\zeta(2) = 2\zeta(2,2) + \zeta(4) \]
+    hence
+    \[ \zeta(2,2)  = {\zeta(2)^2 - \zeta(4) \over 2}  = {\pi^4\over 2}\left({1\over 36} - {1\over 90}\right) = {\pi^4\over 120}\]
+    That's surprisingly nice! 120 is a nice round value that happens to be 5 factorial.
+
+    <h2>Generalizing the multi-$\zeta$</h2>
+    Suppose we define
+    \[\zeta(s_1, s_2, \ldots, s_n) = \sum_{0 &lt; i_1 &lt; \cdots &lt; i_n} {1\over i_1^{s_1}\cdots i_n^{s_n}}\]
+    and set ourselves the goal of trying to compute $\zeta(2,2,\ldots 2)$ in general.
+    <p>
+      There is a family of identities that arise from multiplying a "multi-$\zeta$" function by a single one.
+      \[\zeta(a) \zeta(\rx) = \zeta(\rx, a) + \zeta(a+\rx) + \zeta(a, \rx)\]
+      \[\zeta(a, b) \zeta(\rx) = \zeta(\rx, a, b) + \zeta(a+\rx, b) + \zeta(a, \rx, b) + \zeta(a, b+\rx) + \zeta(a,b,\rx) \]
+      \[\zeta(a, b, c) \zeta(\rx) = \zeta(\rx, a, b, c) + \zeta(a+\rx, b, c) + \zeta(a, \rx, b, c) + \zeta(a, b+\rx, c) +  \]
+      \[\zeta(a, b, \rx, c) + \zeta(a, b, c+\rx) + \zeta(a, b, c, \rx)\]
+      etc.
+      <p>
+        These are established by reasoning similar to that above.
+        In every case we need only account for how the $x$ is "inserted" into the existing ordered list of variables,
+        possibly colliding with existing variables.
+        <p>
+          Now define
+          \[\zeta_k(a) = \zeta(\overbrace{a,  \cdots, a}^{k}) \qquad \zeta_0(a) = 1\]
+          \[\zeta_k(a \sim b) = \zeta(b, \overbrace{a,  \cdots, a}^{k-1})+\zeta(a, b, \overbrace{a,  \cdots, a}^{k-2})
++\cdots +\zeta( \overbrace{a,  \cdots, a}^{k-1}, b)  \]
+          What we want to compute is $\zeta_k(2)$.
+          Observe that
+          \[\zeta_k(a\sim a) = k \zeta_k(a)\]
+          and
+          \[\zeta_k(a)\zeta(ma) = \zeta_{k+1}(a \sim ma) + \zeta_k(a\sim (m+1)a)\]
+          which means
+          \[\zeta_{k}(a \sim ma) = \zeta_{k-1}(a)\zeta(ma) - \zeta_{k-1}(a\sim (m+1)a)  \]
+          and if we set $m=1$  this telescopes out to
+          \[\zeta_{k}(a \sim a) = \zeta_{k-1}(a)\zeta(a) -  \zeta_{k-2}(a)\zeta(2a) + \zeta_{k-3}(a)\zeta(3a) - \cdots  \]
+          that is,
+          \[\zeta_{k}(a) = {\zeta_{k-1}(a)\zeta(a) -  \zeta_{k-2}(a)\zeta(2a) + \zeta_{k-3}(a)\zeta(3a) - \cdots \pm  \zeta(ka) \over k} \tag{\dag}\]
+          So for example we find
+          \[\zeta_{2}(a) = {\zeta(a)\zeta(a) -  \zeta(2a)\over 2} \]
+          \[\zeta_{3}(a) = {\zeta_2(a)\zeta(a) -  \zeta(a)\zeta(2a) + \zeta(3a)\over 3} \]
+          \[\zeta_{4}(a) = {\zeta_3(a)\zeta(a) - \zeta_2(a)\zeta(2a) +  \zeta(a)\zeta(3a) - \zeta(4a)\over 4} \]
+          <h2>Concrete Values of $\zeta_k(2)$</h2>
+          Armed with some known values of $\zeta(2n)$, we compute and notice an interesting pattern:
+          \[\zeta_{1}(2) = \zeta(2) = {\pi^2\over 3!}\]
+          \[\zeta_{2}(2) = {\zeta(2)\zeta(2) -  \zeta(4)\over 2} =
+ {1\over 2}\left(\left(\pi^2\over 6\right)^2 - {\pi^4\over 90}\right) = {\pi^4\over 5!}\]
+          \[\zeta_{3}(2) = {\zeta_2(2)\zeta(2) -  \zeta(2)\zeta(4) + \zeta(6)\over 3}  =
+ {1\over 3}\left({\pi^4\over 5!}{\pi^2\over 6} -{\pi^2\over 6} {\pi^4\over 90} + {\pi^6\over 945}\right) = {\pi^6\over 7!}\]
+          \[\zeta_{4}(2) = {\zeta_3(2)\zeta(2) - \zeta_2(2)\zeta(4) +  \zeta(2)\zeta(6) - \zeta(8)\over 4} =\]
+\[
+ {1\over 4}\left({\pi^6\over 7!}{\pi^2\over 6} -{\pi^4\over 5!} {\pi^4\over 90} + {\pi^2\over 6}{\pi^6\over 945} - {\pi^8\over 9450}\right) = {\pi^8\over 9!}
+\]
+
+Therefore we conjecture that, for all $k \in \N$ that we have
+
+\[\zeta_{k}(2) = {\pi^{2k}\over (2k+1)!}\]
+<h2>Manipulations</h2>
+
+Notice that $(\dag)$ is equivalent to
+
+\[M \zeta_M(a) = \sum_{n=1}^M (-1)^{n+1} \zeta_{M-n}(a) \zeta(an)\]
+
+It would therefore suffice to prove the conjecture if we could prove it inductively along this recurrence
+for the particular value $a = 2$, i.e. if we could show
+
+\[M {\pi^{2M}\over (2M+1)!} =  \sum_{n=1}^M (-1)^{n+1} {\pi^{2(M-n)}\over (2(M-n)+1)!} \zeta(2n)\]
+
+But let's plug in the known expression for the $\zeta$ function at even integers, namely
+
+\[ \zeta(2n) = (-1)^{n+1} {2^{2n-1} \pi^{2n} B_{2n}\over (2n)!}\]
+
+and we get
+
+\[M {\pi^{2M}\over (2M+1)!} =  \sum_{n=1}^M (-1)^{n+1} {\pi^{2(M-n)}\over (2(M-n)+1)!} (-1)^{n+1} {2^{2n-1} \pi^{2n} B_{2n}\over (2n)!}\]
+which simplifies to
+\[M {\pi^{2M}\over (2M+1)!} =  \sum_{n=1}^M  {\pi^{2M}\over (2(M-n)+1)!} {2^{2n-1}  B_{2n}\over (2n)!}\]
+and we can cancel the $\pi$s and move the factorial over to the right:
+\[M =  \sum_{n=1}^M  {2M+1 \choose 2n} {2^{2n-1}  B_{2n}}\]
+Since odd Bernoulli numbers for $n \ge 3$ are zero, this is the same thing as
+\[M =  \sum_{n=2}^{2M}  {2M+1 \choose n} {2^{n-1}  B_{n}}\]
+and by adding some terms to adjust the sum bounds we see
+\[\left({2M+1 \choose 0} {2^{-1}  B_{0}}\right) + \left({2M+1 \choose 1} {2^{0}  B_{1}}\right) + M =  \sum_{n=0}^{2M}  {2M+1 \choose n} {2^{n-1}  B_{n}}\]
+and so
+\[\left(1\cdot (1/ 2) \cdot 1\right) + \left((2M+1)\cdot 1 \cdot (-1/2)\right) + M =  \sum_{n=0}^{2M}  {2M+1 \choose n} {2^{n-1}  B_{n}}\]
+and then the entire left side of the equation cancels, leaving
+\[0 =  \sum_{n=0}^{2M}  {2M+1 \choose n} {2^{n-1}  B_{n}}\]
+which we can tidy up if we want by multiplying by 2:
+<h2>Final Form</h2>
+<b>Conjecture</b>
+<em>For any $M\ge 1$, we have</em>
+\[\sum_{n=0}^{2M}  {2M+1 \choose n} {2^{n}  B_{n}} = 0\]
+This can be empirically verified, e.g. <a href="https://sagecell.sagemath.org/?z=eJyLLi7N1UhKLcrLL83JydTI01TQUjCKywOSSZl5-bmZiTkaRlq-2oY6CkCptPwihTyFzDyFosS89FQNAx0FsJwmRMYXIQNUbmigGQsAReIbKQ==&lang=sage&interacts=eJyLjgUAARUAuQ==">on sagemath</a> with code like
+<pre>
+[sum(bernoulli(n) * 2^n * binomial(2*M+1, n) for n in range(0, 2*M+1)) for M in range(1, 10)]
+</pre>
+which evaluates to a vector of all zeroes.
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\rx": "\\red{x}",
+              "\\green": "\\textcolor{177818}", // 177818
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+
+                        renderDiagrams();
+                        // setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
