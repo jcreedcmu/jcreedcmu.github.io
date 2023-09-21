@@ -147,6 +147,7 @@ which we can tidy up if we want by multiplying by 2:
 \[\sum_{n=0}^{2M}  {2M+1 \choose n} {2^{n}  B_{n}} = 0\]
 Now $B_{2M+1}$ is zero if $M \ge 1$, so in fact
 \[\sum_{n=0}^{2M+1}  {2M+1 \choose n} {2^{n}  B_{n}} = 0\]
+
 which means we can equvialently say
 <h2>Final Form</h2>
 <b>Conjecture</b>
@@ -157,6 +158,32 @@ This can be empirically verified, e.g. <a href="https://sagecell.sagemath.org/?z
 [sum(bernoulli(n) * 2^n * binomial(2*M+1, n) for n in range(0, 2*M+2)) for M in range(1, 10)]
 </pre>
 which evaluates to a vector of all zeroes.
+
+<h2>Postscript</h2>
+I notice that apparently the expression
+
+\[2\left(\left(\sum_{n=0}^{M}  {M \choose n} {2^{n}  B_{n}}\right) - B_M\right)\]
+
+generates the <a href="">Genocchi numbers</a> of the first kind,
+that is,
+
+<pre>
+[2 * (sum(bernoulli(n) * 2^n * binomial(M, n) for n in range(0, M+1)) - bernoulli(M)) for M in range(1, 15)]
+</pre>
+yields
+<pre>
+[1, -1, 0, 1, 0, -3, 0, 17, 0, -155, 0, 2073, 0, -38227]
+</pre>
+Hm, what I have is very close to the formula
+<pre>
+a(n) = Sum_{k=0..n-1} binomial(n,k) 2^k*B(k)
+</pre>
+listed in that oeis link. I think this means
+\[\sum_{n=0}^{M}  {M \choose n} {2^{n}  B_{n}} = (2-2^M)B_M\]
+
+as confirmed by
+<pre>print([sum(bernoulli(n) * 2^n * binomial(M,n) for n in range(0,M+1)) - bernoulli(M) * (2-2^M) for M in range(0,10)])</pre>
+printing all zeroes.
   </body>
   <script>
 	 function go(body) { renderMathInElement( body, { strict: false,
