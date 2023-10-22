@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+img {
+  max-width: 40em;
+}
+canvas {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  display: block; width: 100%;
+  border: 1px solid black;
+}
+
+
+table.proof td {
+  padding-left: 50px;
+}
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>How to Invent Topographs</title>
+  </head>
+  <body>
+    <h1>How to Invent Topographs</h1>
+
+    The point of this note is that, as is commonly the case, I was
+    thinking on my own about some math thing and stumbled into
+    re-inventing something already invented a long time ago. Once upon
+    a time I think I might have felt some disappointment that my
+    thinking wasn't novel, but lately it feels like a kind of
+    satisfying vindication that at least I was thinking "in the right
+    direction" or something.
+
+    <p>
+      In any case, I felt like jotting down a cleaned up version of
+      how my thought process got me there. I tend to like other
+      people's reconstruction of stories of the form "You could have
+      invented X", so here's my offering.
+
+      <h2>Square Roots modulo $n$</h2>
+
+      Suppose we're trying to understand the structure of the square roots of $-1 \pmod k$.
+      It's classically known that square roots of $-1$ <i>exist</I> mod $k$ if and only if
+      $k$'s prime factorization is all primes of the form $4n+1$ and maybe one factor of $2$,
+      but let's say that isn't satisfying enough &mdash; we'd like to know more about where those
+      square roots actually live in the set of numbers mod $k$.
+
+    <p><b>Idea:</b> think proof-relevantly<p>
+
+      The statement that $b^2 \equiv -1 \pmod k$ hides a bit of data that serves as a witness
+      to the equality modulo $k$. Whenever that holds, there is an $\ell$ such that $b^2 = -1 + k\ell$.
+      So let's keep that $\ell$ in mind going forward.
+
+    <p><b>Idea:</b> consider how new solutions can be found from others<p>
+
+      There are a couple of trivial ways in which solutions can be related to each other.
+      If we say that a triple $(b,k,\ell)$ is 'good' when $b^2 = -1 + k\ell$, then
+      also
+      <ul>
+        <li>we can flip the sign of $b$, i.e. $(-b,k,\ell)$ is also good
+        <li>we can swap $\ell$ and $k$, i.e. $(b,\ell,k)$ is also good
+      </ul>
+
+      Furthermore, because we're thinking mod $k$, we also know that
+      adding $k$ to any variable should keep the equation satisfied.
+      That is, if $b^2 \equiv -1 \mod k$, then surely $(b+k)^2 \equiv
+      -1 \mod k$. How does that affect our witness $\ell$?
+
+    <p>
+       We can phrase this as: if $b^2 = -1 + k\ell$, then what's the
+       $\ell'$ that makes $(b+k)^2 = -1 + k\ell'$ true? A bit of algebra tells us:
+       \[(b+k)^2 = -1 + k\ell'\]
+       \[b^2+2bk+k^2 = -1 + k\ell'\]
+       \[(-1+k\ell)+2bk+k^2 = -1 + k\ell'\]
+       \[k\ell+2bk+k^2 =  k\ell'\]
+       \[\ell+2b+k =  \ell'\]
+       So we've shown that if $(b,k,\ell)$ is good, then also $(b+k,k,\ell+2b+k)$ is good.
+
+    <p><b>Idea:</b> make one of the things like the others<p>
+
+      So we have a handful of different operations that can generate
+      more good triples. The sign flip and $\ell$-$k$ swap operations
+      are self-inverse, i.e. they're involutions, which is nice, but
+      the $b \mapsto b+k$ operation isn't. Is there a way to modify
+      this latter operation into an involution while still being able
+      to reach the same set of good triples? Turns out there is. We
+      can compose it with the sign flip, and consider the operation:
+
+      \[(b,k,\ell) \mapsto (-b-k, k, \ell+2b+k)\]
+
+      which is an involution and preserves "goodness" of triples.
+
+    <p><b>Idea:</b> think of coxeter groups and cell complexes<p>
+
+      This idea is not as much of a low-hanging-fruit general-purpose
+      heuristic as the others, but it is something at the forefront of
+      my mind for some reason, given other mathematical things I've
+      played with in the past.
+
+    <p>
+      The idea is: Whenever you have a list of involutions
+      $\sigma_0,\ldots,\sigma_n$ acting on a set $X$ and any
+      $\sigma_i$ and $\sigma_j$ that aren't adjacent in the list
+      commute, then I claim it's just screaming to be interpreted as a
+      discrete space, made up of vertices, edges, faces, etc.
+      <p>
+        The three operations in this case are ordered like so:
+        \[\sigma_0 : (b,k,\ell) \mapsto (-b, k, \ell)\]
+        \[\sigma_1 : (b,k,\ell) \mapsto (-b-k, k, \ell+2b+k)\]
+        \[\sigma_2 : (b,k,\ell) \mapsto (b, \ell, k)\]
+        and we find that indeed $\sigma_0$ commutes with $\sigma_2$.
+        <h2>Visualization</h2>
+        So let's calculating some examples and see what it looks like:
+<img src="diagram1.png">
+
+The way we interpret involutions $\sigma_0, \sigma_1, \sigma_2$ acting
+on a set is as follows: every element of the set is interpreted as
+a <em>flag</em> in the cell complex: a simultaneous choice of a face,
+an edge, and a vertex, all incident to one another. The effect of
+$\sigma_i$ on a flag $x \in X$ is to output the unique flag $x'$ that
+is the same as $x$ is all cells <em>except</em> the dimension-$i$ one.
+So $\sigma_0 x$ is the flag that shares the same face and edge as $x$,
+but differs in the vertex, $\sigma_1 x$ is the flag that shares the
+same vertex and face as $x$, but differs in the edge, and $\sigma_2 x$
+is the flag that shares the same vertex and edge as $x$, but differs
+in the face.
+<p>
+This means that the vertices of the complex can be thought of as
+equivalence classes of flags under hitting them with $\sigma_1$ and
+$\sigma_2$ repeatedly: if you change the edge and the face as much as
+you can, but leave the vertex alone, you've found a vertex.
+<p>
+For the particular $\sigma_1$ and $\sigma_2$ we find that
+$(\sigma_1\sigma)^3 = \mathsf{id}$, which means that every vertex has
+three edges coming out of it. There is no such relation for $\sigma_0\sigma_1$,
+i.e. $(\sigma_0\sigma_1)^n \ne \mathsf{id}$ for all $n$. This means the faces
+of our complex are polygons with infinitely many sides! We have
+an <a href="https://en.wikipedia.org/wiki/Order-3_apeirogonal_tiling">order-3 apeirogonal tiling</a>
+of hyperbolic space.
+<p>
+What's more, we can notice some patters in the numbers we've attached to the flags.
+The value of $k$, the middle element of the triple, stays the same across each face
+of the complex (because $\sigma_0$ and $\sigma_1$ don't affect it) so we can label
+each face with its value of $k$. And for each edge, we notice that the value of $b$
+doesn't change when we apply $\sigma_2$, and it only changes in sign when we apply $\sigma_0$.
+This means we can label each edge with a 'directional' value of $b$: we draw a little arrow
+pointing towards where the $\pm b$ is positive, and label the edge with the absolute value of $b$.
+<p>
+This looks like the following:
+<img src="diagram2.png">
+We can in fact describe how to build the diagram incrementally, without dealing specifically
+in the flags $(b,k,\ell)$. We notice that around each face labelled $k$, the directed labels
+"accelerate" by $k$ each time we go from edge to edge: as we go clockwise around the face $k$,
+the edges point $k$ more clockwise. So if we know the label on a face and an edge, we know the labels
+of all edges around that face, and if we know two adjacent edges' labels on one face, we can
+deduce what the face's label must be. Expanding the diagram a couple more levels deep, we see:
+<img src="diagram3.png">
+Now we have that:
+<ul>
+<li> For every edge labelled $b$, sitting between two faces labelled $\ell$ and $k$, we have
+$b^2 = -1 + \ell k$.
+<li>Landau's conjecture that there are infinitely many primes of the form $n^2 + 1$ is equivalent
+to asserting that there are infinitely many $n \ge 1$ that only occur on one edge in this diagram.
+</ul>
+<h2>Topographs</h2> I googled around for things like "apeirogon" and
+"quadratic residue" and the like, and found out that Conway had
+already invented this diagram (and generalizations thereof) in the
+late 90s and called them "Topographs". Apparently they have to do with
+the effect of changes-of-coordinate on quadratic forms. Allen Hatcher has <a href="https://pi.math.cornell.edu/~hatcher/TN/TNpage.html">a book with lots
+more information</a>. Haven't read it yet, looks very cool. Here's his version of the above diagram:
+<img src="diagram4.png">
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\rx": "\\red{x}",
+              "\\green": "\\textcolor{177818}", // 177818
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+
+                        renderDiagrams();
+                        // setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
