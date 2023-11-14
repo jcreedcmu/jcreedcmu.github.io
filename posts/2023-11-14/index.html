@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+img {
+  max-width: 40em;
+}
+canvas {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  display: block; width: 100%;
+  border: 1px solid black;
+}
+
+
+table.proof td {
+  padding-left: 50px;
+}
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Constructing the Cotangent Function</title>
+  </head>
+  <body>
+    <h1>Constructing the Cotangent Function</h1>
+    <h2>Foreshadowing</h2>
+    The point of this note is to go through some of the motions of the
+    derivation of the Weierstrass elliptic function $\wp$, and the Eisenstein
+    series $G_{2k}$, but in one dimension instead of two. So instead
+    of summing a translated copy of $1/z^2$ at all of the points of a 2-dimensional lattice in $\C$,
+    we define $f$ by summing a translated copy of  $1/x$ at all of the points in a 1-dimensional lattice in $\R$, and
+    instead of the Laurent series of $\wp$ featuring $G_{2k}$, we find a Laurent
+    series whose coefficients feature $\zeta(2k)$.
+    <p>
+      By making a polynomial in terms of $f$ and $f'$, to eliminate the strictly
+      rational parts of the Laurent series, we find a differential equation that
+      $f$ satisfies: this is analogous to the differential equation
+      \[ (\wp')^2 = 4\wp^3 - g_2 \wp - g_3 \]
+      but simpler. We find that the "1-dimensional elliptic function" is just
+      the cotangent function up to some constant factors.
+
+    <h2>A Periodic Function of Poles</h2>
+
+    Let's say we want to construct a function $f : \R \to \R$ that's periodic.
+    We could try to do this by first picking an arbitrary function, and adding
+    infinitely many copies of it translated to the left and right.
+    That is, we could pick a function $g : \R \to \R$, and
+    set
+    \[ f = \sum_{n=-\infty}^{\infty} g(x-n)\]
+
+    Then we'd find that for any $m\in \Z$,
+    \[ f(x + m) = \sum_{n=-\infty}^{\infty} g(x + m -n)
+     = \sum_{n=-\infty}^{\infty} g(x + m -n)\]
+    \[ = \sum_{u+m=-\infty}^{\infty} g(x - u)
+     = \sum_{u=-\infty}^{\infty} g(x - u)
+    = f \]
+    where $u = n-m$, whence $n = u+m$.
+    <p>
+      What functions $g$ might be suitable? Well, in order for the infinite
+      sum to converge <i>anywhere</i>, we probably want $g$ to fall off
+      in magnitude to the left and right, so that its "tail" doesn't accumulate
+      too heavily on values of $f$ near the origin.
+    <p>
+      So let's just try $g = 1/x$. Although it blows up at the origin, it
+      does fall off as $x$ gets big. This means we're deciding to define
+      \[ f = \sum_{n=-\infty}^{\infty} {1\over x-n}\]
+      <h2>Laurent Series</h2>
+      Let's try to rearrange this expression as a power series in $x$.
+      We can't really do anything with the $n=0$ case, as that blows up at the origin.
+      So let's separate that out:
+      \[ f = {1\over x} + \left(\sum_{n=1}^{\infty} {1\over x-n}\right) + \left(\sum_{n=-\infty}^{-1} {1\over x-n}\right)\]
+      From the standard geometric series formula
+      \[ {1\over 1-x} = \sum_{m=0}^\infty x^m \]
+      we can deduce
+      \[ {1\over x-n} = {-1\over n-x} = {-1/n\over 1-x/n} \]
+      \[ = -(1/n) \sum_{m=0}^\infty (x/n)^m \]
+So we can plug this in to get
+      \[ f = {1\over x} + \left(\sum_{n=1}^{\infty} -(1/n) \sum_{m=0}^\infty (x/n)^m \right) + \left(\sum_{n=-\infty}^{-1} -(1/n) \sum_{m=0}^\infty (x/n)^m\right)\]
+      \[  = {1\over x} + \left(\sum_{n=1}^{\infty} -(1/n) \sum_{m=0}^\infty (x/n)^m \right) + \left(\sum_{n=1}^{\infty} (1/n) \sum_{m=0}^\infty (-1)^m (x/n)^m\right)\]
+      \[  = {1\over x} + \left(\sum_{n=1}^{\infty} -(2/n) \sum_{m=0}^\infty (x/n)^{2m+1} \right) \]
+      \[  = {1\over x} -2  \left(\sum_{n=1}^{\infty}  \sum_{m=0}^\infty x^{2m+1}n^{-2m-2} \right) \]
+      and now rearranging (recklessly setting aside issues of convergence:)
+     \[  = {1\over x} -2  \left(  \sum_{m=0}^\infty x^{2m+1} \sum_{n=1}^{\infty}n^{-2m-2} \right) \]
+     \[f  = {1\over x} -2  \left(  \sum_{m=0}^\infty x^{2m+1} \zeta(2m+2) \right) \]
+      And that's at least a Laurent series for $f$ centered at the origin.
+
+      We can actually simplify this by using the fact that $\zeta(0) = -1/2$. That means
+      \[f = -2 \sum_{m=-1}^\infty x^{2m+1} \zeta(2m+2) \]
+      <h2>Differential Equation</h2>
+      What's the derivative of $f$? It's
+      \[f' = -2 \sum_{m=-1}^\infty (2m+1)x^{2m} \zeta(2m+2) \]
+      Let's stare at the first few terms of these Laurent series:
+      \[f = 1/x -2x\zeta(2) - 2x^3\zeta(4) - 2x^5\zeta(6) - \cdots \]
+      \[f' = -1/x^2 -2\zeta(2) - 6x^2\zeta(4) - 10x^4\zeta(6) - \cdots \]
+      They're <i>almost</i> ordinary power series: only one term of negative exponent
+      exists in each. If we squared $f$, and added it to $f'$, those terms
+      would cancel out. Let's investigate $f^2 - f'$, and see if it's an interesting function.
+
+      To make that calculation a bit easier, let's consider
+      \[-(1/2)x f =  \sum_{m=0}^\infty x^{2m} \zeta(2m) \]
+      so that
+      \[(1/4)x^2 f^2 =  \sum_{m=0}^\infty \sum_{p=0}^\infty x^{2m} \zeta(2m) x^{2p} \zeta(2p) \]
+\[ =  \sum_{m=0}^\infty \sum_{k=0}^{m} x^{2m} \zeta(2k) \zeta(2(m-k)) \]
+So now we know
+\[ f^2 =  4\sum_{m=0}^\infty \sum_{k=0}^{m} x^{2m-2} \zeta(2k) \zeta(2(m-k)) \]
+\[= 4x^{-2}\zeta(0)^2 + 4 (\zeta(0)\zeta(2) + \zeta(2)\zeta(0)) + 4x^2
+(\zeta(0)\zeta(4) + \zeta(2)\zeta(2) + \zeta(4)\zeta(0)) +
+ \cdots \]
+\[= x^{-2} -4\zeta(2) - 4x^2(\zeta(4) - \zeta(2)^2) + \cdots\]
+Hence
+\[f^2 + f' = \]
+\[4\left(\sum_{m=0}^\infty \sum_{k=0}^{m} x^{2m-2} \zeta(2k) \zeta(2(m-k)) \right)-2 \left(\sum_{m=-1}^\infty (2m+1)x^{2m} \zeta(2m+2)\right) \]
+\[= 4\left(\sum_{m=0}^\infty  x^{2m-2} \sum_{k=0}^{m}\zeta(2k) \zeta(2(m-k)) \right)-2 \left(\sum_{m=0}^\infty (2m-1)x^{2m-2} \zeta(2m)\right) \]
+\[= \sum_{m=0}^\infty  x^{2m-2} 4\left(\sum_{k=0}^{m}\zeta(2k) \zeta(2(m-k)) \right)-2 (2m-1) \zeta(2m) \]
+Se if we define $c_m$ to be the coefficients of the power series
+\[ f^2 + f' = \sum_{m=0}^\infty c_m x^{2m-2} \]
+we find that
+\[c_m = 4\left(\sum_{k=0}^{m}\zeta(2k) \zeta(2(m-k)) \right)-2 (2m-1) \zeta(2m)\]
+and in the first few cases this works out to
+<center><table>
+<tr><td>$m$</td><td>$c_m$</td></tr>
+<tr><td>$0$</td><td>$4\zeta(0)\zeta(0) + 2\zeta(0) = 0$</td></tr>
+<tr><td>$1$</td><td>$4\zeta(0)\zeta(2) + 4\zeta(2)\zeta(0) - 2\zeta(2) = -6\zeta(2)$</td></tr>
+<tr><td>$2$</td><td>$4\zeta(0)\zeta(4) + 4\zeta(2)\zeta(2) + 4\zeta(0)\zeta(4) - 2\cdot 3\zeta(4) = 0$</td></tr>
+<tr><td>$3$</td><td>$4\zeta(0)\zeta(6) + 4\zeta(2)\zeta(4) +$<br>$ 4\zeta(4)\zeta(2) + 4\zeta(6)\zeta(0) - 2\cdot 5\zeta(6) = 0$</td></tr>
+<tr><td>$4$</td><td>$4\sum_{k = 0}^4 \zeta(2k)\zeta(2(4-k)) - 2\cdot 7\zeta(8) = 0$</td></tr>
+<tr><td>$5$</td><td>$4\sum_{k = 0}^5 \zeta(2k)\zeta(2(5-k)) - 2\cdot 9\zeta(10) = 0$</td></tr>
+<tr><td>$6$</td><td>$4\sum_{k = 0}^6 \zeta(2k)\zeta(2(6-k)) - 2\cdot 11\zeta(12) = 0$</td></tr>
+</table></center>
+<p>
+Strange! Above $m=1$, these coefficents all seem to be exactly zero. If that is true,
+we have that $f^2 + f'$ is a constant function, specifically
+\[f^2 + f' = -6\zeta(2)\]
+Knowing that $\zeta(2) = \pi^2/6$, this is
+\[f^2 + f' = -\pi^2\]
+<h2>Solving the Differential Equation</h2>
+So let's try to solve the more general differential equation
+\[f^2 + f' = -k^2\]
+\[f^2 + {df\over dx} = -k^2\]
+\[ {df\over dx} = -k^2-f^2\]
+\[ {df\over k^2+f^2} =-dx\]
+\[ \int {df\over k^2+f^2} = -x + C\]
+Substitute $f = k \tan u$:
+\[ \int {k \sec^2 u \,du\over k^2+ k^2\tan^2 u} = -x + C\]
+\[ \int {1\over k} du = -x + C\]
+
+\[  u/k = -x + C\]
+\[ \tan^{-1} (f/k)/k = -x + C\]
+\[ f = k \tan (k(C-x))\]
+
+By symmetry, we can determine that the constant $C$ must be $1/2$, so
+
+\[f =  \pi \tan (\pi (C-x)) = \pi \cot (\pi x)\]
+
+<p>
+<b>Exercise</b>: Prove that in fact
+\[2\left(\sum_{k=0}^{m}\zeta(2k) \zeta(2(m-k)) \right) =  (2m-1) \zeta(2m)\]
+when $m \ge 2$, which justifies the inference that $f^2 + f'$ is a constant function.
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}", // 177818
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+
+                        renderDiagrams();
+                        // setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
