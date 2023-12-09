@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Stretchable Edges in Graphs</title>
+  </head>
+
+  <body>
+    <h1>Stretchable Edges in Graphs</h1>
+    <h2>Categories vs. Graphs</h2>
+
+    If I have two path graphs, say $G_1$ has one edge, and $G_2$ has two
+    edges, then there <em>isn't</em> a graph homomorphism from $G_1$ to
+    $G_2$ that maps the first vertex to the first vertex and the last
+    vertex to the last vertex.
+    <center><img src="graphs.png"></center>
+    However, if I have two categories $\C_1$ and $\C_2$, of seemingly the same shape,
+    there <em>is</em> a functor from one to the other that maps the first object
+    to the first object and the last object to the last object.
+    <center><img src="categories.png"></center>
+
+    Why is this? A reasonable answer is: because categories
+    have <em>composition</em>. The existence of a morphism $0\to 1$
+    and a morphism $1\to 2$ in $\C_2$ requires that there is also a
+    composite morphism $0\to 2$, and it is this morphism that we're
+    able to send the morphism $0\to 1 \in \C_1$ to.
+    <h2>Stretchable Edges</h2>
+
+    Here's a different answer. (Maybe less reasonable!) It's because
+    graph edges <em>aren't stretchable</em>. But what if they were? Or
+    at least what if <em>some of them</em> were? Let's try to imagine
+    what this would be like. We want to live in an larger world of
+    graphs, where each edge might be an ordinary, non-stretchable
+    edges, but also might be a stretchable edges.
+    <center><img src="stretch-non-stretch.png"></center>
+    The key property of a stretchable edge is that we should be able to map it onto
+    any arbitrarily long path of edges in the codomain graph, consisting of an arbitrary
+    mixture of regular and stretchable edges.
+    <center><img src="stretch-examples.png"></center>
+    We should <i>not</I> be able to map a regular edge onto a stretchable edge.
+    <center><img src="stretch-non-example.png"></center>
+    For if we could, composition of graph homomorphisms would require us to map
+    a nonstretchable edge onto a nontrivial path, which is not allowed.
+
+    <h2>Defining the Stretchable Edge Object</h2>
+    Maybe we can understand the stretchable edge, call it $S$, by giving some kind of account of how other
+    ordinary graphs ought to be able map into it, and how it maps into them.
+    <p>
+    One intuition to start with is that it smells like we are saying that to have a map
+    <i>out of</i> $S$ is the same thing
+    as showing that there <i>exists</i> some $n$ such that there's a map out of $P_n$, the path with $n$ edges.
+    <center><img src="colimit.png"></center>
+    Conversely, to map <i>into</i> $S$, we could demand a map for <i>every</i> $n$ from some other graph
+    into $P_n$:
+    <center><img src="limit.png"></center>
+    Both of these claims seem to allow "too many" maps, however. In the example above of maps from the stretchable
+    edge into $P_4$, nothing stops us from choosing as an existential witness
+    an $n$ much bigger than 4, and picking one of the many maps from a long path graph into $P_4$.
+    And in the other example, nothing stops us from mapping even the single vertex chaotically into the interior
+    of various paths, which doesn't seem to correspond to any sensible map from the single vertex into $S$.
+    <h2>Limits and Colimits</h2>
+    Therefore we want to "cut down" the space of maps into and out of $S$.
+    Because we used a "there exists" in the definition of maps-out-of $S$, we will use a <i>colimit</i> to quotient out by an equivalence relation.
+    Because we used a "for all" in the definition of maps-into $S$, we will use a <i>limit</i> to filter out maps
+    that satisfy a coherence condition.
+    <p>
+      The diagram category, call it $\P$, which we will take the limits and colimits over is this:
+      <ul>
+        <li> an object is a path graph $P_n$ for some $n\in \N$.
+        <li> a morphism $P_n \to P_m$ is any graph homomorphism from $P_n$ to $P_m$ that preserves the "first vertex" and "last vertex"
+          of the path.
+      </ul>
+
+      We then say that a morphism out of $S$ into a graph $G$ is an element of
+      \[\mathop{\mathrm{colim}}\limits_{P_n\in \P^{op}} \hom(P_n, G) \]
+      So as before, a morphism is given by choosing an $n$, and exhibiting a graph homomorphism from
+      $P_n$ to $G$, but the colimit means that we <em>identify</em> the pair $\langle P_n, f : P_n \to G \rangle$
+      with the pair $\langle P_m, (f \o \phi) : P_m \to G \rangle$ whenever $\phi$ is a morphism $P_m \to P_n$
+      in $\P$.
+
+For example, the following $f$ and $f\o\phi$ are identified in the colimit.
+    <center><img src="colimit-example.png"></center>
+    <p>
+      We say that a morphism into $S$ from a graph $G$ is an element of
+      \[\mathop{\mathrm{lim}}\limits_{P_n\in \P} \hom(G, P_n) \]
+      Concretely, this is an $n$-index family $(f_n : P_n \to G)_{n\in \N}$ of maps into $G$, with the property that,
+      for any map $\phi : P_m \to P_n$, we have
+      \[\phi \o f_n = f_m\]
+
+      This constrains the possible maps from the single vertex graph
+      to $S$. Suppose towards a contradiction that
+      there exists $n \ge 2$ such that we decided to have $f_n$ map the vertex
+      into the interior of $P_n$. There is map $\phi_L : P_n \to P_1$
+      that sends that interior vertex to the first vertex of $P_1$, <em>and also</em>
+      there is a map $\phi_R : P_n \to P_1$ that sends that interior vertex to the last vertex of $P_1$.
+      We have
+      \[\phi_L \o f_n = f_1 = \phi_R \o f_n\]
+      which requires $f_1$ to map the vertex to both vertices of $P_1$ simultaneously, a contradiction.
+    <p>
+      Therefore there are only two maps from the vertex graph to $S$: one that maps the vertex
+      to the first vertex of every $P_n$, and one that maps it to the last vertex of every $P_n$.
+      <h2>Composition</h2>
+If $G_1, G_2$ are graphs, and we have a map $G_1 \to S$ and a map $S \to G_2$, we should be able to compose
+them to get a map $ G_1 \to G_2$. So, following the above prescriptions, let's suppose we have
+\[ (  f_n :G_1 \to P_n)_{n\in \N}  : \mathop{\mathrm{lim}}\limits_{P_n\in \P} \hom_{\C}(G_1,P_n)\]
+and
+\[ \langle P_n, g:P_n \to G_2 \rangle : \mathop{\mathrm{colim}}\limits_{P_n\in \P^{op}} \hom_{\C}(P_n, G_2)\]
+Given this raw data, we absolutely can output $g \o f_n : G_1 \to G_2$ as our answer. But because
+we've used data coming from a colimit, we have to show that our computation is well-defined, i.e.
+that it respects the equivalence relation of the colimit.
+<p>
+So let's imagine that instead of $\langle P_n, g\rangle$ we were given a different (but equivalent)
+element $\langle P_m, g \o \phi\rangle$ of the colimit, for some $\phi : P_m \to P_n$. Then we would
+have computed $g \o \phi \o f_m$ as our answer. But the limit property of $f$ guarantees
+that $\phi \o f_m = f_n$, so this is the same morphism $G_1 \to G_2$ after all. We can successfully
+compose morphisms $G_1 \to S$ and $S \to G_2$!
+<h2>Maps from $S$ to itself</h2>
+If we want to add $S$ as an object to the category of graphs, knowing what the maps out of and into $S$ are isn't enough:
+we also need to account for maps from $S$ to itself, and how they compose with themselves, and with
+other maps adjacent to $S$.
+<p>
+And $S$ isn't the only object we'd like to add! Ideally we'd like to have all graphs that include
+many stretchable edges in them.
+<p>
+At this point I engage in a bit of optimistic guessing, and try to think about
+the category where
+<ul>
+<li>an object is a functor into the category of graphs
+<li>a morphism from $(P : \P \to \rgrph)$ to $(Q : \Q \to \rgrph)$ is an element of
+\[ \mathop{\mathrm{lim}}\limits_{q\in \Q^{op}} \mathop{\mathrm{colim}}\limits_{p\in \P^{op}} \hom_{\rgrph}(P(p), Q(q))\]
+</ul>
+
+I conjecture that this category is where all graphs with stretchable edges live.
+<p>
+This definition at least captures everything that I've thought of above as a special case.
+An ordinary graph is given by the functor out of the one-object category into $\rgrph$, which picks
+out the graph in question. If we consider the definition of morphisms from $G_1 : \mathbf{1} \to \rgrph$ to
+$G_2 : \mathbf{1} \to \rgrph$, we get just a trivial limit of the trivial colimit that yields exactly the
+homset between $G_1$ and $G_2$ in $\rgrph$.
+<p>
+One can also see that the single stretchable edge graph $S$ exists as the object which is the inclusion
+functor $\P \to \rgrph$, and that morphisms from it to ordinary graphs and vice-versa match the definitions
+above: in either case one of the colimit or limit degenerates into triviality, leaving the other.
+<p>
+The reason why I think the limit has to come before the colimit is so that identity morphisms can be constructed at all.
+In first-order logic, we can prove
+\[\forall x. \exists y.P(y) \imp P(x)\]
+but not
+\[\exists y. \forall x.P(y) \imp P(x)\]
+so $\lim \colim$ works better than $\colim \lim$.
+
+      <h2>Lax Slice Category</h2>
+Furthermore, I think this category admits an even more compact description as a kind of lax slice category $\rcat/\rgrph$.
+<ul>
+<li>an object is any functor $P : \P \to \rgrph$ in $\rcat$.
+<li>a morphism from $(P : \P \to \rgrph)$ to $(Q : \Q \to \rgrph)$ is a pair consisting
+of a functor $F: \Q \to \P$ and a natural transformation $\alpha : P\o F \to Q$.
+<li>...except we identify morphisms that are related by a natural transformation as follows.
+If $\langle F, \alpha \rangle$ is a morphism as above from
+$(P : \P \to \rgrph)$ to $(Q : \Q \to \rgrph)$, then for any $G : \Q \to \P$ and any
+$\beta : G \to F$, we consider
+\[\langle F, \alpha\rangle \equiv \langle G, \alpha \o \beta\rangle\]
+to be the same morphism from $(P : \P \to \rgrph)$ to $(Q : \Q \to \rgrph)$.
+    <center><img src="slice.png"></center>
+
+</ul>
+The naturality of $\alpha$ seems to capture the coherence requirement of the limit in the previous
+definition, and the identification-up-to-tacked-on-natural-transforms seems to capture the quotienting
+caused by the colimit.
+<p>
+If was more sophisticated, maybe I could see the $\beta$ as actually being a 2-cell in some lax slice 2-category,
+but I think I run out of higher-categories-brain trying to think through that.
+    <a id="mark"></a></body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathbb P}",
+              "\\Q": "{\\mathbb Q}",
+              "\\rcat": "\\mathbf{Cat}",
+              "\\rgrph": "\\mathbf{Grph}",
+              "\\colim": "{\\mathrm {colim}}",
+              "\\imp": "\\Rightarrow",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
