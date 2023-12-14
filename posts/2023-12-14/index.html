@@ -203,9 +203,9 @@ $\mathsf{read} : 1 \x \B_{\mathsf{pull}} \to D \x \B_{\mathsf{pull}}$:
  \end{CD}
     \]
 where
-\[\mathsf{read}_B(b) = \ \ \langle b, f(b) \rangle\]
+\[\mathsf{read}_B(b) = \ \ \langle f(b), b \rangle\]
 
-\[\mathsf{read}_G\langle b, \mathsf{dirty}\rangle = \ \ \blet d = f(b) \bin \langle d, \langle b, \mathsf{clean}(\star) \rangle \rangle\]
+\[\mathsf{read}_G\langle b, \mathsf{dirty}\rangle = \ \ \langle f(b), \langle b, \mathsf{clean}(\star) \rangle \rangle\]
 \[\mathsf{read}_G\langle b, \mathsf{clean}(\star)\rangle = \ \ \langle f(b), \langle b, \mathsf{clean}(\star) \rangle \rangle\]
 
 \[\mathsf{read}_C\langle b, \mathsf{dirty}\rangle = \ \ \blet d = f(b) \bin \langle d, \langle b, \mathsf{clean}(d) \rangle \rangle\]
