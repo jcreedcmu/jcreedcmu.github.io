@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Cache Types, Part 2</title>
+  </head>
+
+  <body>
+    <h1>Cache Types, Part 2</h1>
+
+    <h2>Definitions</h2>
+    I want to organize some type-centric thoughts about small functional programs that maintain caches of
+    expensive-to-compute data, and the reasons for their correctness.
+
+    Let's say a "cache span" is a span of types:
+    \[
+    \begin{CD}    B @&lt;{b}&lt;&lt; G @&gt;{c}&gt;&gt; C\\      \end{CD}
+    \]
+    $B$ is the "base type". This is the actual data we care about, before we start caching anything.
+    $C$ is the "cache type". This probably looks like an extension of $B$ with more record fields,
+    which are the cache. $G$ is the set of "good cache states", ones where the cached derived data in $C$
+    is consistent with $B$. There may be multiple cache states in $C$ that correspond to any particular
+    value in $B$: maybe we have some dirty-bit bookkeeping which might be in various different legitimate states.
+    So in general $G$ is a <em>relation</em> between $B$ and $C$.
+    <p>
+      We write $\B$ for the cache span $(B, b, G, c, C)$.
+    <p>
+      A <i>computation</I> $f$ from type $A$ to type $D$, over state $\B$, is a triple of arrows
+$(f_B, f_C, f_G)$ that form a commutative diagram
+    \[
+    \begin{CD}   A\x B @&lt;{A \x b}&lt;&lt; A\x G @&gt;{A \x c}&gt;&gt; A\x C\\
+@V{f_B}VV @VV{f_G}V @VV{f_C}V\\
+        D\x B @&lt;&lt;{D \x b}&lt; D\x G @&gt;&gt;{D \x c}&gt; D\x C\\      \end{CD}
+    \]
+      Each vertical arrow can be thought of as being a map $A \to D$ but in a state monad (for store type $B, G,$ or $C$).
+      We can also with slightly more generality define a computation from type $A$ to type $D$, over the <e>state transition</e> from $\B$ to $\B'$,
+      as a commutative diagram
+    \[
+    \begin{CD}   A\x B @&lt;{A \x b}&lt;&lt; A\x G @&gt;{A \x c}&gt;&gt; A\x C\\
+@V{f_B}VV @VV{f_G}V @VV{f_C}V\\
+        D\x B' @&lt;&lt;{D \x b'}&lt; D\x G' @&gt;&gt;{D \x c'}&gt; D\x C'\\      \end{CD}
+    \]
+In this case we write $f : A \x \B \to D \x \B'$. Composition of computations is composition of commutative diagrams.
+      Let $\mathbf{1}$ be the trivial cache span $1 \leftarrow 1 \to 1$.
+<p><b>Lemma</b>
+Suppose we have cache spans $\B_0, \ldots, \B_n$ with $\B_0$ and $\B_n$ both being assumed to be the trivial cache span.
+Suppose we have types $A_0, \ldots A_n$. Suppose we have computations
+\[f_0 : A_0 \x \B_0 \to A_1 \x \B_1, \ldots, f_{n-1} : A_{n-1} \x \B_{n-1} \to A_n \x \B_n\]
+Then
+\[ f_{(n-1)B}\o\cdots \o f_{0B} = f_{(n-1)C}\o\cdots \o f_{0C}\]
+<br>
+<b>Proof</b><br>
+A straightforward diagram chase.
+    \[
+    \begin{CD}   A_0 @= A_0 @= A_0\\
+@V{f_{0B}}VV @VV{f_{0G}}V @VV{f_{0C}}V\\
+       A_1\x B_1 @&lt;{A_1 \x \beta_1}&lt;&lt; A_1\x G_1 @&gt;{A_1 \x \gamma_1}&gt;&gt; A_1\x C_1\\
+@V{f_{1B}}VV @VV{f_{1G}}V @VV{f_{1C}}V\\
+       A_2\x B_2 @&lt;{A_2 \x \beta_2}&lt;&lt; A_2\x G_2 @&gt;{A_2 \x \gamma_2}&gt;&gt; A_2\x C_2\\
+@V{f_{2B}}VV @VV{f_{2G}}V @VV{f_{2C}}V\\
+\vdots @. \vdots @. \vdots \\
+ @V{f_{(n-2)B}}VV @VV{f_{(n-2)G}}V @VV{f_{(n-2)C}}V\\
+       A_{n-1}\x B_{n-1} @&lt;{A_{n-1} \x \beta_{n-1}}&lt;&lt; A_{n-1}\x G_{n-1} @&gt;{A_{n-1} \x \gamma_{n-1}}&gt;&gt; A_{n-1}\x C_{n-1}\\
+@V{f_{(n-1)B}}VV @VV{f_{(n-1)G}}V @VV{f_{(n-1)C}}V\\
+      A_n @= A_n @= A_n\\
+  \end{CD}
+    \]
+<p>
+We aim to interpret this lemma as saying that the "naive specification" $f_{(n-1)B}\o\cdots \o f_{0B}$ is the same as
+the "optimized implementation" $f_{(n-1)C}\o\cdots \o f_{0C}$. Nothing in the above definitions really breaks the symmetry between
+$B$ and $C$. So far it's just a matter of convention that we regard one arm of the relation $G$ as being "specification" and
+the other as "implementation".
+<h2>Examples</h2>
+Let's assume our base state type is $B$, and that we have some type $D$ of data derived from $B$ and a presumed expensive
+function $f : B \to D$ that computes the derived data.
+<h3>Naive Ref Cell with Push</h3>
+We can define a cache span $\B_{\mathsf{push}}$ to be
+    \[
+    \begin{CD}    B @= B @&gt;{\gamma_{\mathsf{push}}}&gt;&gt; B \x D\\      \end{CD}
+    \]
+where
+\[ \gamma_{\mathsf{push}}(b) =  \langle b, f(b) \rangle\]
+
+We can define some computations for this cache span.
+<ol>
+<li> An initialization computation $\mathsf{init} : B \x \mathbf{1} \to 1 \x \B_{\mathsf{push}}$:
+    \[
+    \begin{CD}   B @= B @= B\\
+@|  @|  @VV{\gamma_\mathsf{push}}V\\
+        B @= B @&gt;&gt;{\gamma_{\mathsf{push}}}&gt; B \x D\\      \end{CD}
+    \]
+This takes a value of type $B$ and a trivial store to a store with one ref cell of type $B$,
+whose cache is already warmed up by computing $f$.
+<li> Given any $u : B \to B$, an update computation
+$\mathsf{upd} : 1 \x \B_{\mathsf{push}} \to 1 \x \B_{\mathsf{push}}$:
+    \[
+    \begin{CD}
+        B @= B @&gt;{\gamma_{\mathsf{push}}}&gt;&gt; B \x D\\
+@V{u}VV  @VV{u}V  @VV{\mathsf{upd}_C}V\\
+        B @= B @&gt;&gt;{\gamma_{\mathsf{push}}}&gt; B \x D\\
+ \end{CD}
+    \]
+where
+\[\mathsf{upd}_C\langle b, d\rangle = \ \ \blet b' = u(b) \bin \langle b', f(b')\rangle \]
+If we had decidable equality on $B$, we could have checked whether the new value of the store
+was equal to the previous one, and decided to forgo the computation of $f$ in that case.
+For simplicity I won't write out the details here.
+<li> A read computation to read out the value of type $D$:
+$\mathsf{read} : 1 \x \B_{\mathsf{push}} \to D \x \B_{\mathsf{push}}$:
+    \[
+    \begin{CD}
+        B @= B @&gt;{\gamma_{\mathsf{push}}}&gt;&gt; B \x D\\
+@V{\mathsf{read}_B}VV @VV{\mathsf{read}_B}V   @VV{\mathsf{read}_C}V\\
+        D \x B @= D \x B @&gt;&gt;{D \x \gamma_{\mathsf{push}}}&gt; D \x (B \x D)\\
+ \end{CD}
+    \]
+where
+\[\mathsf{read}_B\langle b, d\rangle = \ \ \langle f(b), b \rangle\]
+\[\mathsf{read}_C\langle b, d\rangle = \ \ \langle d, \langle b, d \rangle \rangle\]
+
+Notice two things:
+<ul>
+<li> The "implementation" $\mathsf{read}_C$ is cheap (because it doesn't use $f$) while
+the "specification" $\mathsf{read}_B$ is expensive (because it does use $f$)
+<li> this computation is advertised as being allowed to update state during <em>read</em>, even though it doesn't
+use this ability. However we will use this ability for the "pull" protocol below.
+</ul>
+</ol>
+
+<!-- -------------------------------------------------------------------------------------------------- -->
+<h3>Ref Cell with Pull and Dirty Bit</h3>
+Let's take what is essentially the option type $\mathtt{Maybe}\ D$ as a "dirty bit status"
+\[ S(D) = \mathsf{clean}(D) + \mathsf{dirty} \]
+We can define a cache span $\B_{\mathsf{pull}}$ to be
+    \[
+    \begin{CD}
+    B @&lt;{\beta_{\mathsf{pull}}}&lt;&lt; B \x S(1) @&gt;{\gamma_{\mathsf{pull}}}&gt;&gt; B \x S(D)\\
+   \end{CD}
+    \]
+where
+\[ \beta_{\mathsf{pull}}(b, s) =  b\]
+\[ \gamma_{\mathsf{pull}}(b, \mathsf{clean}(\star)) =  \langle b, \mathsf{clean}(f(b)) \rangle\]
+\[ \gamma_{\mathsf{pull}}(b, \mathsf{dirty}) =  \langle b, \mathsf{dirty}  \rangle\]
+
+We can define some computations for this cache span.
+<ol>
+<li> An initialization computation $\mathsf{init} : B \x \mathbf{1} \to 1 \x \B_{\mathsf{pull}}$:
+    \[
+    \begin{CD}   B @= B @= B\\
+@|  @VV{\mathsf{init}_G}V  @VV{\mathsf{init}_C}V\\
+    B @&lt;&lt;{\beta_{\mathsf{pull}}}&lt; B \x S(1) @&gt;&gt;{\gamma_{\mathsf{pull}}}&gt; B \x S(D)\\
+\end{CD}
+    \]
+where
+\[ \mathsf{init}_G(b) = \langle b, \mathsf{dirty} \rangle\]
+\[ \mathsf{init}_C(b) = \langle b, \mathsf{dirty} \rangle\]
+<li> Given any $u : B \to B$, we can define an update computation
+$\mathsf{upd} : 1 \x \B_{\mathsf{pull}} \to 1 \x \B_{\mathsf{pull}}$:
+    \[
+    \begin{CD}
+    B @&lt;{\beta_{\mathsf{pull}}}&lt;&lt; B \x S(1) @&gt;{\gamma_{\mathsf{pull}}}&gt;&gt; B \x S(D)\\
+@V{u}VV  @VV{\mathsf{upd}_G}V  @VV{\mathsf{upd}_C}V\\
+    B @&lt;&lt;{\beta_{\mathsf{pull}}}&lt; B \x S(1) @&gt;&gt;{\gamma_{\mathsf{pull}}}&gt; B \x S(D)\\
+ \end{CD}
+    \]
+where
+\[ \mathsf{upd}_G(b, s) = \langle u(b), \mathsf{dirty} \rangle\]
+\[ \mathsf{upd}_C(b, s) = \langle u(b), \mathsf{dirty} \rangle\]
+    <a id="mark"></a>
+<li> A read computation to read out the value of type $D$:
+$\mathsf{read} : 1 \x \B_{\mathsf{pull}} \to D \x \B_{\mathsf{pull}}$:
+    \[
+    \begin{CD}
+    B @&lt;{\beta_{\mathsf{pull}}}&lt;&lt; B \x S(1) @&gt;{\gamma_{\mathsf{pull}}}&gt;&gt; B \x S(D)\\
+@V{\mathsf{read}_B}VV @VV{\mathsf{read}_G}V   @VV{\mathsf{read}_C}V\\
+    D \x B @&lt;&lt;{D \x \beta_{\mathsf{pull}}}&lt; D \x (B \x S(1)) @&gt;&gt;{D \x \gamma_{\mathsf{pull}}}&gt; D \x (B \x S(D))\\
+ \end{CD}
+    \]
+where
+\[\mathsf{read}_B(b) = \ \ \langle b, f(b) \rangle\]
+
+\[\mathsf{read}_G\langle b, \mathsf{dirty}\rangle = \ \ \blet d = f(b) \bin \langle d, \langle b, \mathsf{clean}(\star) \rangle \rangle\]
+\[\mathsf{read}_G\langle b, \mathsf{clean}(\star)\rangle = \ \ \langle f(b), \langle b, \mathsf{clean}(\star) \rangle \rangle\]
+
+\[\mathsf{read}_C\langle b, \mathsf{dirty}\rangle = \ \ \blet d = f(b) \bin \langle d, \langle b, \mathsf{clean}(d) \rangle \rangle\]
+\[\mathsf{read}_C\langle b, \mathsf{clean}(d)\rangle = \ \ \langle d, \langle b, \mathsf{clean}(d) \rangle \rangle\]
+
+Notice:
+<ul>
+<li> The "implementation" $\mathsf{read}_C$ is sometimes expensive, when the dirty bit says $\mathsf{dirty}$
+<li> Update is always cheap, i.e. never mentions $f$.
+<li> State is sometimes changed during read, when we compute $f$ and clear the dirty bit.
+</ul>
+</ol>
+
+
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathbf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{let}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
