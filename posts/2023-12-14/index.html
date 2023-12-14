@@ -40,7 +40,7 @@
 
     Let's say a "cache span" is a span of types:
     \[
-    \begin{CD}    B @&lt;{b}&lt;&lt; G @&gt;{c}&gt;&gt; C\\      \end{CD}
+    \begin{CD}    B @&lt;{\beta}&lt;&lt; G @&gt;{\gamma}&gt;&gt; C\\      \end{CD}
     \]
     $B$ is the "base type". This is the actual data we care about, before we start caching anything.
     $C$ is the "cache type". This probably looks like an extension of $B$ with more record fields,
@@ -49,22 +49,22 @@
     value in $B$: maybe we have some dirty-bit bookkeeping which might be in various different legitimate states.
     So in general $G$ is a <em>relation</em> between $B$ and $C$.
     <p>
-      We write $\B$ for the cache span $(B, b, G, c, C)$.
+      We write $\B$ for the cache span $(B, \beta, G, \gamma, C)$.
     <p>
       A <i>computation</I> $f$ from type $A$ to type $D$, over state $\B$, is a triple of arrows
 $(f_B, f_C, f_G)$ that form a commutative diagram
     \[
-    \begin{CD}   A\x B @&lt;{A \x b}&lt;&lt; A\x G @&gt;{A \x c}&gt;&gt; A\x C\\
+    \begin{CD}   A\x B @&lt;{A \x\beta}&lt;&lt; A\x G @&gt;{A \x \gamma}&gt;&gt; A\x C\\
 @V{f_B}VV @VV{f_G}V @VV{f_C}V\\
-        D\x B @&lt;&lt;{D \x b}&lt; D\x G @&gt;&gt;{D \x c}&gt; D\x C\\      \end{CD}
+        D\x B @&lt;&lt;{D \x\beta}&lt; D\x G @&gt;&gt;{D \x \gamma}&gt; D\x C\\      \end{CD}
     \]
       Each vertical arrow can be thought of as being a map $A \to D$ but in a state monad (for store type $B, G,$ or $C$).
       We can also with slightly more generality define a computation from type $A$ to type $D$, over the <e>state transition</e> from $\B$ to $\B'$,
       as a commutative diagram
     \[
-    \begin{CD}   A\x B @&lt;{A \x b}&lt;&lt; A\x G @&gt;{A \x c}&gt;&gt; A\x C\\
+    \begin{CD}   A\x B @&lt;{A \x \beta}&lt;&lt; A\x G @&gt;{A \x \gamma}&gt;&gt; A\x C\\
 @V{f_B}VV @VV{f_G}V @VV{f_C}V\\
-        D\x B' @&lt;&lt;{D \x b'}&lt; D\x G' @&gt;&gt;{D \x c'}&gt; D\x C'\\      \end{CD}
+        D\x B' @&lt;&lt;{D \x \beta'}&lt; D\x G' @&gt;&gt;{D \x \gamma'}&gt; D\x C'\\      \end{CD}
     \]
 In this case we write $f : A \x \B \to D \x \B'$. Composition of computations is composition of commutative diagrams.
       Let $\mathbf{1}$ be the trivial cache span $1 \leftarrow 1 \to 1$.
