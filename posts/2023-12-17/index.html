@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+      .A { color: #ff4f00; }
+      .B { color: #004faf; }
+      blockquote { background-color: #eeeeee; padding: 1em; border-top: 3px solid #aaa; }
+    </style>
+    <title>How to Invent Presheaves</title>
+  </head>
+
+  <body>
+    <h1>How to Invent Presheaves</h1>
+    <p><b class="A">A</b>:
+      So what was that question you had about orderings?
+    <p><b class="B">B</b>:
+      I know that if you have a total order $(X, \le)$, there's a sensible notion of
+      what it means for a subset of $X$ to be a <em>prefix</em> of the whole order...
+    <p><b class="A">A</b>:
+      Sure. Everything in the subset should be less than everything not in it.
+    <p><b class="B">B</b>:
+      Something like that. But what would be the analogous property for partial orders?
+    <p><b class="A">A</b>:
+      I see, it isn't quite as obvious. There's not going to be one obvious cutoff. Because
+      elements in a partial order might be incomparable...
+    <p><b class="B">B</b>:
+      Maybe we <i>should</I> require that there is a single 'cutoff' element? Here's a
+    proposed definition:
+    <blockquote>
+      A subset $Y$ of a partial order $(X, \le)$ is a <em>prefix</em> if there exists a $y$ such that $Y = \{x \in X \st x \le y\}$.
+    </blockquote>
+
+    <p><b class="A">A</b>:
+      That's an interesting definition, but it doesn't generalize our intuitions for total orders, I think.
+    <p><b class="B">B</b>: Why not?
+
+    <p><b class="A">A</b>: Think about the natural numbers $\N$. I
+      figure that all of $\N$ ought to be considered a prefix of itself, and
+      there's no greatest number, so your definition would exclude that.
+    <p><b class="B">B</b>: Kk, but that feels like a weird edge
+      case. Maybe we could say:
+    <blockquote>
+      A subset $Y$ of a partial order $(X, \le)$ is a <em>prefix</em> if
+<ul>
+<li> there exists a $y$ such that $Y = \{x \in X \st x \le y\}$, or
+<li> $Y$ is all of $X$
+</ul>
+    </blockquote>
+
+
+    <p><b class="A">A</b>: I can still come up with a total order where that doesn't coincide with what I think "prefix" ought to mean. How about two copies of the total order $\N$ consecutively one after the other:
+      <center><img src="wplusw.png"></center>
+      Do you agree that the set $\{0,1,2,\ldots\}$ is definitely a prefix of the whole order $\{0,1,2,\ldots,\omega,\omega+1,\omega+2,\ldots\}$?
+    <p><b class="B">B</b>: I see. That is a prefix, and there's no single element $y$ for which $\{0,1,2,\ldots\}$ is
+the set of things less-than-or-equal-to $y$. But wait --- it <em>is</em> the set of all things <i>strictly</i>
+less than $\omega$! Let me try to salvage my definition one more time:
+    <blockquote>
+      A subset $Y$ of a partial order $(X, \le)$ is a <em>prefix</em> if
+<ul>
+<li> there exists a $y$ such that $Y = \{x \in X \st x \le y\}$, or
+<li> there exists a $y$ such that $Y = \{x \in X \st x &lt; y\}$, or
+<li> $Y$ is all of $X$
+</ul>
+    </blockquote>
+
+    <p><b class="A">A</b>: In this case, I'd ask you whether you still expect $\{0,1,2,\ldots\}$ to
+count as a prefix of the following total order, where I've concatenated $\N$ with another copy of $\N$ with
+the order <em>reversed</em>:
+      <center><img src="wpluswstar.png"></center>
+(Bear in mind when I say $\omega - 1, \omega - 2, \ldots$, these are just names I've chosen for elements of this order;
+I'm not claiming there's a countable ordinal $\omega - 2$ or anything like that.)
+    <p><b class="B">B</b>: I admit I do expect that to be a prefix. And I see
+      my proposed definition for posets doesn't include it. It's not the set of elements strictly below
+      any single element, either.
+
+    <p><b class="A">A</b>: Could we just somehow formally say "everything in the subset should be less than everything not in it"?
+    <p><b class="B">B</b>: I think that's also too strong. If we had a bunch of parallel total orders, which completely are unrelated
+to one another, and I have prefixes of each of the total orders
+       I think the union of those prefixes should count as a prefix of the overall partial order. For example,
+the set of orange numbers here should count as a prefix, I think.
+      <center><img src="parallel.png"></center>
+
+    <p><b class="A">A</b>: Yeah, I agree. And I see that if we said "everything in the prefix has to be $\le$ everything
+in the complement of the prefix" that would rule this out. Because there's no "cross-talk" between the different copies
+of $\N$. By assumption, they're unrelated.
+    <p><b class="B">B</b>: How about this definition?
+    <blockquote>
+      A subset $Y$ of a partial order $(X, \le)$ is a <em>prefix</em> if
+ for all $y \in Y$, and all $z \le y$, we have that also $z \in Y$.
+    </blockquote>
+
+    <p><b class="A">A</b>: So a set has to be <em>closed</em> downwardn the partial order.
+      That feels right, and includes all of the examples above that we thought should count as prefixes.
+
+      <h2>Categories</h2>
+    <p><b class="B">B</b>:
+
+    <p><b class="A">A</b>:
+    <p><b class="B">B</b>:
+
+
+    <a id="mark"></a>
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
