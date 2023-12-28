@@ -26,6 +26,7 @@ cp -rv demo \
  link-svgrepo-com.svg \
  katex-0.12.0 \
  katex \
- dist/
+ dist/ \
+ cca/
 
 ./node_modules/.bin/ts-node src/make.ts "$(pwd)/dist"

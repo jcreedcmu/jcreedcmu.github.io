@@ -1,0 +1,144 @@
+
+@font-face {
+  font-family: 'inter';
+  src: url('font/Inter-Regular.ttf') format('truetype');
+}
+body {
+ font-family: 'inter', sans-serif;
+ margin: 0px;
+}
+
+.character { background-color: #d5e0f0; }
+.character-heading {
+ background-color: #102f5b;
+ text-align: right;
+ color: white;
+ font-weight: bold;
+ font-size: 0.9em;
+ padding-right: 0.5em;
+ padding-left: 1em;
+ padding-top: 0.5em;
+ padding-bottom: 0.5em;
+ vertical-align: top;
+}
+
+.character-answer {
+ max-width: 650px;
+ padding-right: 1em;
+ padding-left: 1em;
+ padding-top: 0.5em;
+ padding-bottom: 0.5em;
+ vertical-align: top;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+.para {
+  text-align: justify;
+  padding: 1em;
+  max-width: 650px;
+  background-color: #eee;
+  padding-left: 2em;
+  padding-right: 2em;
+  padding-top: 0em;
+  margin-left: 3em;
+  padding-bottom: 1em;
+  border-top: 0.5em solid #999;
+}
+
+
+.indicator {
+ vertical-align: top;
+}
+
+.surround {
+  width: 1.5em;
+  text-align: center;
+  display: inline-block;
+  background-color: #aaa;
+  color: white;
+  border-radius: 1em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.selected .surround {
+  background-color: #102f5b;
+}
+
+.option {
+  font-size: 0.9em;
+  padding-left: 0.5em;
+  color: #999;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  vertical-align: top;
+}
+
+.selected .option {
+  color: #000;
+}
+
+.image-container {
+  text-align: center;
+  background-color: #d5e0f0;
+}
+
+.wrap {
+  color: #777;
+  border-top: 3px solid #999;
+  padding-top: 1em;
+  text-align: center;
+  font-size: 1.5em;
+}
+
+.avatar {
+  vertical-align: baseline;
+}
+
+.weird {
+  margin-top: 5em;
+  transform: rotate(9deg);
+  animation: cycleBackground 16s linear infinite alternate;
+}
+
+
+.weird p:nth-child(2) {
+  transform: rotate(-5deg);
+  color: #007;
+  font-size: 1.1em;
+}
+
+@keyframes cycleBackground {
+  0% {
+    background-color: #eee;
+  }
+  33% {
+    background-color: #ccf;
+  }
+  66% {
+    background-color: #fcc;
+  }
+  100% {
+    background-color: white;
+  }
+}
+
+.weird p:nth-child(3) {
+  transform: rotate(-10deg);
+
+  background-image: linear-gradient(60deg, #E21143, #7FB03A);
+  background-clip: text;
+  color: transparent;
+  font-size: 0.9em;
+  margin-bottom: 5em;
+}
+
+.weird tr:nth-child(2) .surround {  width: 3em; }
+.weird tr:nth-child(3) .surround {  width: 7em; }
+.weird tr:nth-child(4) .surround {  width: 5em; }
+
+.weird tr:nth-child(2)  { transform: scale(1.5) translate(50px,0px); }
+.weird tr:nth-child(3)  { transform: scale(0.9) rotate(4deg) translate(0px,10px); }
