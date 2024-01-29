@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Linear Logic and Algebraic Geometry</title>
+  </head>
+
+  <body>
+    <h1>Linear Logic and Algebraic Geometry</h1>
+
+    I noticed a couple of suspicious similarities between, on the one
+    hand, some basic definitions in algebraic geometry (or maybe
+    arguably just commutative algebra) and, on the other hand, the
+    constructive semantics of linear logic. I don't know if these
+    amount to much of anything interesting, but I thought I'd note
+    them down just in case there is any value.
+<p>
+
+    The tl;dr is that "algebraic geometry is like <b>unrestricted</b> logic" (as opposed to linear logic).
+    <ol>
+      <li> It has "weakening" and "contraction" principles
+      <li> The the "variety-of" $V$ and "ideal-of" $I$ functions from Hilbert's Nullstellensatz correspond to the shift operators $\ups$ and $\dns$ from focusing.
+      <li> The additive conjunction $\amp$ and the multiplicative
+         conjunction $\otimes$ coincide when appropriately interpreted
+         in rings and spectra, in the sense that $\ups ( P_1 \otimes
+         P_2)$ has the same interpretation as $(\ups P_1) \amp (\ups
+         P_2)$. These normally coincide in unrestricted logic, and
+         crucially do not coincide in linear logic.
+    </ol>
+    This makes me wonder:
+    <h3>Question</h3>
+    <blockquote style="background-color: #fed; padding: 1em;">
+      Is there some kind of "substructural algebraic geometry" where
+      \[ \ups ( P_1 \otimes P_2) \equiv (\ups P_1) \amp (\ups P_2) \]
+      <b>fails</b> to hold?
+    </blockquote>
+
+    <h2>1. Prime Ideals and Weakening and Contraction</h2>
+    Fix a commutative ring $R$. A subset $J \subseteq R$ is an <em>ideal</em> if
+    <ol>
+      <li>$0 \in J$.
+      <li>$a\in J$ implies $-a \in J$.
+      <li>$a,b \in J$ imply $a+b \in J$.
+      <li>$a \in J, f \in R$ imply $af \in J$.
+    </ol>
+    An ideal $\pp$ is a <em>prime</em> ideal if for all $a,b\in R$ we have that
+    $ab \in \pp$ implies $a\in \pp$ or $b\in \pp$.
+    <p>
+      Now we make a suggestive definition, which makes elementhood in a prime ideal resemble logical entailment.
+      Define $f_1, \ldots, f_n \tri \pp$ to mean $f_1\cdots f_n \in \pp$, using the multiplication operation
+      of the ring $R$. Let $\Gamma$ stand for an arbitrary list of elements in $R$.<p>
+      <b>Lemma</b>: <em>The relation $\tri$ satisfies weakening and contraction laws as follows:</em><br>
+      \[{\Gamma \tri \pp \over \Gamma, f \tri \pp  }\mathsf{weak} \qquad {\Gamma, f, f \tri \pp \over \Gamma, f\tri \pp}\mathsf{contr}\]
+      <b>Proof</b>: Weakening follows merely because $\pp$ is an ideal. If $\prod \Gamma \in \pp$, then by axiom
+      4 of being an ideal, we have $\left(\prod\Gamma\right) \cdot f \in \pp$ as well. $\cqed$
+    <p>
+      Contraction follows because $\pp$ is prime. For suppose $(\prod \Gamma)\cdot f \cdot f \in \pp$. Since
+      $\pp$ is prime, either $\prod \Gamma \in \pp$, or $f \in \pp$, or (redundantly!) $f \in \pp$.
+      In any of those cases, we can apply axiom 4 of the definition of being an ideal to find that $(\prod \Gamma)\cdot f \in \pp$.
+
+      <h2>2. The Variety-Ideal Adjunction and Focusing Polarity Shifts</h2>
+      In classical algebraic geometry, we pick a field $k$, and
+      consider the polynomial ring $k[x_1, \ldots, x_n]$, and talk about
+      the order-reversing functions  $V$ ("variety of") and $I$ ("ideal of") which
+      pass between subsets $S$ of the polynomial ring $k[x_1, \ldots, x_n]$, and subsets $X$ of the affine space $\A_k^n$.
+These form a Galois connection.
+\[I(X) = \{ f \in R \st \forall p \in X . f(p) = 0\}\]
+\[V(S) = \{ p \in \A_k^n \st  \forall f \in S . f(p) = 0 \}\]
+The ideal of a set of points is the set of all polynomials that are zero on all of those points. The variety
+of a set of polynomials is the set of points that makes all of the polynomials zero.
+<p>
+      More generally, if we have a ring $R$, we can consider its spectrum $\spec(R)$, a topological space whose underlying set
+      is the set of all prime ideals $\pp \subseteq R$. The functions $V$ and $I$ generalize to:
+    <p>
+<!-- https://math.stackexchange.com/questions/276531/basic-question-on-the-ideal-variety-correspondence-and-adjoint-functors -->
+      They can be defined as follows, assuming $S \subseteq R$ and $X\subseteq \spec(R)$:
+\[I(X) = \{ f \in R \st \forall \pp \in X . f \in \pp \}\]
+\[V(S) = \{ \pp \in \spec(R) \st  \forall f \in S . f \in \pp \}\]
+The condition that $f$ is zero at a point $p$ is replaced by the condition that the $f$ belongs to the ideal $\pp$.
+<p>
+Let us change notation slightly to resemble the logical construction immediately below. Instead of thinking in terms
+of subsets of $R$ and $\spec(R)$, let us treat $S$ (and $IX$) as <em>predicates</em> on $R$, and $X$ (and $VS$)
+as predicates on $\spec(R)$. We continue to use the notation $f \tri \pp$ for $f \in \pp$. Now observe the resemblance of
+\[(IX)(f) = \forall (\pp : \spec(R)) . X(\pp) \imp (f \tri \pp) \]
+\[(VS)(\pp) = \forall (f : R) . S(f) \imp (f \tri \pp) \]
+to the clauses for the shift operators in <a href="../2018-04-29/index.html">the constructive semantics of a polarized logic</a>:
+		\[\sem{\dns N}(\alpha) = \forall \phi  . \sem N(\phi) \imp (\alpha \tri \phi)\]
+		\[\sem{\ups P}(\phi) = \forall \alpha  . \sem P(\alpha) \imp (\alpha \tri \phi)\]
+
+<h2>3. Additive/Multiplicative Conjunctions Coincide</h2>
+
+We can expand this observation into a fragment of a "semantics" of polarized propositional logic in rings and spectra.
+In this semantics it holds that
+\[ \ups ( P_1 \otimes P_2) \equiv (\ups P_1) \amp (\ups P_2) \]
+which is further corroboration that we are somehow observing a <b>resource-unrestricted logic</b> rather than linear logic.
+
+Recall that the usual semantic clauses for additive and multiplicative conjunction are:
+		\[\sem{N_1 \amp N_2}(\phi) = \sem{N_1}(\phi) \lor \sem{N_2}(\phi) \]
+		\[\sem{P_1 \otimes P_2}(\alpha) = \exists \alpha_1, \alpha_2. (\alpha = \alpha_1 \otimes \alpha_2) \land \sem{P_1}(\alpha_1) \land \sem{P_2}(\alpha_2) \]
+<p>
+We interpret
+<ul>
+<li> positive propositions as predicates on $R$
+<li> negative propositions as predicates on $\spec(R)$
+<li> positive worlds $\alpha$ as ring elements $f \in R$
+<li> negative worlds $\phi$ as prime ideals $\pp \in \spec(R)$
+<li> $\ups$ as $V$
+<li> $\dns$ as $I$
+<li> the binary operation $\otimes$ on positive worlds as ring multiplication
+</ul>
+So lets suppose we have an interpretation $\sem {P_1} = S_1$ and $\sem{P_2} = S_2$ of two
+positive propositions as subsets $S_1, S_2 \subseteq R$.
+<p>
+ Observe that the standard lifting
+of ring multiplication to subsets is the definition
+\[ S_1S_2 =  \{f \in R \st \exists f_1, f_2. (f = f_1  f_2) \land (S_1)(f_1) \land (S_2)(f_2) \}\]
+<p>
+Let's compute the interpretation of $\ups ( P_1 \otimes P_2)$.
+\[\sem{\ups ( P_1 \otimes P_2)}(\pp) \iff \forall (f:R) . \sem{ ( P_1 \otimes P_2)}(f) \imp (f \in \pp) \]
+\[\iff \forall (f:R) . ( \exists (f_1,f_2:R).(f = f_1f_2) \land \sem{P_1}(f_1) \land \sem{P_2}(f_2)) \imp (f \in \pp) \]
+\[\iff \forall (f_1,f_2:R). \sem{P_1}(f_1) \imp \sem{P_2}(f_2) \imp (f_1f_2 \in \pp) \]
+\[\iff \forall (f_1,f_2:R). f_1 \in S_1 \imp f_2 \in S_2 \imp (f_1f_2 \in \pp) \]
+\[\iff S_1 S_2 \subseteq \pp \]
+And now let's compute the interpretation of $(\ups P_1) \amp (\ups P_2)$:
+\[\sem{(\ups P_1) \amp (\ups P_2)}(\pp) \iff \sem{\ups P_1}(\pp) \lor \sem{\ups P_2}(\pp)  \]
+\[\iff (\forall (f_1:R). \sem{ P_1}(f_1) \imp f_1 \in \pp)  \lor (\forall (f_2:R). \sem{ P_2}(f_2) \imp f_2 \in \pp) \]
+\[\iff (\forall (f_1:R). f_1 \in S_1 \imp f_1 \in \pp)  \lor (\forall (f_2:R). f_2 \in S_2 \imp f_2 \in \pp) \]
+\[\iff (S_1 \subseteq \pp) \lor (S_2 \subseteq \pp)\]
+
+But we can in fact show
+<p><b>Lemma</b>:
+\[ S_1 S_2 \subseteq \pp \iff (S_1 \subseteq \pp) \lor (S_2 \subseteq \pp)\]
+<br><b>Proof</b>:
+<br>$\Leftarrow$: Suppose wlog that $S_1 \subseteq\pp$. Then since $\pp$ is an ideal, $S_1 S_2 \subseteq \pp$.
+<br>$\imp$: Suppose towards a contradiction that not $(S_1 \subseteq \pp) \lor (S_2 \subseteq \pp)$.
+This means we have $s_1\in S_1 \setminus\pp , s_2\in S_2\setminus \pp$. But then $s_1 s_2 \in S_1S_2$,
+and since $\pp$ is a prime ideal, we also know $s_1 s_2 \not\in \pp$. This contradicts the assumption $S_1S_2\subseteq \pp$.
+$\cqed$
+<p>
+Therefore $\otimes$ and $\amp$ coincide in the semantics, at least up to appropriately inserted $\ups$-shifts.
+
+
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\spec": "\\mathrm{Spec}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\amp": "\\mathop\\&",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\pp": "{\\mathfrak p}",
+              "\\A": "{\\mathbb A}",
+              "\\o": "\\circ",
+              "\\sem": "[\\![#1]\\!]",
+		        "\\B": "{\\mathbf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{let}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+	 "\\dns": "{\\downarrow}",
+	 "\\ups": "{\\uparrow}",
+	 "\\celse": "{\\ |\\ }",
+	 "\\tri": "\\triangleright",
+	 "\\imp": "\\Rightarrow",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
