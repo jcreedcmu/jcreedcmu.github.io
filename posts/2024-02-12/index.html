@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>What Type is a Deck of Cards?</title>
+  </head>
+
+  <body>
+    <h1>What Type is a Deck of Cards?</h1>
+
+    Consider a standard deck $D_\mathsf{French}$ of French-suited playing cards.  It has 52 cards.
+    <canvas id = "diagram1"></canvas>
+
+    Or, if we include the jokers, we can talk about the extended deck $D^+_\mathsf{French}$, containing 54 cards.
+    <canvas id = "diagram2"></canvas>
+
+    We could also consider the <A href="https://en.wikipedia.org/wiki/Rider%E2%80%93Waite_Tarot">Rider-Waite Tarot Deck</a>
+    It has 22 "major arcana" cards, and the "minor arcana" resembles the standard playing cards somewhat, albeit with
+    different suits.
+    <canvas id = "diagram3"></canvas>
+    I'm sweeping under the rug a tremendous amount of historical variations of these sets. The idea I want to focus
+    on is
+    <h2>Decks of Cards are Finite Types</h2>
+    On the one hand, this is obvious. A deck of cards is a finite collection of things. Any finite
+    type is, up to isomorphism, determined by its cardinality. But the interesting things about how
+    people <em>think</em> about a given card deck design are obscured by thinking about it up to isomorphism.
+    So instead think a little more intensionally: let's consider what type-theoretic operations are used to
+    build up a deck of cards.
+
+    <p>
+      For the standard french-suited 52-card deck, it is clear that we arrive at it by taking the <b>product type</b> of two
+      types, the 13-element type of <b>ranks</b>, and the 4-element type of <b>suits</b>.
+\[\mathsf{Rank}_\mathsf{French} = \{A, K, Q, J, 10, 9, 8, 7, 6, 5, 4, 3, 2\}\]
+\[\mathsf{Suit}_\mathsf{French}  = \{\heartsuit, \diamondsuit, \clubsuit, \spadesuit\}\]
+      \[ D_\mathsf{French} = \mathsf{Rank}_\mathsf{French} \x \mathsf{Suit}_\mathsf{French}\]
+
+      If we introduce a 2-element type of jokers,
+      \[J = \{ \mathsf{RedJoker}, \mathsf{BlackJoker} \}\]
+      then we can explain the extended deck as a <b>sum type</b>.
+      \[ D^+_\mathsf{French} = (\mathsf{Rank}_\mathsf{French} \x \mathsf{Suit}_\mathsf{French}) + J\]
+      The Rider-Waite Tarot is also a combination of sums and products.
+\[\mathsf{Rank}_\mathsf{Tarot} = \{ K, Q, N, P, 10, 9, 8, 7, 6, 5, 4, 3, 2, A\}\]
+\[\mathsf{Suit}_\mathsf{Tarot}  = \{\mathsf{Pentacle}, \mathsf{Cup}, \mathsf{Wand}, \mathsf{Sword}\}\]
+\[\mathsf{MinorArcana}_\mathsf{Tarot}  = \mathsf{Rank}_\mathsf{Tarot} \x \mathsf{Suit}_\mathsf{Tarot}\]
+\[\mathsf{MajorArcana}_\mathsf{Tarot}  = \{0, I, II, III, \ldots, XIX, XX, XXI\}\]
+\[D_\mathsf{Tarot}  = \mathsf{MinorArcana}_\mathsf{Tarot} + \mathsf{MajorArcana}_\mathsf{Tarot}\]
+<h2>Other Type Constructors</h2>
+The reader may object that this is barely interesting at all. That is exactly my point! I intend to draw attention
+to the triviality of the type structure of these decks in order to ask:
+<blockquote style="background-color: #fed; padding: 1em;">
+What else could we be doing instead? What other type could a deck of cards have?
+</blockquote>
+<h3>Function Types</h3>
+Imagine we had suits $S = \{\mathsf{Red}, \mathsf{Green}, \mathsf{Blue}\}$ and quantities
+$Q = \{0,1,2\}$, and made a deck of cards whose type was $S \to Q$. This would mean something like:
+    <canvas id = "diagram4"></canvas>
+
+<h3>Types with Other Algebraic Structure</h3>
+Arguably it is already the case that we understand
+\[\mathsf{Rank}_\mathsf{French} = \{A, K, Q, J, 10, 9, 8, 7, 6, 5, 4, 3, 2\}\]
+to come equipped with a total order
+\[A \ge K \ge Q \ge J \ge 10 \ge 9 \ge 8 \ge 7 \ge 6 \ge 5 \ge 4 \ge 3 \ge 2\]
+or, perhaps, depending on the game being played, an alternative order such as
+\[ K \ge Q \ge J \ge 10 \ge 9 \ge 8 \ge 7 \ge 6 \ge 5 \ge 4 \ge 3 \ge 2 \ge A\]
+But why stop at total orders? Would it be interesting to have a type that comes with:
+<ul>
+<li>a monoid structure?
+<li>a group structure?
+<li>a partial equivalence relation?
+<li>a boolean algebra?
+<li>a topology?
+<li>a set of morphims forming a category?
+</ul>
+<h3>Inductive Datatypes</h3>
+
+What might it mean for a deck of cards to be labelled by lists, abstract syntax trees, monadic expressions?
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+                        renderDiagrams();
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
