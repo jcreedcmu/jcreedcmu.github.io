@@ -81,6 +81,40 @@ Imagine we had suits $S = \{\mathsf{Red}, \mathsf{Green}, \mathsf{Blue}\}$ and q
 $Q = \{0,1,2\}$, and made a deck of cards whose type was $S \to Q$. This would mean something like:
     <canvas id = "diagram4"></canvas>
 
+<h3>Dependent Product Types</h3>
+The card game <A href="https://en.wikipedia.org/wiki/Set_(card_game)">Set</A> has
+a structure that could be thought of as a dependent product type.
+Say
+\[ \mathsf{Attribute} = \{ \mathsf{Color}, \mathsf{Number}, \mathsf{Shape}, \mathsf{Shading} \}\]
+\[ \mathsf{Values} : \mathsf{Attribute} \to \mathsf{Type}\]
+\[ \mathsf{Values}(\mathsf{Color}) = \{\mathsf{Red}, \mathsf{Green}, \mathsf{Blue}\}  \]
+\[ \mathsf{Values}(\mathsf{Number}) =\{\mathsf{1}, \mathsf{2}, \mathsf{3}\}  \]
+\[ \mathsf{Values}(\mathsf{Shape}) =\{\mathsf{Round}, \mathsf{Diamond}, \mathsf{Squiggly}\}  \]
+\[ \mathsf{Values}(\mathsf{Shading}) =\{\mathsf{Solid}, \mathsf{Shaded}, \mathsf{Hollow}\} \]
+and then type of the deck of Set cards is the type
+\[ \prod_{\alpha \in \mathsf{Attribute}} \mathsf{Values}(\alpha) \]
+
+<h3>Dependent Sum Types and Multinomial Types</h3>
+<a href="https://www.decktet.com/download/decktet-rules.pdf">Decktet</a> has cards with varying numbers of suits per card.
+<p>
+One idea that might work for the specifically the multi-suited ranked cards in Decktet is to set
+\[\mathsf{Suit} = \{\mathsf{Moon}, \mathsf{Sun}, \mathsf{Wave}, \mathsf{Leaf}, \mathsf{Wyrm}, \mathsf{Knot}\}\]
+\[\mathsf{Rank} = \{2,3,4,5,6,7,8,9\}\]
+and then specify exactly the function
+\[\delta : \mathsf{Rank} \to {\mathsf{Suit} \choose 2,2,2}\]
+which maps each rank to which partition of 6 into three pairs it corresponds to.
+<p>
+The codomain --- written to suggest the multinomial coefficient --- is meant to be
+the set of partitions of the set of suits into three pairs.
+We could express this by postulating a function
+\[ \mathsf{Part} : {\mathsf{Suit} \choose 2,2,2} \to \mathsf{Type} \]
+that for each partition $p$ gives the (three-element) type $\mathsf{Part}(p)$ of parts of $p$, and
+\[ \_{\in}\_ : \textcolor{gray}{ \prod_{p : {\mathsf{Suit} \choose 2,2,2}} }  \mathsf{Suit}\x \mathsf{Part}(p)  \to \mathsf{Type} \]
+which, given a partition $p$, (implicitly omitted in applications of $\in$) a suit $\sigma$, and a part $q$ of $p$, yields a type
+$\sigma \in q$ that has exactly one inhabitant iff indeed $\sigma$ is in $q$, and is empty otherwise.
+<p>
+Given all this machinery, the type of ranked cards in Decktet could be said to be
+\[\sum_{r \in \mathsf{Rank}}  \sum_{q \in \mathsf{Part}(\delta(r))} \sum_{\sigma \in \mathsf{Suit}} \sigma \in q \]
 <h3>Types with Other Algebraic Structure</h3>
 Arguably it is already the case that we understand
 \[\mathsf{Rank}_\mathsf{French} = \{A, K, Q, J, 10, 9, 8, 7, 6, 5, 4, 3, 2\}\]
