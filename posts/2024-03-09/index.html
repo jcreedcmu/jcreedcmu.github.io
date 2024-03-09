@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>A Picture of Sheaves</title>
+
+  </head>
+
+  <body>
+    <h1>A Picture of Sheaves</h1>
+    This is a short expository note on the definition of sheaves.
+    The intended audience is people who have heard of sheaves, and were perhaps put off by the definition,
+    and wish they had some more examples or pictures or intuition.
+    <h2>Functions on the Points of a Space</h2>
+    You're a cartographer; you're interested in various statistics, measurements, and observations
+    of the country you live in. Each one answers a question. Each has a <em>type</em>. <p/>
+    For example, the answer to the question <b>what is the altitude above sea level here, measured in meters?</b>
+    <img src="picture1.png">
+    is a function from <em>points in space</em> to <em>numbers</em>. We could write
+    \[\mathbf{Altitude} : X \to \R\]
+    where $X$ is the type of points of space.
+    <p/>
+    The question <b>which province does this location belong to?</b>
+    <img src="picture2.png">
+    is answered by a function from <em>points in space</em> to the <em>type of provinces</em>,
+    which is the three-element type
+    $\mathsf{Province} = \{\mathsf{Forestan}, \mathsf{Mountainia}, \mathsf{Beachside}\}$.
+    We could write
+    \[\mathbf{WhichProvince} : X \to \mathsf{Province}\]
+    <h2>Functions on the Subsets of a Space</h2>
+    Other questions of interest are answered by a function where the input type is <em>subsets</em> of a space.
+    For example, the answer to the question <b>what is the population of this region?</b> is
+    a function from <em>subsets of space</em> to <em>numbers</em>.
+    <img src="picture3.png">
+    We could write
+    \[\mathbf{Population} : \ps(X) \to \N\]
+    where $\mathcal{P(X)}$ is the powerset of X.
+    Notice that this function is not just <em>any</em> function from the collection of
+    subsets of $X$ to numbers, but one with a special property: if we have two subsets $U, V$,
+    with $U \subseteq V$, then surely $\mathbf{Population}(U) \le \mathbf{Population}(V)$.
+    <h2>Functions to Sets</h2>
+    Instead of merely counting the population of a region, we could also ask for the <i>actual set</i> of people
+    that live there.
+    The question <b>who are the people living in this region?</b> is answered
+    by a function from <em>subsets of space</em> to the type of <em>sets</em>.
+    \[\mathbf{Inhabitants} : \ps(X) \to \rset\]
+    There is again a special property that $\mathbf{Inhabitants}$ has, compared to other
+    functions in $\ps(X) \to \rset$. For any subsets $U, V \in \ps(X)$ where $U \subseteq V$, there exists
+     a function $\mathbf{Inhabitants}_{V \supseteq U} : \mathbf{Inhabitants}(U) \to \mathbf{Inhabitants}(V)$.
+    <img src="picture4.png">
+    In fact, these functions satisfy some additional special properties. For any $U, V, W \in \ps(X)$ with
+ $U \subseteq V \subseteq W$,
+    then
+    \[\mathbf{Inhabitants}_{U\supseteq U} = \rid\]
+    \[\mathbf{Inhabitants}_{W\supseteq V} \o \mathbf{Inhabitants}_{V\supseteq U} = \mathbf{Inhabitants}_{W\supseteq U}\]
+    <img src="picture5.png">
+    <h2>Functions to Sets, but Backwards</h2>
+
+    The National Art Fund comes to you and asks for a report on the
+    feasibility of an art project on a grand scale. The artist
+    proposes to paint a design on a huge swath of countryside. You
+    consider the possibilities. The answer to the question <b>how could this region be painted?</b>
+    is, like $\mathbf{Inhabitants}$, also a function from the <em>subsets of space</em>
+    to the type of <em>sets</em>.
+    <img src="picture6.png">
+    \[\mathbf{Paintings} : \ps(X) \to \rset\]
+    It produces the set of all possible paintings that cover a region. For this question, the special property
+    relating subsets of space to functions goes in the <b>opposite</b> direction. If we have two
+    subsets $U \subseteq V$, then there is a function
+      \[\mathbf{Paintings}_{U \subseteq V} : \mathbf{Paintings}(V) \to \mathbf{Paintings}(U)\]
+    that goes from set of paintings on the <em>bigger</em> subset to
+    the set of paintings on the <em>smaller</em> set. That is, if we
+    have made a decision about how to paint a bigger set, then we have
+    also committed to what the painting will look like on the smaller
+    set.
+    <p/>
+    There is a similar set of composition properties
+    \[\mathbf{Paintings}_{U\subseteq U} = \rid\]
+    \[\mathbf{Paintings}_{U\subseteq V} \o \mathbf{Paintings}_{V\subseteq W} = \mathbf{Paintings}_{U\subseteq W}\]
+    and moreover a property that holds about patching-together of ways of painting on smaller sets.
+    Informally:
+    <blockquote>
+      If we have decided how to paint a bunch of sets, and none of those decisions conflict, then we know
+      how to paint their union.
+    </blockquote>
+    More formally, suppose we have a collection of sets $(U_i)_{i\in I}$, and we've made a decision
+    for how to paint them by selecting $p_i \in \mathbf{Paintings}(U_i)$. Now it might be that some of the
+    $U_i$ overlap, in which case our plan had better not involve
+    commitments to painting the overlaps in different ways!
+    <p/>
+    So if it is the case that for all $i, j \in I$ we have
+   \[\mathbf{Paintings}_{U_i\cap U_j\subseteq U_i}(p_i) = \mathbf{Paintings}_{U_i\cap U_j\subseteq U_j}(p_j)\]
+    then there exists a uniqe $p \in \mathbf{Paintings}_{\bigcup_j U_j}$ such that for all $i$ we have
+   \[\mathbf{Paintings}_{U_i \subseteq \bigcup_j U_j}(p) = p_i\]
+    <img src="picture7.png">
+    <h2>What is a Sheaf?</h2>
+    <blockquote>
+      A sheaf is a question that <em>behaves like</em> the question
+      <b>how could this region be painted?</b>.
+    </blockquote>
+    It is a map that takes a subset of a space, and yields a set of elements that live "over" that subset.
+    It is required to have the property that you can map the set of elements over a bigger subset to the
+    set of elements over a smaller subset, in a "coherent" way. It is also required to have the property
+    that if you have a colleciton of elements that live over a collection of subsets, which are "consistent"
+    with one another, then there is a unique element over the union of those the subsets which is the
+    "patching together" of all those elements.
+    <a id="mark"></a>
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Set}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ps": "\\mathcal{P}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
