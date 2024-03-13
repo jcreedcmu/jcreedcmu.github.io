@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Set-Theoretic Geometry</title>
+  </head>
+
+  <body>
+    <h1>Set-Theoretic Geometry</h1>
+
+    The purpose of this expository note is to distill something of
+    what happens in algebraic geometry down to a really elementary
+    level, where it's just about sets and functions, but which still
+    retains some of the "geometric" or "spatial" feeling.
+    <p>
+      The usual slogan is that
+      <blockquote>
+        space is algebra backwards
+      </blockquote>
+      but you don't even have to have algebraic operations (like the
+      multiplication or addition of a ring) to obtain a simple
+      form of "space".
+      <h2>Triangles of Functions</h2>
+      Let's start by asking some questions that have simple answers.
+      Let's say $k$ is the five-element set $\{a,b,c,d,e\}$, and let's write
+      $k[X]$ for the six-element set $\{a,b,c,d,e,X\}$. Is there anything fundamentally
+      different about the element $X$? Not really. But it's going to be treated differently
+      in the examples to follow, so I want to emphasize its difference from the outset.
+    <p>
+      <b>Question</b>: Consider the inclusion $i_1 : k \to k[X]$, and the identity
+      function $\rid : k \to k$. What functions $f : k[X] \to k$ have the property
+      that $f \o i_1 = \rid$?
+      <img src="picture1.png">
+      <b>Answer</b>: The value of $f$ on any element of $k$ is fixed by the constraint
+      that $f i_1 = \rid$. We must have $f(a) = a$, $f(b) = b$, etc. But $f's$ value on $X$
+      is completely free. Therefore there are five possible $f$. One where $f(X) = a$,
+      one where $f(X) = b$, etc.
+    <p>
+      Now let's say $k[X,Y]$ is the set $\{a,b,c,d,e,X,Y\}$, and ask
+      <br>
+      <b>Question</b>: Consider the inclusion $i_2 : k \to k[X,Y]$, and the identity
+      function $\rid : k \to k$. What functions $f : k[X,Y] \to k$ are there that have the property
+      that $f \o i_2 = \rid$?<br>
+      <img src="picture2.png">
+      <b>Answer</b>: As before, the value of $f$ on any element of $k$ is fixed by the constraint
+      that $f i_2 = \rid$. But $f's$ values on $X$ and $Y$
+      are completely free, and can be chosen independently of one another.
+      Therefore there are $5^2 = 25$ possible $f$. One where $f(X) = a, f(Y) = b$,
+      one where $f(X) = c, f(Y) = c$, one where $f(X) = e, f(Y) = a$, and so on,
+      one for every choice of where $X$ and $Y$ land in the set $k$.
+      <h2>The Relative Point of View</h2>
+      We will want to treat the entire function from $k$ to $k[X]$ as a single coherent thing.
+      For any set $k$, say that a <b>$k$-space</b> is a set $S$ together with a map $k \to S$.
+      So, for example, the set $k[X]$ together with $i_1$ is a $k$-space. the set $k[X,Y]$
+      together with $i_2$ is a $k$-space. The set $k$ together with $\rid$ is a $k$-space.
+    <p>
+      We abbreviate these spaces by referring to them as $\sp$ of their carrier set.
+      So $\sp(k[X])$ means the $k$-space consisting of $k[X]$ and the function $i_1$.
+      <h2>Space is Algebra Backwards</h2>
+      We also want to define a <b>map between $k$-spaces</b>, but to do so in such a way
+      that is "backwards". If $j_1 : k \to S_1$ and $j_2 : k \to S_2$ are $k$-spaces,
+      we say that a map from $\sp(S_1) = (S_1, j_1)$ to $\sp(S_2) = (S_2, j_2)$ is a map $h : S_2 \to S_1$ such that $h \o j_2 = j_1$.
+      <br><img src="picture3.png">
+    <p>
+      So what our earlier questions amount to are:
+      <br><b>Question</b>: How many maps are there from $\sp(k)$ to $\sp(k[X])$?
+      <br><b>Answer</b>: 5, one for every element of $k$.
+      <br>
+      <br><b>Question</b>: How many maps are there from $\sp(k)$ to $\sp(k[X,Y])$?
+      <br><b>Answer</b>: 25, one for every pair of elements of $k$.
+    <p>
+      It can be seen that the number of maps from $\sp(k)$ to $\sp(k[X_1,\ldots,X_n])$
+      is $5^n$, corresponding to the set of all $n$-tuples of elements taken from $k$.
+      We contemplate this fact and interpret it as telling us that
+      <blockquote>
+        $\sp(k[X_1,\ldots,X_n])$ is in some sense an $n$-dimensional space, which has $k^n$ points
+      </blockquote>
+      and draw some suggestive pictures:
+      <br><img src="picture4.png"><br>
+      We start with the intuition that $\sp(k)$ is itself, a space consisting of one point.
+      The points belonging to another spaces $\sp(S)$ are "ways of injecting a space into a point",
+      i.e. maps $\sp(k) \to \sp(S)$, i.e. functions $S \to k$ making the appropriate triangle
+      commute.
+      <h2>Lines in Spaces</h2>
+      With this intuition, we can ask questions that feel more genuinely geometric. For
+      example: how many lines are there in a plane?
+      <br>
+      By a line we mean a 1-dimensional space, so we must mean $\sp(k[X])$. By
+      a plane we mean a 2-dimensional space, so we must mean $\sp(k[X,Y])$.
+      By "locating a line within the plane", we mean a map from the line to the plane:
+      a map from $\sp(k[X])$ to $\sp(k[X,Y])$. Therefore:
+      <br><b>Question</b>: How many ways can we map a line into the plane?
+      <br><b>Answer</b>: As many as there are maps $f : k[X,Y] \to k[X]$ such that
+      $f \o i_2 = i_1$. As before, the requirement that $f \o i_2 = i_1$ means
+      that the value of $f$ on any of $\{a,b,c,d,e\}$ is determined, but
+      we have a free choice of $f's$ value on $X$ and $Y$. And we can map
+      each of $X$ or $Y$ to any element in the set $\{a,b,c,d,e,X\}$. So there
+      are a total of $(5+1)^2 = 36$ ways of mapping a line into the plane.
+      Here are some examples:
+      <br><img src="example1.png"><br>
+      <br><img src="example2.png"><br>
+      <br><img src="example3.png"><br>
+      <br><img src="example4.png"><br>
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\sp": "\\mathsf {Sp}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
