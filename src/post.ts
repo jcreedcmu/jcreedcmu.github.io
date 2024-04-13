@@ -29,7 +29,6 @@ function tocOfPost(post: Post): string {
 export function getIndex(posts: Post[]): string {
   const uncategorizedPosts = posts.filter(p => p.category === undefined);
   const otherPosts = posts.filter(p => p.category === 'other');
-  const journalPosts = posts.filter(p => p.category === 'journal');
   return `<!DOCTYPE html>
 <html>
   <head>
@@ -51,12 +50,6 @@ export function getIndex(posts: Post[]): string {
           <div class="header">OTHER</div>
           <table>
             ${otherPosts.map(tocOfPost).join('\n')}
-          </table>
-        </div>
-        <div>
-          <div class="header">JOURNAL</div>
-          <table>
-            ${journalPosts.map(tocOfPost).join('\n')}
           </table>
         </div>
       </div>
