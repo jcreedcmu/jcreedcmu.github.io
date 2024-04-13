@@ -29,6 +29,13 @@ function tocOfPost(post: Post): string {
 export function getIndex(posts: Post[]): string {
   const uncategorizedPosts = posts.filter(p => p.category === undefined);
   const otherPosts = posts.filter(p => p.category === 'other');
+
+  otherPosts.unshift({
+    dir: 'twelf-wasm',
+    title: 'twelf-wasm', url: '/twelf-wasm',
+    category: 'other', date: '2024-04-01', tags: ['twelf'], description: 'Twelf in WASM'
+  });
+
   return `<!DOCTYPE html>
 <html>
   <head>
