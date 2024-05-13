@@ -33,7 +33,7 @@
 
   <body>
     <h1>A Signal-Processing Cheatsheet</h1>
-	 These are some notes to myself about linear filters, both continuous and discrete.
+	 These are some notes to myself about linear filters.
 	 <h2>Continuous Signals</h2> Fourier tells us that all signals $\R
 	 \to \C$ are sums of periodic functions $\lambda t . e^{2\pi i f
 	 t}$, and all linear time-invariant transformations $F : (\R \to
@@ -53,35 +53,45 @@
 	 \mathsf{ohm}$ and a capacitor with capacitance $C :
 	 \mathsf{farad}$.
 	 <center><img src="diagram1.png"></center>
-	 Ohm's law tells us $V = IR$, so
-	 \[ I = (V_i - V_o)/R : (\uA = \uC/\us = \uV/\uOm)\]
-	 We also know that that current builds up charge on the capacitor:
-	 \[ {d\over dt} q = I : \uC/\us\]
-	 and the voltage across the capacitor is proportional to the charge:
+	 By properties of resistors and capacitors, we know
+	 \[ {d\over dt} q = I = (V_i - V_o)/R : (\uA = \uC/\us = \uV/\uOm)\]
 	 \[ V_o = q/C : (\uC/\uF = \uV)\]
 
-	 Putting these facts together, we find
-	 \[  {d q\over dt}  = (V_i - q/C)/R : \uC/\us \]
-	 \[ R {d q\over dt}  = V_i - q/C : \uV \]
-	 Now if we assume
-	 \[f : \ucy / \us \qquad k : \C \qquad 2\pi : \ur / \us \qquad i : 1/\ur \]
-	 and
-	 \[V_i = \bar V_i e^{2\pi i f t}:\uV \qquad V_o = k V_i: \uV \]
-	 we find
-	 \[ q = C V_o = C k V_i = C k \bar V_i e^{2\pi i f t} : \uC \]
-	 and so
-	 \[{d q\over dt} = 2\pi i f C k \bar V_i e^{2\pi i f t} : \uC / \us \]
-	 and so
-	 \[ R {d q\over dt}  = V_i - q/C : \uV \]
-	 becomes
-	 \[ R \cdot 2\pi i f C k \bar V_i e^{2\pi i f t} =  \bar V_i e^{2\pi i f t} - k \bar V_i e^{2\pi i f t} : \uV\]
-	 and this simplifies to
-	 \[ R \cdot 2\pi i f C k   =  1  - k  : \C\]
-	 \[ (1 + R \cdot 2\pi i f C) k   =  1   : \C\]
-	 \[ k   =  {1\over 1 + 2\pi i RC f}   : \C\]
-	 \[    =  {1-2 \pi i RC f\over 1 + (2\pi  RC f)^2}   : \C\]
-\[|k| = {1\over \sqrt{1 + (2\pi  RC f)^2}} = {1\over \sqrt{1 + R^2C^2\omega^2}}\]
-    <a id="mark"></a>
+
+	 Now assume
+	 \[f : \ucy / \us \qquad k : \C \qquad 2\pi : \ur / \ucy  \]
+	 \[ \omega = 2\pi f : \ur / \us \qquad i : 1/\ur \]
+	 \[z = e^{2\pi i f t} = e^{i\omega t} : \C \qquad q = \bar q z:\uC \]
+	 \[V_i = \bar V_i z :\uV \qquad V_o = \bar V_o z: \uV \]
+
+	 and infer
+	 \[ i\omega  \bar q  = (\bar V_i  - \bar V_o)/R : \uA \]
+	 \[ \bar V_o = \bar q/C : \uV\]
+Now we can solve for $\bar V_o$ in terms of $\bar V_i$:
+	 \[ i\omega  \bar V_o C  = (\bar V_i  - \bar V_o)/R : \uA \]
+	 \[ i\omega  \bar V_o RC  = \bar V_i  - \bar V_o : \uV \]
+	 \[ \bar V_o(1 + i\omega   RC)  = \bar V_i : \uV \]
+	 \[ \bar V_o  = {1\over 1 + i\omega   RC}\bar V_i : \uV \]
+
+
+	 <h3>High-pass Circuit</h3>
+	 Suppose we have a circuit with the capacitor and resistor swapped:
+	 <center><img src="diagram2.png"></center>
+	 In this case we have
+	 \[ {d\over dt} q = I = V_o/R : \uA \]
+	 \[ V_i - V_o = q/C : \uV\]
+	 The roles of $V_o$ and $V_i - V_o$ have swapped.
+	 Make the same assumptions as before, and infer
+	 \[ i \omega  \bar q =  \bar V_o/R : \uA\]
+	 \[ \bar V_i - \bar V_o = \bar q/C :  \uV\]
+Now we can solve for $\bar V_o$ in terms of $\bar V_i$:
+	 \[ \bar V_i - \bar V_o = {\bar V_o \over i\omega RC} : \uV\]
+	 \[ \bar V_i  = \left(1 + {1 \over i\omega RC}\right)\bar V_o : \uV\]
+	 \[ \bar V_i  = {1 +  i\omega RC\over i\omega RC}\bar V_o : \uV\]
+	 \[ i\omega RC \bar V_i  = \left( {1 +  i\omega RC }\right)\bar V_o : \uV\]
+	 \[ \bar V_o  =  {i\omega RC \over 1 +  i\omega RC } \bar V_i: \uV\]
+
+
   </body>
   <script>
 	 function go(body) { renderMathInElement( body, { strict: false,
