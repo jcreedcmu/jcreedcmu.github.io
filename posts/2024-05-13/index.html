@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>A Signal-Processing Cheatsheet</title>
+  </head>
+
+  <body>
+    <h1>A Signal-Processing Cheatsheet</h1>
+	 These are some notes to myself about linear filters, both continuous and discrete.
+	 <h2>Continuous Signals</h2> Fourier tells us that all signals $\R
+	 \to \C$ are sums of periodic functions $\lambda t . e^{2\pi i f
+	 t}$, and all linear time-invariant transformations $F : (\R \to
+	 \C) \to (\R \to \C)$ are just fancy ways of independently
+	 adjusting the amplitudes or phases of all the periodic components
+	 of a signal. So we are interested in the frequency and phase
+	 response those particular transformations that are easy to
+	 implement.
+	 <h3>Low-pass Circuit</h3>
+	 Note that $\uOm = \uV/\uA$ and $\uA = \uC /\us$ and $\uF = \uC/\uV$.
+
+	 Suppose we have an input signal
+	 \[ \lambda t . V_i(t) : \R \to  \uV \]
+	 or we can just squint and take the time dependence as implicit and say
+	 \[  V_i : \uV \]
+	 Suppose we have a circuit with a resistor with resistance $R :
+	 \mathsf{ohm}$ and a capacitor with capacitance $C :
+	 \mathsf{farad}$.
+	 <center><img src="diagram1.png"></center>
+	 Ohm's law tells us $V = IR$, so
+	 \[ I = (V_i - V_o)/R : (\uA = \uC/\us = \uV/\uOm)\]
+	 We also know that that current builds up charge on the capacitor:
+	 \[ {d\over dt} q = I : \uC/\us\]
+	 and the voltage across the capacitor is proportional to the charge:
+	 \[ V_o = q/C : (\uC/\uF = \uV)\]
+
+	 Putting these facts together, we find
+	 \[  {d q\over dt}  = (V_i - q/C)/R : \uC/\us \]
+	 \[ R {d q\over dt}  = V_i - q/C : \uV \]
+	 Now if we assume
+	 \[f : \ucy / \us \qquad k : \C \qquad 2\pi : \ur / \us \qquad i : 1/\ur \]
+	 and
+	 \[V_i = \bar V_i e^{2\pi i f t}:\uV \qquad V_o = k V_i: \uV \]
+	 we find
+	 \[ q = C V_o = C k V_i = C k \bar V_i e^{2\pi i f t} : \uC \]
+	 and so
+	 \[{d q\over dt} = 2\pi i f C k \bar V_i e^{2\pi i f t} : \uC / \us \]
+	 and so
+	 \[ R {d q\over dt}  = V_i - q/C : \uV \]
+	 becomes
+	 \[ R \cdot 2\pi i f C k \bar V_i e^{2\pi i f t} =  \bar V_i e^{2\pi i f t} - k \bar V_i e^{2\pi i f t} : \uV\]
+	 and this simplifies to
+	 \[ R \cdot 2\pi i f C k   =  1  - k  : \C\]
+	 \[ (1 + R \cdot 2\pi i f C) k   =  1   : \C\]
+	 \[ k   =  {1\over 1 + 2\pi i RC f}   : \C\]
+	 \[    =  {1-2 \pi i RC f\over 1 + (2\pi  RC f)^2}   : \C\]
+\[|k| = {1\over \sqrt{1 + (2\pi  RC f)^2}} = {1\over \sqrt{1 + R^2C^2\omega^2}}\]
+    <a id="mark"></a>
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+              "\\us": "\\mathsf{second}",
+              "\\uC": "\\mathsf{coulomb}",
+              "\\uF": "\\mathsf{farad}",
+              "\\uV": "\\mathsf{volt}",
+              "\\uA": "\\mathsf{ampere}",
+              "\\uOm": "\\mathsf{ohm}",
+              "\\ucy": "\\mathsf{cycle}",
+              "\\ur": "\\mathsf{radian}",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
