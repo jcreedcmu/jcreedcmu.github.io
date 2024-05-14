@@ -141,7 +141,99 @@ So the recursive specification of the high-pass filter is:
 \[t(n) = \alpha ( t(n-1) + s(n) - s(n-1))\]
 <b>Exercise</b>: Show the "coinduction step" that if the high-pass and low-pass signals add up to the input signal at one
 time step, then they add up to the input signal at the next time step.
+<h2>Cutoff Frequency</h2>
+
+The thing that characterizes the cutoff frequency of the
+highpass/lowpass pair is that it's the frequency at which they have
+equal responses, when $\omega RC = 1\,\ur$, so when
+\[ f_c  = {1\,\ur \over 2\pi RC} : \ucy/\us\]
+This will make the highpass multiply the signal by
+\[ i\over 1+i\]
+and the lowpass by
+\[ 1\over 1+i\]
+and these both have amplitude $\sqrt{2}$.
+<h2>Rewriting lowpass and highpass response in terms of cutoff</h2>
+We know
+\[ RC  = {1\,\ur \over 2\pi f_c} : \us\]
+so lowpass and highpass are (ignoring radians as a unit for now)
+	 \[
+  { 1 \over 1 +  i f /f_c } : \C
+\qquad
+  { i f /f_c \over 1 +  i f /f_c } : \C
+\]
+<h2>Deriving discrete lowpass and highpass</h2>
+We start from the desired
+\[\bar t =   { 1 \over 1 +  i (1\, \ur) f /f_c } \bar s\]
+We know
+\[ z^{-1} = e^{-2\pi i \phi(1\,\uf)} \approx 1-2\pi i \phi (1\,\uf) : \C \]
+hence
+\[( 1 - z^{-1})  / (1\,\uf) \approx 2\pi i \phi  : \uf^{-1} \]
+and $f = \phi K$. We know
+\[\bar t =   { 1 \over 1 +  i (1\, \ur) 2\pi f /(2\pi f_c) } \bar s\]
+so
+\[\bar t =   { 1 \over 1 +  i (1\, \ur) 2\pi \phi K /(2\pi f_c) } \bar s\]
+\[\bar t =   { 1 \over 1 +   (1\, \ur)(1\,\uf)^{-1} (1-z^{-1})  K /(2\pi f_c) } \bar s\]
+
+\[\bar t =   { 1 \over 1 +   { K \ur\over 2\pi f_c \uf} - z^{-1}{ K \ur\over 2\pi f_c \uf} } \bar s\]
+
+\[\bar t =   { 2\pi f_c \uf \over 2\pi f_c \uf +   { K \ur} - z^{-1}{ K \ur} } \bar s\]
+\[\bar t =   { {2\pi f_c \uf\over 2\pi f_c \uf +   { K \ur}} \over 1 - z^{-1}{ K \ur \over 2\pi f_c \uf +   { K \ur}} } \bar s\]
+
+This seems to be telling us that
+\[ \alpha = { K \ur \over 2\pi f_c \uf +   { K \ur}} : \C \]
+which at least makes sense for extreme values of $\alpha$. Let's do a little concrete test.
+Set $K = 44100, f_c = 800$. We can apply the filter with the derived value of $\alpha$,
+and confirm that the output peaks at about $\sqrt{2}$ of the input signal.
+
+<pre>
+#![allow(dead_code, unused_labels, unused_variables)]
+use std::f64::consts::PI;
+const BUF_LEN: usize = 44100;
+fn main() {
+  let sample_rate = 44100.0f64;
+  let freq = 800.0f64;
+  let buf: Vec&lt;f64&gt; = (0..BUF_LEN)
+    .map(|x| (2.0 * PI * freq * (x as f64) / sample_rate).sin())
+    .collect();
+  let mut out_buf: Vec&lt;f64&gt; = vec![0.; BUF_LEN];
+  let alpha = sample_rate / (2.0 * PI * freq + sample_rate);
+  println!("alpha {:?}", alpha);
+  let mut prev = 0.0;
+  let mut max = 0.0;
+  for (i, b) in buf.iter().enumerate() {
+    out_buf[i] = alpha * prev + (1.0 - alpha) * b;
+    prev = out_buf[i];
+
+    let a = prev.abs();
+    if i &gt; ((BUF_LEN as f64) * 0.99) as usize && a &gt; max {
+      max = a;
+    }
+  }
+  println!("max^2 {:?}", max * max);
+}</pre>
+This code prints out
+<pre>
+alpha 0.8976816319233426
+max^2 0.47330916400608175
+</pre>
+
+which is pretty close to $\mathtt{max}^2 = 0.5$. The closer we get to
+the Nyquist frequency, the less accurate it gets.
+
 <a id="mark"></a>
+<h2>Bandpass</h2>
+
+Maybe I can say
+\[c_n = i\omega/f_n\]
+\[L = {1\over (1+c_1)(1+c_2)}\]
+\[M = {c_1 + c_2\over (1+c_1)(1+c_2)}\]
+\[H = {c_1c_2\over (1+c_1)(1+c_2)}\]
+so that
+\[|L| = {1\over \sqrt{(1-\omega^2/f_1f_2)^2 + (\omega/f_1 + \omega/f_2)^2} }\]
+\[|M| = (\omega/f_1 + \omega/f_2)|L|\]
+\[|H| = \omega^2|L|/f_1f_2\]
+Graphing this seems to give me what I want. How do I translate this into discrete filters?
+
   </body>
   <script>
 	 function go(body) { renderMathInElement( body, { strict: false,
