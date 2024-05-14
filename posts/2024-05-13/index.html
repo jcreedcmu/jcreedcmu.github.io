@@ -101,22 +101,46 @@ $\bar s : \ua$ and $\phi : \ucy / \uf$ and $n : \uf$. Let's define
 \[ z =  e^{2\pi i \phi (1\,\uf)} : \C\]
 and observe
 \[s \o \sigma  = \lambda n.\bar s e^{2\pi i \phi (n+1\,\uf)} = \lambda n . z\bar s e^{2\pi i \phi n} = z s\]
-
+<p>
+Let's say we know the sampling rate $K = 44,100\, \uf / \us$.
+In this case $f = \phi K : \ucy / \us$ and $\omega = 2\pi f = 2\pi K \phi : \ur / \us$.
 <p>
 If we recursively define a transformation
-\[t(n) = \alpha t(n-1) +  s(n)\]
+\[t(n) = \alpha t(n-1) +  (1-\alpha)s(n)\]
 for some $\alpha : \C$, and we assume that $s = \bar s z^n$ and $t = \bar t z^n$, then
-\[\bar tz^n = \alpha \bar t z^nz^{-1} + \bar s z^n\]
-\[\bar t = \alpha \bar t z^{-1} + \bar s \]
-\[\bar t (1-\alpha z^{-1}) =   \bar s \]
-\[\bar t  = { 1\over 1-\alpha z^{-1} }\bar s \]
+\[\bar tz^n = \alpha \bar t z^nz^{-1} + (1-\alpha)\bar s z^n\]
+\[\bar t = \alpha \bar t z^{-1} + (1-\alpha)\bar s \]
+\[\bar t (1-\alpha z^{-1}) = (1-\alpha)\bar s \]
+\[\bar t  = { 1-\alpha\over 1-\alpha z^{-1} }\bar s \]
 Now for relatively small $\phi$, away from the nyquist frequency of ${1\over 2}{\ucy\over \uf} $,
  we're going to approximately have
-\[ z^{-1} = e^{2\pi i \phi(1\,\uf)} \approx -2\pi i \phi (1\,\uf) : \C \]
+\[ z^{-1} = e^{-2\pi i \phi(1\,\uf)} \approx 1-2\pi i \phi (1\,\uf) : \C \]
 So we'll have
-\[ \bar t = {1\over 1 + \alpha \cdot 2\pi i \phi (1\,\uf)} \bar s\]
-\[ \bar t = {1\over 1 +   i \omega \alpha (1\,\uf)} \bar s \]
-If $\omega = 2\pi \phi : \ur / \uf$.
+\[ \bar t = {1-\alpha \over 1 - \alpha + \alpha \cdot 2\pi i \phi (1\,\uf)} \bar s\]
+\[ \bar t = {1 \over 1 + {\alpha\over 1-\alpha} 2\pi i \phi (1\,\uf)} \bar s\]
+
+\[ \bar t = {1\over 1 + {\alpha\over 1-\alpha} 2\pi i f  (1\,\uf) / K} \bar s\]
+\[ \bar t = {1\over 1 +   i \omega {\alpha\over 1-\alpha} (1\,\uf)/K} \bar s \]
+So here the role of time constant (formerly $RC: \us$) is played by
+${\alpha\over 1-\alpha} (1\, \uf) / K : \us$.
+<h3>High-Pass Filter</h3>
+We want to imitate
+	 \[ \bar V_o  =  {i\omega RC \over 1 +  i\omega RC } \bar V_i: \uV\]
+so we want
+	 \[ \bar t  =  {i\omega ({\alpha\over 1-\alpha} (1\, \uf) / K) \over 1 +  i\omega ({\alpha\over 1-\alpha} (1\, \uf) / K) } \bar s: \ua\]
+hence
+	 \[ \bar t  =  {i\omega {\alpha} (1\, \uf) / K \over 1-\alpha +  i\omega {\alpha} (1\, \uf) / K } \bar s: \ua\]
+	 \[   =  {2\pi i\phi {\alpha} (1\, \uf)  \over 1-\alpha +  2\pi i\phi {\alpha} (1\, \uf)  } \bar s: \ua\]
+	 \[   =  {2\pi i\phi {\alpha} (1\, \uf)  \over 1-\alpha(1 -   2\pi i\phi  (1\, \uf) ) } \bar s: \ua\]
+	 \[   =  {2\pi i\phi {\alpha} (1\, \uf)  \over 1-\alpha e^{ -   2\pi i\phi  (1\, \uf) } } \bar s: \ua\]
+	 \[   =  {2\pi i\phi {\alpha} (1\, \uf)  \over 1-\alpha z^{-1} } \bar s: \ua\]
+	 \[   =  {\alpha  -\alpha + 2\pi i\phi {\alpha} (1\, \uf)  \over 1-\alpha z^{-1} } \bar s: \ua\]
+	 \[   =  {\alpha  -\alpha(1 - 2\pi i\phi  (1\, \uf))  \over 1-\alpha z^{-1} } \bar s: \ua\]
+	 \[\bar t   =  {\alpha  -\alpha z^{-1}  \over 1-\alpha z^{-1} } \bar s: \ua\]
+So the recursive specification of the high-pass filter is:
+\[t(n) = \alpha ( t(n-1) + s(n) - s(n-1))\]
+<b>Exercise</b>: Show the "coinduction step" that if the high-pass and low-pass signals add up to the input signal at one
+time step, then they add up to the input signal at the next time step.
 <a id="mark"></a>
   </body>
   <script>
