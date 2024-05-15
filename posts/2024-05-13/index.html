@@ -23,6 +23,7 @@
       table.proof td {
         padding-left: 50px;
       }
+		table.transfer td { padding: 0em 2em ; }
       body {
         width: 40em;
         margin-left: 10em;
@@ -34,15 +35,107 @@
   <body>
     <h1>A Signal-Processing Cheatsheet</h1>
 	 These are some notes to myself about linear filters.
+	 <h2>Symbols</h2>
+<center><table class="transfer">
+<tr><td>$f$</td><td> frequency</td><td>$\ucy / \us$</td></tr>
+<tr><td>$\omega$</td><td>angular frequency</td><td>$\ur / \us$</td></tr>
+<tr><td>$\phi$</td><td>frame frequency</td><td>$\ucy / \uf$</td></tr>
+<tr><td>$K$</td><td>sampling rate</td><td>$\uf / \us$</td></tr>
+<tr><td>$T$</td><td>sample duration</td><td>$\us / \uf$</td></tr>
+</table></center>
+\[\omega = 2\pi f \qquad  f = \phi K \qquad \phi = f T \]
 	 <h2>Continuous Signals</h2>
 	 Fourier tells us that all signals $\R
 	 \to \C$ are sums of periodic functions $\lambda t . e^{2\pi i f
-	 t}$, and all linear time-invariant transformations $F : (\R \to
+	 t}$, and all LTI (= linear time-invariant) transforms $F : (\R \to
 	 \C) \to (\R \to \C)$ are just fancy ways of independently
 	 adjusting the amplitudes or phases of all the periodic components
 	 of a signal. So we are interested in the frequency and phase
-	 response those particular transformations that are easy to
+	 response those particular transforms that are easy to
 	 implement.
+	 <p>
+		The <em>transfer function</em> for a linear time-invariant function $F$ is a
+		function of $s = i\omega$.
+		<center><table class="transfer">
+			 <tr><td>Low-pass, cutoff $\omega_c$</td><td>\[1\over 1 + s/\omega_c\]</td></tr>
+			 <tr><td>Hi-pass, cutoff $\omega_c$</td><td>\[s/\omega_c \over 1 + s/\omega_c\]</td></tr>
+		</table></center>
+		Periodic signals $e^{st} = e^{i\omega t}$ are the eigenvectors of LTI transforms.
+		Applying a transform with transfer function $\tau(s)$ to $e^{st}$
+		yields $\tau(s) e^{st}$.
+<!--
+		<h3>Differentiation</h3>
+		Differentiation $D_t$ has transfer function $s$. This means
+		that a rational-function transfer function is basically the same thing as a differential
+		equation. We can look at a transfer function like
+		\[1\over 1 + s/\omega_c\]
+		replace the $s$ with $D_t$, and reason that the differential equation that gave rise to it is
+		\[V_o = {1\over 1 + D_t/\omega_c}V_i\]
+		\[(1 + D_t/\omega_c)V_o = V_i\]
+		\[V_o + V'_o/\omega_c = V_i\]
+		\[V'_o = \omega_c(V_i - V_o)\]
+-->
+		<h2>Discrete Signals</h2>
+		Instead of writing transfer functions in terms of $s$, we write them in terms of the operator $z$,
+		which shifts a signal by one sample. If we have a signal like $t \mapsto e^{st}$, and we
+		change it to $t \mapsto e^{s(t + T)}$, what we've done is multiply it by $e^{sT}$. So
+		\[ z = e^{sT} \]
+		We can approximate continuous transforms with discrete transforms by approximating the exponential.
+		Some options for approximation include:
+		<!-- \[ z = {e^{asT}\over e^{(a-1)sT}} \approx { 1 + asT\over 1 + (a-1)sT} \] -->
+		<!-- which would mean -->
+		<!-- \[ z (1 + (a-1)sT) = 1 + asT \] -->
+		<!-- \[ z + zasT - zsT  = 1 + asT \] -->
+		<!-- \[ z + zasT   = 1 + (a+z)sT \] -->
+		<!-- \[ z -1   =  (a-az + z)sT \] -->
+		<!-- \[ s = {1\over T} {z -1 \over a + z(1-a)}  \] -->
+
+		<!-- So in particular for $a \in \{0,1/2,1\}$: -->
+
+<!-- http://web.cecs.pdx.edu/~tymerski/ece452/6.pdf -->
+		\[ z \approx {1\over  1 - sT} \qquad s \approx {1\over T}(1 - z^{-1})\]
+		\[ z \approx {1 + sT/2\over 1 - sT/2} \qquad s \approx {2\over T}{1 - z^{-1}\over 1 + z^{-1}}  \]
+		\[ z \approx 1 + sT \qquad s \approx {1\over T} {1 - z^{-1}\over z^{-1}}\]
+		<h3>Deriving Low-Passes</h3>
+		If we pick
+		\[s \approx {1\over T}(1 - z^{-1}) \]
+		then
+		\[1\over 1 + s/\omega_c\]
+		becomes
+		\[1\over 1 + {1\over T} (1 - z^{-1})/\omega_c\]
+		\[1\over 1 + 1/T\omega_c -  z^{-1}/T\omega_c \]
+		Multiply:
+		\[T\omega_c \over T\omega_c + 1 -  z^{-1} \]
+		Define:
+		\[ \alpha = {1 \over T\omega_c + 1} \]
+		So this becomes
+		\[ 1 - \alpha  \over 1 -  \alpha z^{-1} \]
+		which arises from
+		\[y(n) = \alpha y(n-1) + (1-\alpha)x(n)\]
+	 <p>
+		But if we do the bilinear transform
+		\[  s \approx {2\over T}{1 - z^{-1}\over 1 + z^{-1}}  \]
+then we get
+		\[1\over 1 + {2\over T}{1 - z^{-1}\over \omega_c(1 + z^{-1})}\]
+
+		\[
+= {T\omega_c(1 + z^{-1})\over T\omega_c(1 + z^{-1}) + {2}(1 - z^{-1})}
+= {T\omega_c(1 + z^{-1})\over T\omega_c + T\omega_c z^{-1} + 2 - 2z^{-1}}
+\]
+\[
+= {T\omega_c(1 + z^{-1})\over T\omega_c + 2 + (T\omega_c - 2)z^{-1}}
+= {{T\omega_c\over 2 + T\omega_c }(1 + z^{-1})\over 1 - {2 - T\omega_c \over 2 + T\omega_c }z^{-1}}
+\]
+Let $\beta = 2 T\omega_c $ and this is
+\[
+= {{\beta \over 1 + \beta }(1 + z^{-1})\over 1 - {1 - \beta \over 1 + \beta }z^{-1}}
+\]
+Let $q = {\beta \over 1 + \beta }$ and this becomes
+\[
+= {q (1 + z^{-1})\over 1 - (1-2q)z^{-1}}
+\]
+
+		<h2>Circuits</h2>
 	 <h3>Low-pass Circuit</h3>
 	 Note that $\uOm = \uV/\uA$ and $\uA = \uC /\us$ and $\uF = \uC/\uV$.
 
@@ -181,6 +274,8 @@ so
 
 This seems to be telling us that
 \[ \alpha = { K \ur \over 2\pi f_c \uf +   { K \ur}} : \C \]
+or equivalently
+\[   f_c  =  {K  (1 - \alpha)  \over  2\pi\alpha} {\ur \over \uf}  : \ucy / \us \]
 which at least makes sense for extreme values of $\alpha$. Let's do a little concrete test.
 Set $K = 44100, f_c = 800$. We can apply the filter with the derived value of $\alpha$,
 and confirm that the output peaks at about $\sqrt{2}$ of the input signal.
@@ -220,7 +315,6 @@ max^2 0.47330916400608175
 which is pretty close to $\mathtt{max}^2 = 0.5$. The closer we get to
 the Nyquist frequency, the less accurate it gets.
 
-<a id="mark"></a>
 <h2>Bandpass</h2>
 
 Maybe I can say
