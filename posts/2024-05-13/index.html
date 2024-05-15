@@ -126,7 +126,7 @@ then we get
 = {T\omega_c(1 + z^{-1})\over T\omega_c + 2 + (T\omega_c - 2)z^{-1}}
 = {{T\omega_c\over 2 + T\omega_c }(1 + z^{-1})\over 1 - {2 - T\omega_c \over 2 + T\omega_c }z^{-1}}
 \]
-Let $\beta = 2 T\omega_c $ and this is
+Let $2\beta = T\omega_c $ and this is
 \[
 = {{\beta \over 1 + \beta }(1 + z^{-1})\over 1 - {1 - \beta \over 1 + \beta }z^{-1}}
 \]
@@ -314,6 +314,45 @@ max^2 0.47330916400608175
 
 which is pretty close to $\mathtt{max}^2 = 0.5$. The closer we get to
 the Nyquist frequency, the less accurate it gets.
+
+<h3>Bilinear Approximation</h3>
+Actually the bilinear seems a good bit more accurate:
+<pre>
+#![allow(dead_code, unused_labels, unused_variables)]
+use std::f64::consts::PI;
+const BUF_LEN: usize = 44100;
+fn main() {
+  let sample_rate = 44100.0f64;
+  let freq = 5000.0f64;
+  let buf: Vec&lt;f64&gt; = (0..BUF_LEN)
+    .map(|x| (2.0 * PI * freq * (x as f64) / sample_rate).sin())
+    .collect();
+  let mut out_buf: Vec&lt;f64&gt; = vec![0.; BUF_LEN];
+  let beta = 1.0 / (1.0 +  sample_rate / (PI * freq));
+  println!("beta {:?}", beta);
+  let mut prev = 0.0;
+  let mut prev_in = 0.0;
+  let mut max = 0.0;
+  for (i, cur_in) in buf.iter().enumerate() {
+    out_buf[i] = beta * cur_in + beta * prev_in + (1.0 - 2.0 * beta) * prev;
+    let a = prev.abs();
+    if i &gt; ((BUF_LEN as f64) * 0.99) as usize && a &gt; max {
+      max = a;
+    }
+
+    prev = out_buf[i];
+    prev_in = buf[i];
+  }
+  println!("max^2 {:?}", max * max);
+}
+</pre>
+gives
+<pre>
+beta 0.26263999657662396
+max^2 0.47821852035029805
+</pre>
+even though I've cranked up the frequency to 5000Hz! At 800Hz it gives
+$\mathtt{max}^2 = 0.4995$, way better than $0.4733$.
 
 <h2>Bandpass</h2>
 
