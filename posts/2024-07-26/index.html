@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+
+
+
+      .ui-example { border: solid black 1px; padding: 1rem; margin: 1rem; }
+  .ui-example > p { margin-left: 2rem; display: flex; }
+  .ui-example > p > * { flex: 1; }
+  .whitespace { white-space: pre; }
+    </style>
+    <title>Type Combinators for Interactive Forms</title>
+  </head>
+
+  <body>
+    <h1>Type Combinators for Interactive Forms</h1>
+
+    I read <a href="https://eighty-twenty.org/2024/07/21/ui-for-sums-remembers-products">this
+    blog post titled "UI for sums must remember products "</a>
+
+    the other day, and I thought it was a really interesting idea. The
+    core of it, I think, is the observation that the type of data that
+    represents the state of a web form as you're editing it is not the
+    same as the type of data that gets returned from a form when you
+    submit it.
+    <p>
+      Just to copy the post's example here, if we have a form like
+      <div class="ui-example">
+        <input type="radio" checked="" /><label> Local project</label>
+        <p><label>Project name:</label><input /></p>
+        <input type="radio" /><label> Clone Git repository</label>
+        <p><label>Git repository URL:</label><input /></p>
+        <p><label>Access token:</label><input /></p>
+        <p><label>Project name:</label><input /></p>
+      </div>
+      Then the type of the UI state while we're <b>editing</b> is something like the record type
+(I'm going to use subscript $0$ for all the variables pertaining to this example)
+<p>
+      <div class="whitespace">$E_0 := \{$
+    $projectType : \mathsf{Local} \celse \mathsf{Clone},$
+    $localProjectName : \mathsf{str},$
+    $gitRepoUrl : \mathsf{str},$
+    $accessToken : \mathsf{str},$
+    $clonedProjectName : \mathsf{str},$
+$\}$</div>
+<p>
+Whereas the type of data that <b>results</b> when the user clicks the submit button is more
+like a tagged union of two distinct record types:
+      <div class="whitespace">$R_0 :=$
+    $\celse \mathsf{Local}\ \{\ localProjectName : \mathsf{str}\ \}\  $
+    $\celse \mathsf{Cloned}\ \{$
+        $gitRepoUrl : \mathsf{str},$
+        $accessToken : \mathsf{str},$
+        $clonedProjectName : \mathsf{str},$
+    $\}$</div>
+
+      So although the "eventual type" of the data we're editing is $(\mathsf{str}) + (\mathsf{str} \x \mathsf{str} \x \mathsf{str})$,
+      the "editing type" is actually something like $2 \x \mathsf{str} \x (\mathsf{str} \x \mathsf{str} \x \mathsf{str})$.
+
+      <h3>Defining Form-Types</h3>
+      In the blog post above, the author notes correctly that although it seems intuitive that we should turn
+      $A + B$ into $2 \x A \x B$, it doesn't seem correct to naively apply this recursively.
+      $(A + B) + C$ would turn into $(2 \x A \x B) + C$, and thence to $2 \x (2 \x A \x B) \x C$, which appears
+      to have too many choices in it! What we really wanted was $3 \x A \x B \x C$.
+      <p>
+        So I asked myself: if there isn't a binary operation
+        on <b>types</b> that associates how we want, is there an
+        operation on "something more than types"?
+      <p>
+        Here's the answer I came up with: briefly, "yes, an operation on 3-tuples of types with a function".
+        Define a "form-type" to be a tuple $(C, P, R, f)$ where $C, P, R$ are types, and $f : C \x P \to R$.
+        This can represent the type of an individual form element, or a larger form made of multiple elements.
+        The intuitions for these are:
+<ul>
+<li> $C$ is the type of <b>choices</b> that need to be made in order for the form to be submittable. In the example, we say $C = C_0 := \mathsf{Local} \celse \mathsf{Clone} \cong 2$.
+<li> $R$ is the <b>result</b> type, the type of data our program gets at the very end when the form is submitted.
+In the running example, we say $R = R_0$ as defined above.
+<li> $P$ is the type of <b>partially used data</b> across all choices. In the example above, we set
+$P = P_0$ where we define
+      <div class="whitespace">$P_0 := \{$
+    $localProjectName : \mathsf{str},$
+    $gitRepoUrl : \mathsf{str},$
+    $accessToken : \mathsf{str},$
+    $clonedProjectName : \mathsf{str},$
+$\}$</div>
+Notice that $E_0 = C_0 \x P_0$.
+<li> $f$ is a function that tells us how to compute $R$ from $C \x P$. In the example, it is pretty
+easy to imagine how we compute $R_0$ from $C_0 \x P_0$: we case-match on the value of type $C_0$,
+and project out whichever fields we need from $P_0$ in order to construct an element of the sum type $R_0$.
+</ul>
+
+<h3>Combinators for Building Form Types</h3>
+
+Here's how we can build up form types. A simple text box is the form type
+$\overline{\mathsf{str}} = (1, \mathsf{str}, \mathsf{str}, \lambda \ll c,p\rr . p)$. There are no interesting choices to be made,
+so the choice type is the unit type. The data to be edited is string, and the data to be returned is string.
+<p>
+We now define two binary operations $\oplus$, and $\otimes$, each taking two form types and yielding a form type.
+They can be thought of as "disjunctive" and "conjunctive" ways of combining forms, but I'm not claiming they're the
+coproduct or product in any particular category right now.
+<p>
+The operation $\oplus$ is defined by saying
+<div class="whitespace">
+\((C_1, P_1, R_1, f_1) \oplus (C_2, P_2, R_2, f_2) = (\)
+    $C_1 + C_2,$
+    $P_1 \x P_2,$
+    $R_1 + R_2,$
+    $\lambda \ll c, \ll p_1, p_2\rr\rr. \bb{case} c \bb{of}$
+        $\celse (\bb{inl} c_1) \Rightarrow f_1\ll c_1, p_1\rr$
+        $\celse (\bb{inl} c_2) \Rightarrow f_2\ll c_2, p_2\rr,$
+\()\)
+</div>
+
+and the operation $\otimes$ is defined by saying
+<div class="whitespace">
+\((C_1, P_1, R_1, f_1) \otimes (C_2, P_2, R_2, f_2) = (\)
+    $C_1 \x C_2,$
+    $P_1 \x P_2,$
+    $R_1 \x R_2,$
+    $\lambda \ll\ll c_1, c_2\rr, \ll p_1, p_2\rr\rr. $
+        $\ll f_1\ll c_1, p_1\rr,  f_2\ll c_2, p_2\rr \rr,$
+\()\)
+</div>
+
+<h3>Associativity</h3>
+Now we can revisit how this solves the "$3 \x A \x B \x C$ problem".
+Let's say the "edit type" $\E(\hbox{---})$ of a form-type
+is defined by $\E(C,P,R,f) := C \x P$.
+Suppose we have form types with trivial choice-types $\ol X_i = (1, P_i, R_i, f_i)$ for $i \in \{1,2,3\}$.
+
+
+<p>
+Observe that $\E(\ol X_1 \oplus \ol X_2) = (1 + 1) \x (P_1 \x P_2) $, as expected, but also
+ $\E((\ol X_1 \oplus \ol X_2) \oplus X_3) = (1 + (1 + 1)) \x (P_1 \x (P_2 \x P_3)) $, as desired.
+<p>
+More generally, if we had had  $\ol X_i = (C_i, P_i, R_i, f_i)$ for $i \in \{1,2,3\}$, then we would have
+\[\E((\ol X_1 \oplus \ol X_2) \oplus X_3) = (C_1 + (C_2 + C_3)) \x (P_1 \x (P_2 \x P_3)) \]
+which seems intuitively right to me.
+      <h2>Validation</h2>
+      This discrepancy between "edit types" and "result types" is even bigger if we consider input fields that have more complex validation.
+      Suppose our form also had a numeric input, like:
+    <div class="ui-example">
+        <input type="radio" checked="" /><label> Local project</label>
+        <p><label>Project name:</label><input /></p>
+        <input type="radio" /><label> Clone Git repository</label>
+        <p><label>Git repository URL:</label><input /></p>
+        <p><label>Access token:</label><input /></p>
+        <p><label>Project name:</label><input /></p>
+        <p><label><b>Clone depth</b>:</label><input /></p>
+      </div>
+and suppose we want the user to be able to edit its ephemeral value as a string, and defer forcing validation until they try to submit.
+This subtlety has actually come up for me implementing forms; if you try to make a react form and force the state to always be a number,
+you can't fully delete the number that's there as a default before typing in your preferred value.
+<p>
+So in order to handle validation, we need to represent the possibility that validation fails!
+<p>
+So let's generalize form-types by including one more component type, for <B>errors</B>: a form type is now
+a tuple $(C, P, R, E, f)$ where $C, P, R$ are types, and $f : C \x P \to R + E$. The act of submitting takes the choices $C$
+<B>and</B> the partially used data $P$, and produces either a result $R$ <B>or</B> an error $E$.
+<h3>Revising the definition of combinators</h3>
+Now we can still define a sensible $\oplus$ and $\otimes$. We say:
+<div class="whitespace">
+\((C_1, P_1, R_1, E_1, f_1) \oplus (C_2, P_2, R_2, E_1, f_2) = (\)
+    $C_1 + C_2,$
+    $P_1 \x P_2,$
+    $R_1 + R_2,$
+    $E_1 + E_2,$
+    $\lambda \ll c, \ll p_1, p_2\rr\rr. \bb{case} c \bb{of}$
+        $\celse (\bb{inl} c_1) \Rightarrow \iota_1 (f_1\ll c_1, p_1)\rr$
+        $\celse (\bb{inl} c_2) \Rightarrow \iota_2 (f_2\ll c_2, p_2)\rr,$
+\()\)
+
+</div>
+
+and
+
+<div class="whitespace">
+\((C_1, P_1, R_1, E_1, f_1) \otimes (C_2, P_2, R_2, E_2, f_2) = (\)
+    $C_1 \x C_2,$
+    $P_1 \x P_2,$
+    $R_1 \x R_2,$
+    $E_1 + E_2,$
+    $\lambda \ll\ll c_1, c_2\rr, \ll p_1, p_2\rr\rr. \bb{case} f_1\ll c_1, p_1\rr \bb{of} $
+        $\celse (\bb{inr} e_1) \Rightarrow \iota_3(e_1)$
+        $\celse (\bb{inl} r_1) \Rightarrow \bb{case} f_1\ll c_1, p_1\rr \bb{of} $
+            $\celse (\bb{inr} e_2) \Rightarrow \iota_4(e_2)$
+            $\celse (\bb{inl} r_2) \Rightarrow \bb{inl}(\ll r_1, r_2 \rr),$
+\()\)
+
+</div>
+
+where <div class="whitespace">
+$\iota_1 : (R_1 + E_1) \to (R_1 + R_2) + (E_1 + E_2)$
+$\iota_2 : (R_2 + E_2) \to (R_1 + R_2) + (E_1 + E_2)$
+$\iota_3 : E_1 \to (R_1 \x R_2) + (E_1 + E_2)$
+$\iota_4 : E_2 \to (R_1 \x R_2) + (E_1 + E_2)$
+
+</div>
+are the obvious injections which seemed like they would be more confusing if written out explicitly.
+
+<p>
+Let us briefly note what's going on here. In the $\oplus$ of two forms,
+<ul>
+<li>the user has all the choices available in the one form, and the other; the $C$ are summed together.
+<li>the user can edit all the constitutent data of one form, and the other; we take the product of their data $P$.
+<li>when the time comes to submit and do validation, only the data that is selected by the "choices" gets validated,
+and any errors that arise from it are propagated as errors of the whole form
+</ul>
+In the $\otimes$ of two forms,
+<ul>
+<li>the user must simultaneously make a choice in each of the choice sets of the two forms; the $C$ are multiplied together.
+<li>the user can edit all the constitutent data of one form, and the other; we take the product of their data $P$.
+<li>when the time comes to submit and do validation, both component pieces of data are validated, according to the
+respective "choices". An error may arise from either or both subforms; however, if errors arise in both, we <b>asymmetrically</b>
+report the error in the first, rather than the second. If we encounter no errors, we have results from both parts,
+and so can propagate up a result.
+</ul>
+<h3>Open Question</h3>
+It's not clear to me if it's possible, but it seems desirable if so &mdash; can this asymmetry be repaired somehow?
+It seems otherwise so pleasant that $\oplus$ is "3/4s sum types" and $\otimes$ is "3/4s product types".
+Connecting any of this to lenses or monads or anything also seems tantalizingly possible, but I don't yet see how.
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bb": "\\mathrel\\mathbf{#1}",
+              "\\bx": "{\\bf{x}}",
+              "\\ol": "\\overline{#1}",
+              "\\lstr": "\\overline{\mathsf{str}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\E": "{\\mathcal E}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
