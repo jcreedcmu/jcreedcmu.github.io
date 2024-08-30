@@ -67,6 +67,19 @@ function as $\mathrm{Uniform}(0,1)$:
     \sqrt{q}$ and also $U_2 \le \sqrt{q}$, which naturally has area
     $\sqrt{q}\sqrt{q} = q$.
 
+    <h2>An Alternative Suggestive "Proof"</h2>
+    Here's another intuitive angle that is also visual and more discrete.
+    <p/>
+    Again for the special case $n=2$, observe that the two processes
+    give the same result, with the diagram illustrating $N = 5$:
+    <center><img src="diagram2.png"></center>
+    <ol><li>Uniformly choose an integer $s$ in the interval $[0,N^2)$, or
+    <li>Independently uniformly choose integers $x,y$ from the interval
+    $[0,N)$ and compute
+\[ s = \begin{cases} \max(x,y)^2 + x &amp; \hbox{if $y \ge x$;} \\ \max(x,y)^2 - 1 - y &amp; \hbox{if $x \ge y$.} \end{cases} \]
+</ol>
+    In the continuous limit, we see that $\max(x/N, y/N)^2$ and $s/N^2$ have the same
+    distribution as $N \to \infty$.
   </body>
   <script>
 	 function go(body) { renderMathInElement( body, { strict: false,
