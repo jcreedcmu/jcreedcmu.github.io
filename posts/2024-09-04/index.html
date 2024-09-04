@@ -60,7 +60,7 @@
     <h2>Turning linearity into indexing</h2>
     Now I want to pull the trick that I pulled in my thesis. To do that I say that every "linearity type"
     &mdash; any type that traffics with linear type operators like $\lol$ &mdash; is secretly not really a type,
-    but rather a $\W \to \rtype$, for $\W$ being some monoid of <em>worlds</em> or <em>resources</em>.
+    but rather a $\W \to \rtype$, for $\W$ being some commutative monoid (all monoids below will be commutative without further mention) of <em>worlds</em> or <em>resources</em>.
     Notationally, I'll use $\varepsilon : \W$ for the unit of this monoid, and $\cdot$ or mere juxtaposition for the product.
     So now (also using Agda-style notation for universal quantification) I want to work with the type
     \[ ( \alpha : \W \to \rtype) \to ((\alpha \lol \alpha) \lol ( \alpha \lol \alpha ))(\varepsilon) \tag{2}\]
