@@ -80,7 +80,7 @@
     whatever world variables happened to be in the context. Here I
     want to be a bit clearer, and a bit more compatible with an
     imagined mechanization in, say, Agda. So instead what I'm going to do is assume that the desired inhabitant
-    of the type (1)-(3) should be well-typed for <em>any</em> monoid. I'll include the quantification over the type in
+    of the type (1)-(3) should be well-typed for <em>any</em> monoid. I'll include the quantification over the monoid in
     the type, and apply parametricity reasoning to it like any other. So we're now looking for an inhabitant of
   \[ \tau = (\W : \rtype) \{\_ : \mathsf{isMonoid}\ \W\} ( \alpha : \W \to \rtype) \to (p\ q : \W) \to \]
     \[(s : (r : \W) \to \alpha(r) \to \alpha(pr)) (z : \alpha(q)) \to \alpha(pq) \tag{4}\]
