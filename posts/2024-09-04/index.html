@@ -225,6 +225,10 @@ giving us
 which is the desired result: the only parametric inhabitant of
     \[ \forall \alpha . (\alpha \lol \alpha) \lol ( \alpha \lol \alpha ) \]
 is the Church numeral 1.
+<h2>Other Theorems For Free</h2>
+I think this same line of thinking allows seeing that
+\[ \forall \alpha \beta. (\alpha \lol \alpha \lol \beta) \to (\alpha \lol \alpha \lol \beta) \]
+has exactly two inhabitants; one that calls the continuation identically and one that swaps the arguments.
   </body>
   <script>
 	 function go(body) { renderMathInElement( body, { strict: false,
