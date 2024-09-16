@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Naive Topology Intuitions and Logic</title>
+  </head>
+
+  <body>
+    <h1>Naive Topology Intuitions and Logic</h1>
+
+    While playing around a bit with CAD programs lately, I realize I
+    have two separate &mdash; and potentially contradictory! &mdash;
+    bundles of intuitions about shapes in space ought to undergo
+    unions and intersections.
+
+    <h3>Shapes to a Topologist</h3>
+    One I'll call the "topologist" idea of shape. A shape is a subset of $\R^n$,
+    and unions are set-theoretic unions, and intersections are set-theoretic intersections.
+    <h3>Naive Shapes</h3>
+    The other I'll call the "naive" idea of shape, but I don't mean that as an insult.
+    It actually strikes me as quite natural. It's what I expect and get from CAD software that
+    manipulates 3-d shapes. According to this intuition, if I take two equal-sized
+    squares side-by-side,
+    <ol>
+      <li> If I compute their union, I should get a rectangle twice as wide as it is tall.
+      <li> If I compute their intersection, I should get the empty shape.
+    </ol>
+    <center><img src="diagram.png"></center>
+
+    <h3>The Problem</h3>
+    Here's why this is at odds with the topologist's intuition: ask yourself, is
+    the boundary of the square in the square? That is, are we dealing with an
+    open square $(0,1) \x (0,1)$ or a closed square $[0,1] \x [0,1]$? If open,
+    then the union of the two squares $(0,1) \x (0,1) \cup (1,2) \x (0,1)$
+    is not the rectangle $(0,2) \x (0,1)$. If closed, then the intersection
+    of the two squares is not empty!
+    <h3>A Solution I Don't Like</h3>
+
+    We could say that the squares are products of half-open intervals like
+    $[0,1) \x [0,1)$, and that would make this particular example
+    work, (in the sense that conditions (1) and (2) above are
+    satisfied) but it's ugly and asymmetric, and I'm not sure if
+    there's any sensible story to tell about rotation. Surely at least
+    saying the rotation of a shape is the pointwise rotation of the
+    points belonging to it can no longer be the case, since this would
+    break the half-open-in-the-correct-direction invariant that we're
+    tacitly introducing.
+
+    <h3>A Solution I Like</h3>
+    My goal is to give some formal account of what the "Naive Shapes" idea
+    is saying. I feel like a core part of it is believing that
+    <blockquote> If I try to ask whether the boundary of these shapes "belongs to" the shapes
+        or not, this is <em>a meaningless question</em></blockquote>
+
+    So I want to do something like quotienting out by the presence or
+    absence of boundary points. Alternatively, I can think of it as
+    picking out a subset of the possible shapes that are
+    "well-behaved", which excludes lower-dimensional shapes like the
+    single face that is the intersection of two squares sitting next
+    to each other. Then the operation of taking their intersection is
+    modified to instead be finding the "best approximation to their
+    intersection by a <em>well-behaved</em> shape"
+
+    <h3>Well-Behaved Shapes</h3>
+    After some rumination, I decided that a definition I like is:
+
+    <blockquote>
+      A subset of $\R^n$ is well-behaved if it is equal to the interior of its closure.
+    </blockquote>
+
+    because this means the set itself is open, and also doesn't have any weird "holes"
+    that closure would have repaired.
+
+    <h3>Cut off by LLM</h3>
+    I had a longer bit of explanation and proof planned for this post, but then I popped
+    <blockquote>
+      Is there a standard name for the property of a subset X of a topological space where X is equal to the interior of its closure?
+    </blockquote>
+    into ChatGPT, and it turns out this is in fact a <a href="https://en.wikipedia.org/wiki/Regular_open_set">well-known property of subsets
+    of a topological space</a>: the property is called being <b>regular open</b>.
+
+    <p/> The interesting fact is that these do form a complete boolean
+    algebra. Being regular open is preserved by intersection, and
+    although it isn't preserved by union or complementation , you can
+    define a "corrected union"
+    \[ A \sqcup B = \mathrm{Int}(\mathrm{Clo}(A \cup B))\]
+    and a "corrected complement"
+    \[ {\sim}A = \mathrm{Int}(\mathrm{Clo}(X \setminus A))\]
+    and these are the appropriate operations for the boolean algebra.
+    <h3>The Logical View</h3>
+    I notice the definition of regular open is the same as something that smells a lot
+    like (although I suppose it's strictly stronger than) the axiom that characterizes
+    <a href="https://en.wikipedia.org/wiki/S5_(modal_logic)">the modal logic S5 </a>:
+    if we interpret Int as $\square$ and Clo as $\dia$ in a classical modal logic interpreted
+    into a topological space, then we're requiring
+    \[ A \dashv\vdash \square \dia A \]
+    So, $A$ being true here is the same as A always eventually being true.
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\dia": "\\Diamond",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
