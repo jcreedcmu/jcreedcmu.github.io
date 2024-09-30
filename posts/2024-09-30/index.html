@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Defining Fillets</title>
+  </head>
+
+  <body>
+    <h1>Defining Fillets</h1>
+
+I realized after playing around in CAD for a while that I didn't really understand what the formal definition of the filleting operation is. It seemed like a fun exercise to reconstruct what I feel it ought to be from first principles. If I take a collection of cubes and a bunch of edges that are alternatingly convex and concave, and fillet them all, OnShape does <em>something</em>:
+<center><img src="diagram1.png"></center>
+What's happening in isolation on each edge is clear to me, but what happens when the edges come together isn't.
+This is mostly because I can imagine a notion of "positive" and "negative" filleting operations separately.
+<center><img src="posneg.png"></center>
+Positive filleting only adds material, and negative filleting only removes it. If $S$ is
+a subset of a metric space $M$ with distance function $d$, then I can define the
+operations of $F^+_r(S)$, "positive fillet to radius $r$", and $F^-_r(S)$, "negative fillet to radius $r$"
+(which both output a subset of $M$) as follows.
+<p/>
+First define
+\[ B_r(x) = \{ y \in M \st d(y,x) \le r \}\]
+\[ \square S = \{ x \in M \st \forall y \in B_r(x) . y \in S\}\]
+\[ \dia S = \{ x \in M \st \exists y \in B_r(x) . y \in S\}\]
+Then we can define
+\[ F^+_r(S) = \square \dia S \]
+\[ F^-_r(S) = \dia \square S \]
+The trouble arises when I want to consider doing both of these simultaneously.
+I can't unambiguously sequence them, since they don't commute. Consider the following example
+of a thin (relative to $r$) square ring with a small (relative to $r$) hole:
+<center><img src="noncom.png"></center>
+
+Across the top we do a $F^+_r$. The small hole gets filled in. If we
+did a subsequent $F^-_r$, it would round off the corners of the
+square. Across the bottom we do a $F^-_r$. This immediately eliminates the ring,
+because no point of the ring is surrounded by a solid disc of radius $r$.
+So $F^-_r F^+_r S$ in this case is a rounded rectangle, but $F^+_r F^-_r S$ is the empty set.
+$F^-_r$ and $F^+_r$ do not commute.
+
+<h2>One Idea for Simultaneous Positive and Negative Fillets</h2>
+
+I'm still not sure what OnShape is doing precisely, but here's a definition that might be plausible.
+Instead of working with exclusively subsets of the metric space as intermediate data, let's
+generalize to maps from the metric space to the reals. Define
+\[ \red{\square} S = \lambda x . \max_{y \in B_r(x)} \min_{z \not\in S} d(z,y) - r\]
+\[ \red{\dia} S = \lambda x . \max_{y \in B_r(x)} \min_{z \in S} d(z,y) - r\]
+Both $\red\square$ and $\red\dia$ take a subset $S \subseteq M$ to a function $M \to \R$.
+<p/>
+<b>Claim</B>: Although I may be off by some edge cases, I think morally we have
+\[\square S \qquad =\qquad  \{ x \st \red{\square} S(x) \ge 0\} \]
+\[ \dia S \qquad =\qquad  \{ x \st \red{\dia} S(x) \le 0 \} \]
+
+This means that it seems plausible to define a filleting operation by subtracting these two
+and comparing with zero, or equivalently comparing them with each other:
+\[ F S = \{ x \st \red\square S(x) - \red\dia S(x) \ge 0 \} \]
+\[ = \{ x \st (\max_{y \in B_r(x)} \min_{z \not\in S} d(z,y)) - (\max_{y \in B_r(x)} \min_{z \in S} d(z,y)) \ge 0 \} \]
+\[ = \{ x \st \max_{y \in B_r(x)} \min_{z \not\in S} d(z,y)  \ge \max_{y \in B_r(x)} \min_{z \in S} d(z,y) \} \]
+    <a id="mark"></a>
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{ff3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\imp": "\\Rightarrow",
+              "\\dia": "{\\Large\\diamond}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
