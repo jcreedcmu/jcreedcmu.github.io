@@ -68,19 +68,25 @@ $F^-_r$ and $F^+_r$ do not commute.
 I'm still not sure what OnShape is doing precisely, but here's a definition that might be plausible.
 Instead of working with exclusively subsets of the metric space as intermediate data, let's
 generalize to maps from the metric space to the reals. Define
-\[ \red{\square} S = \lambda x . \max_{y \in B_r(x)} \min_{z \not\in S} d(z,y) - r\]
-\[ \red{\dia} S = \lambda x . \max_{y \in B_r(x)} \min_{z \in S} d(z,y) - r\]
+\[ \red{\square} S = \lambda x . \max_{y \in B_r(x)} \min_{z \not\in S} d(z,y) \]
+\[ \red{\dia} S = \lambda x . \max_{y \in B_r(x)} \min_{z \in S} d(z,y) \]
 Both $\red\square$ and $\red\dia$ take a subset $S \subseteq M$ to a function $M \to \R$.
 <p/>
 <b>Claim</B>: Although I may be off by some edge cases, I think morally we have
-\[\square S \qquad =\qquad  \{ x \st \red{\square} S(x) \ge 0\} \]
-\[ \dia S \qquad =\qquad  \{ x \st \red{\dia} S(x) \le 0 \} \]
+\[\square S \qquad =\qquad  \{ x \st \red{\square} S(x) \ge r\} \]
+\[ \dia S \qquad =\qquad  \{ x \st \red{\dia} S(x) \le r \} \]
 
-This means that it seems plausible to define a filleting operation by subtracting these two
-and comparing with zero, or equivalently comparing them with each other:
-\[ F S = \{ x \st \red\square S(x) - \red\dia S(x) \ge 0 \} \]
-\[ = \{ x \st (\max_{y \in B_r(x)} \min_{z \not\in S} d(z,y)) - (\max_{y \in B_r(x)} \min_{z \in S} d(z,y)) \ge 0 \} \]
-\[ = \{ x \st \max_{y \in B_r(x)} \min_{z \not\in S} d(z,y)  \ge \max_{y \in B_r(x)} \min_{z \in S} d(z,y) \} \]
+This means that it seems plausible to define a filleting operation by comparing these with each other,
+instead of with $r$:
+\[ F S = \{ x \st \red\square S(x) \ge  \red\dia S(x)  \} \]
+
+Informally: a point $x$ belongs to the filleting of $S$ if and only
+the deepest depth you can get into the interior of $S$ (measured by
+how far away the exterior is) is greater than the farthest you can
+escape into the exterior of $S$ (measured by how far away $S$ is), if
+you're only allowed to go $r$ away from $x$. For points far away from
+any complicated crinkling of the boundary of $S$, this amounts to simply
+asking whether you're in $S$ or not.
     <a id="mark"></a>
   </body>
   <script>
