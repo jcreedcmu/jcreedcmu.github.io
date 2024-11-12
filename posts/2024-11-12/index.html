@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>A Heuristic Argument for the Central Limit Theorem</title>
+  </head>
+
+  <body>
+    <h1>A Heuristic Argument for the Central Limit Theorem</h1> This
+is a derivation I keep rederiving every once in a while so I figured
+I'd write it down. The title is a bit clickbaity: It's not a proof,
+and it's not even really an argument for the full central limit
+theorem, just the asymptotic behavior of the binomial coefficients.
+But it gives a flavor of the thing.
+<h2>Binomial Coefficients</h2>
+What's the shape of
+\[N \choose k\]
+
+for large $N$, for various $k$? Well, it's going to get large. We can see from
+numerical experiments that it looks sort of bell-curve-like, with a maximum value attained at $k=N/2$. We'd like
+to reparameterize it so that for the same value of $t$, we end up on
+the same "part" of the curve. So let's make the educated guess that
+\[f(t) = {N \choose N/2 + tN^p}\]
+gives us this property for some $p$, which says how fast the distribution "spreads out". We don't know what $p$ is, and we hope that something later in the story will help us find what it must be.
+<p>
+Where to go from here? We could try doing calculus to it. With the reparameterization, adjacent discrete values of $N/2 + tN^p$ which actually differ by 1 will differ in their $t$-value by $1/N^p$, so let's set $\Delta t = 1/N^p$. Maybe we could analyze the derivative of $f$.
+
+\[ f'(t) = \lim_{\Delta t \to 0} {f(t + \Delta t) - f(t)\over \Delta t}\]
+\[  = \lim_{\Delta t \to 0} \left(1\over \Delta t\right)\left( { N \choose N/2 + (t + \Delta t)N^p} - { N \choose N/2 + tN^p}\right)\]
+\[  = \lim_{\Delta t \to 0} \left(1\over \Delta t\right)\left( { N \choose N/2 + t N^p + 1} - { N \choose N/2 + tN^p}\right)\]
+Gross. That doesn't look like it's heading anywhere useful. Subtracting one binomial coefficient from the adjacent one will be a mess. But dividing one by another might be more promising. Because in general
+\[{a\choose b+1}{a\choose b}^{-1}
+= {a!\over (b+1)!(a-b-1)!}\left(a!\over b!(a-b)!\right)^{-1}
+\]
+\[=  { a!\over (b+1)!(a-b-1)!}{b!(a-b)! \over a!}\]
+\[= {b!(a-b)!\over (b+1)!(a-b-1)!}\]
+\[= {a-b \over b+1}\]
+<h2>Logarithm</h2>
+<p>So let's try taking the derivative of the logarithm of $f$.
+\[ (\ln f(t))' = \lim_{\Delta t \to 0} {\ln f(t + \Delta t) - \ln f(t)\over \Delta t}\]
+\[  = \lim_{\Delta t \to 0}\left(1\over\Delta t\right) \ln { f(t + \Delta t) \over  f(t)}\]
+\[  = \lim_{\Delta t \to 0}\left(1\over\Delta t\right) \ln { { N \choose N/2 + t N^p + 1} \over { N \choose N/2 + t N^p }}\]
+\[  = \lim_{\Delta t \to 0}\left(1\over\Delta t\right) \ln { N/2 - t N^p  \over  N/2 + t N^p + 1}\]
+\[  \approx \lim_{\Delta t \to 0}\left(1\over\Delta t\right) \ln { N/2 - t N^p  \over  N/2 + t N^p }\]
+
+\[  = \lim_{\Delta t \to 0} N^p \ln { N/2 - t N^p \over  N/2 + t N^p }\]
+\[  = \lim_{\Delta t \to 0} N^p \ln { 1 - 2t N^{p-1} \over  1 + 2t N^{p-1}  }\]
+
+\[  = \lim_{\Delta t \to 0} N^p \ln \left(1- 2{ 2tN^{p-1} \over  1 + 2t N^{p-1}  }\right)\]
+
+\[  = \lim_{\Delta t \to 0} N^p \ln \left(1- 2{ 1 \over  1 + (2t)^{-1} N^{1-p}  }\right)\]
+\[  \approx \lim_{\Delta t \to 0} N^p \ln \left(1- 2{ 1 \over   (2t)^{-1} N^{1-p}  }\right)\]
+\[  = \lim_{\Delta t \to 0} N^p \ln \left(1- { 4t \over    N^{1-p}  }\right)\]
+\[  = \lim_{\Delta t \to 0} \ln \left(\left(1- { 4t \over    N^{1-p}  }\right)^{N^p}\right)\]
+
+Now we star at that final expression and remember that
+\[ \lim_{n \to \infty} \left(1-{x\over n}  \right)^{n} = e^x\]
+So we'd have
+\[ \lim_{N \to \infty} \left(1- { 4t \over    N^{1-p}  }\right)^{N^p} = e^{-4t}\]
+if only we knew $N^p = N^{1-p}$. This is the moment in the story that tells us what $p$ is: the right choice is $p=1/2$, which solves $p = 1-p$. Then we have
+
+\[ (\ln f(t))' = \lim_{\Delta t \to 0} \ln \left(\left(1- { 4t \over    \sqrt{N}  }\right)^{\sqrt{N}}\right)\]
+\[  = \lim_{N \to \infty} \ln \left(\left(1- { 4t \over    \sqrt{N}  }\right)^{\sqrt{N}}\right)\]
+\[  =  \ln \left(e^{-4t}\right)\]
+\[  =  -4t \]
+\[ \int (\ln f(t))' dt = \int -4t\,dt \]
+\[ \ln f(t) =  -2t^2 + \ln C\]
+\[  f(t) =  Ce^{-2t^2}\]
+
+At the end of the day, we're claiming that there exists a constant $C$ such that for any $t$,
+\[\lim_{N\to \infty} {N \choose N/2 + t\sqrt N} \approx  C e^{-2t^2}\]
+<h2>Examples</h2>
+Let's check some examples to see if this is right. Given
+the above result, I expect setting $N=10,000$ and $t = 0,1$
+will give me
+\[ {10,000 \choose 5,000} {10,000 \choose 5,100}^{-1}
+\approx {Ce^{-2 \cdot 0^2} \over Ce^{-2 \cdot 1^2} }
+\]
+\[ = e^2\]
+And indeed if I put
+<pre>
+(log(binomial(10000,5000) / binomial(10000,5100))).n()
+</pre>
+into <a href="https://sagecell.sagemath.org/">Sage</a>, I get
+<pre>1.99993332799924</pre>
+as expected. Similarly, setting $t = 3,5$ gives me
+\[ {10,000 \choose 5,300} {10,000 \choose 5,500}^{-1}
+\approx {Ce^{-2 \cdot 3^2} \over Ce^{-2 \cdot 5^2} }
+\]
+\[ = e^{2\cdot(25-9)} = e^{32}\]
+and
+<pre>
+(log(binomial(10000,5300) / binomial(10000,5500))).n()</pre>
+</pre>
+gives
+<pre>
+32.0696311776450
+</pre>
+as expected.
+<h2>Extracting Combinatorial Insight</h2>
+If we substitute $N := 4m^2$, we wind up with fewer divisions and square roots:
+\[\lim_{m\to \infty} {4m^2 \choose 2m^2 + 2mt} \approx  C e^{-2t^2}\]
+So the ratio between how many subsets of a square of points of a certain size depends (asymptotically) only between how many columns are filled relative to half. For example, the number of configurations that look like (a) vs. (b) when "sorted" is about $e^8$, because we're comparing $Ce^{-2\cdot0^2}$ to $Ce^{-2\cdot 2^2}$.
+<center><img src="diagram.png"></center>
+<p>
+Is there any way to describe a function from
+\[ {100 \choose 50} \to {100 \choose 70} \]
+that is "approximately $e^8$ to one"?
+
+
+
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
