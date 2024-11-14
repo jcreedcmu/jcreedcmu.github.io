@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Three Lists in One</title>
+  </head>
+
+  <body>
+    <h1>Three Lists in One</h1>
+    On mastodon <a href="https://mastodon.social/@jsiehler@mathstodon.xyz/113470682104228202">there arose a question</a> I'd wondered about before myself in the past: since
+    \[ f(x) = {1\over 1- x}\]
+    has the funny property that
+    \[ f(f(f(x))) = x\]
+    shouldn't this somehow mean something like
+    \[ \mathsf{List}(\mathsf{List}(\mathsf{List}\, x)) \approx x \]
+    in type theory? I'd be happy with some variation of this, since
+    <a href="https://ncatlab.org/nlab/show/seven+trees+in+one">Seven Trees in One</a> treats the "sixth root of unity" in type theory, and gets
+    \[ x^7 \cong x \]
+    instead of the implausible
+    \[ x^6 = 1 \]
+    <h2>The Problem with Lists</h2>
+    But oops can't iterate the type of lists in combinatorial species without hitting infinities. We have
+    \[ \mathsf{List}\, x = 1 + x + x^2 + x^3 + \cdots\]
+    and so then
+    \[ \mathsf{List}(\mathsf{List}\, x) = 1 + (1 + x + x^2 + x^3 + \cdots)\]
+\[ + (1 + x + x^2 + x^3 + \cdots)^2 \]
+\[ + (1 + x + x^2 + x^3 + \cdots)^3 \]
+    \[ + \cdots \]
+    and we already have an infinite number of copies of 1 there!
+    Let's try a variation of the type of lists, with a "header" of some type $a$:
+    \[ \mathsf{List}_a\, x = a(1 + x + x^2 + x^3 + \cdots)\]
+    \[ = a + ax + ax^2 + ax^3 + \cdots\]
+    Then
+    \[ \mathsf{List}_a(\mathsf{List}_a\, x) = a + a^2(1 + x + x^2 + x^3 + \cdots)\]
+\[ + a^3(1 + x + x^2 + x^3 + \cdots)^2 \]
+\[ + a^4(1 + x + x^2 + x^3 + \cdots)^3 \]
+    \[ + \cdots \]
+and instead of $1 + 1 + 1 + \cdots$ we have now $a + a^2 + a^3 + a^4 + \cdots$ which seems perfectly reasonable.
+    <h2>The problem with "header lists"</h2>
+    But now since
+    \[ \mathsf{List}_a\, x \approx {a\over {1-x}} \]
+instead of $1/(1-x)$, we don't have
+  \[ \mathsf{List}_a(\mathsf{List}_a(\mathsf{List}_a\, x)) \approx x \]
+but instead we find that if we make some abbreviations
+\[ P = \mathsf{List}_a\, x \]
+\[ Q = \mathsf{List}_a(\mathsf{List}_a\, x) \]
+\[ R = \mathsf{List}_a(\mathsf{List}_a(\mathsf{List}_a\, x)) \]
+we would expect analytically
+\[P \approx {a\over {1-x}} \qquad Q \approx {a\over {1-P}} \qquad R \approx {a\over {1-Q}}\]
+we should be able to do some algebra and reason that
+
+\[Q \approx {a - ax \over 1-x-a}\]
+\[R \approx {a-ax-a^2 \over 1-x-a-a + ax}\]
+
+So maybe we could hope to show type theoretically some version of
+
+\[R(1-x-a-a + ax) = {a-ax-a^2 }\]
+
+or, moving negatives across the equals sign
+
+\[R + Rax + ax + a^2 = a + Rx + Ra + Ra \tag{1} \]
+
+Note that if we happen to have $a = 1$, (that is, we're working with real lists instead of header-lists) then we would find:
+
+\[x + (Rx + R + 1) = R + (Rx + R + 1) \tag{2}\]
+
+So "up to some additive cancellation", there would be a relationship between $x$ and $\mathsf{List}^3\, x$.
+
+<h2>Actually Proving Something</h2>
+Now I wasn't able to prove (1), but I was able to prove something that works "up to additive cancellation" kind of like (2). Let's start with assuming are given types $x, a$, and we have types $P, Q, R$ which satsfy
+\[ P  = Px + a \qquad  Q  = QP + a \qquad  R  = RQ + a \tag{3}\]
+in other words we do have
+\[ P = \mathsf{List}_a\, x \]
+\[ Q = \mathsf{List}_a(\mathsf{List}_a\, x) \]
+\[ R = \mathsf{List}_a(\mathsf{List}_a(\mathsf{List}_a\, x)) \]
+Then there is an isomorphism
+\[ R + ax + a^2 + Rax + C \cong a + Ra + Rx + Ra + C \]
+where
+\[ C = RQ + RQx + RP + Pa\]
+Here's a diagram of it, where every node in the graph is a use of some equation from (3), and horizontal juxtaposition is taking a sum of types:
+<center><img src="diagram.png"></center>
+It's quite a mess! I'm not sure how to clean it up or make more sense of it. I obtained it by slogging through the rational-function reasoning I used to get to (2), and substituting the nearest type-theory-valid reasoning I could find at each step. I think this is technically a mechanically obtainable consequence of the theorems in Seven Trees in One, but I haven't read it recently enough to remember how that goes in general.
+
+<h3> Setting $a=1$ again</h3>
+We can set $a=1$ and obtain
+\[ R + x + 1 + Rx + C \cong 1 + R + Rx + R + C \]
+which after rearranging summands means there is a type $D$
+(namely $D = Rx + R + 1 + C$)
+\[ R + D \cong x + D \]
+so we can honestly say "list of list of list of $x$ <font color="#def">plus $D$</font> is the same as $x$  <font color="#def">plus $D$</font>".
+<h2>Checking in Agda</h2>
+Just to be sure I didn't mess it up, I wrote a little agda:
+<pre>
+module _ (a x : Set) where
+  -- lists with a "header"
+  data L (y : Set) : Set where
+    nil : (h : a) → L y
+    cons : (e : y) (tl : L y) → L y
+
+  P = L x
+  Q = L (L x)
+  R = L (L (L x))
+
+  data before : Set where
+    b1 : (r : R) → before
+    b2 : (α : a) (χ : x) → before
+    b3 : (α1 α2 : a) → before
+    b4 : (r : R) (α : a) (χ : x) → before
+    b5 : (r : R) (q : Q) → before
+    b6 : (r : R) (q : Q) (χ : x) → before
+    b7 : (r : R) (p : P) → before
+    b8 : (p : P) (α : a) → before
+
+  data after : Set where
+    a1 : a → after
+    a2 : R → a → after
+    a3 : R → x → after
+    a4 : R → a → after
+    a5 : R → Q → after
+    a6 : R → Q → x → after
+    a7 : R → P → after
+    a8 : P → a → after
+
+  fore : before → after
+  fore (b1 (nil α)) = a1 α
+  fore (b1 (cons e tl)) = a5 tl e
+  fore (b2 α χ) = a3 (nil α) χ
+  fore (b3 α1 α2) = a8 (nil α1) α2
+  fore (b4 r α χ) = a6 r (nil α) χ
+  fore (b5 r (nil α)) = a2 r α
+  fore (b5 r (cons e tl)) = a7 (cons tl r) e
+  fore (b6 r q χ) = a3 (cons q r) χ
+  fore (b7 r (nil h)) = a4 r h
+  fore (b7 (nil h) (cons e p)) = a8 (cons e p) h
+  fore (b7 (cons q r) (cons e p)) = a6 r (cons p q) e
+  fore (b8 p α) = a7 (nil α) p
+
+  -- These clauses the same as the above but flipped around
+  back : after → before
+  back (a1 α) = b1 (nil α)
+  back (a5 tl e) = b1 (cons e tl)
+  back (a3 (nil α) χ) = b2 α χ
+  back (a8 (nil α1) α2) = b3 α1 α2
+  back (a6 r (nil α) χ) = b4 r α χ
+  back (a2 r α) = b5 r (nil α)
+  back (a7 (cons tl r) e) = b5 r (cons e tl)
+  back (a3 (cons q r) χ) = b6 r q χ
+  back (a4 r h) = b7 r (nil h)
+  back (a8 (cons e p) h) = b7 (nil h) (cons e p)
+  back (a6 r (cons p q) e) = b7 (cons q r) (cons e p)
+  back (a7 (nil α) p) = b8 p α
+</pre>
+This checks ok, and I'm confident that if I bothered to continue the development I could easily show these two functions are inverses, because one was textually constructed out of the other and still totality-checks.
+    <a id="mark"></a>
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
