@@ -114,69 +114,89 @@ which after rearranging summands means there is a type $D$
 (namely $D = Rx + R + 1 + C$)
 \[ R + D \cong x + D \]
 so we can honestly say "list of list of list of $x$ <font color="#def">plus $D$</font> is the same as $x$  <font color="#def">plus $D$</font>".
-<h2>Checking in Agda</h2>
-Just to be sure I didn't mess it up, I wrote a little agda:
+
+<h1>A Simpler Isomorphism</h1>
+Actually, by staring at the diagram above, and connecting all the nodes corresponding to $C$ at the bottom to all the nodes corresponding to $C$ at the top, and "untangling" the diagram,
+I realize that I don't need $C$ at all:
+<center><img src="diagram2.png"></center>
+There really is a straightforward direct isomorphism
+\[ R + a^2 + Rax + ax \cong a + Ra + Ra + Rx \]
+
+It is expressed in the following agda code:
 <pre>
-module _ (a x : Set) where
-  -- lists with a "header"
+data _==_ {A : Set} : A → A → Set where
+  refl : {a : A} → a == a
+
+module _ (A X : Set) where
+
+  -- lists of elements Y with an extra "header" element of type A
   data L (y : Set) : Set where
-    nil : (h : a) → L y
+    nil : (h : A) → L y
     cons : (e : y) (tl : L y) → L y
 
-  P = L x
-  Q = L (L x)
-  R = L (L (L x))
+  P = L X
+  Q = L (L X)
+  R = L (L (L X))
+
+  -- We aim to prove
+  -- R + A² + XAR + XA ≅ A + AR + AR + XR
+  -- which has the interesting special case when A = 1 that
+  -- R + 1 + XR + X ≅ 1 + R + R + XR
+  -- i.e.
+  -- X + (XR + R + 1) = R + (XR + R + 1)
+  -- which is expressing a type theoretic echo of the numerical fact that
+  -- the degree of 1/(1-x) is 3, i.e.
+  -- x = 1/(1-1/(1-1/(1-x)))
 
   data before : Set where
-    b1 : (r : R) → before
-    b2 : (α : a) (χ : x) → before
-    b3 : (α1 α2 : a) → before
-    b4 : (r : R) (α : a) (χ : x) → before
-    b5 : (r : R) (q : Q) → before
-    b6 : (r : R) (q : Q) (χ : x) → before
-    b7 : (r : R) (p : P) → before
-    b8 : (p : P) (α : a) → before
+    bef1 : R → before
+    bef2 : A → A → before
+    bef3 : X → A → R → before
+    bef4 : X → A → before
 
   data after : Set where
-    a1 : a → after
-    a2 : R → a → after
-    a3 : R → x → after
-    a4 : R → a → after
-    a5 : R → Q → after
-    a6 : R → Q → x → after
-    a7 : R → P → after
-    a8 : P → a → after
+    aft1 : A → after
+    aft2 : A → R → after
+    aft3 : A → R → after
+    aft4 : X → R → after
 
   fore : before → after
-  fore (b1 (nil α)) = a1 α
-  fore (b1 (cons e tl)) = a5 tl e
-  fore (b2 α χ) = a3 (nil α) χ
-  fore (b3 α1 α2) = a8 (nil α1) α2
-  fore (b4 r α χ) = a6 r (nil α) χ
-  fore (b5 r (nil α)) = a2 r α
-  fore (b5 r (cons e tl)) = a7 (cons tl r) e
-  fore (b6 r q χ) = a3 (cons q r) χ
-  fore (b7 r (nil h)) = a4 r h
-  fore (b7 (nil h) (cons e p)) = a8 (cons e p) h
-  fore (b7 (cons q r) (cons e p)) = a6 r (cons p q) e
-  fore (b8 p α) = a7 (nil α) p
+  fore (bef1 (nil a)) = aft1 a
+  fore (bef1 (cons (nil a) r)) = aft2 a r
+  fore (bef1 (cons (cons (nil a) q) r)) = aft3 a (cons q r)
+  fore (bef1 (cons (cons (cons x p) q) r)) = aft4 x (cons (cons p q) r)
+  fore (bef2 a1 a2) = aft3 a1 (nil a2)
+  fore (bef3 x a r) = aft4 x (cons (nil a) r)
+  fore (bef4 x a) = aft4 x (nil a)
 
   -- These clauses the same as the above but flipped around
   back : after → before
-  back (a1 α) = b1 (nil α)
-  back (a5 tl e) = b1 (cons e tl)
-  back (a3 (nil α) χ) = b2 α χ
-  back (a8 (nil α1) α2) = b3 α1 α2
-  back (a6 r (nil α) χ) = b4 r α χ
-  back (a2 r α) = b5 r (nil α)
-  back (a7 (cons tl r) e) = b5 r (cons e tl)
-  back (a3 (cons q r) χ) = b6 r q χ
-  back (a4 r h) = b7 r (nil h)
-  back (a8 (cons e p) h) = b7 (nil h) (cons e p)
-  back (a6 r (cons p q) e) = b7 (cons q r) (cons e p)
-  back (a7 (nil α) p) = b8 p α
+  back (aft1 a) = bef1 (nil a)
+  back (aft2 a r) = bef1 (cons (nil a) r)
+  back (aft3 a (cons q r)) = bef1 (cons (cons (nil a) q) r)
+  back (aft4 x (cons (cons p q) r)) = bef1 (cons (cons (cons x p) q) r)
+  back (aft3 a1 (nil a2)) = bef2 a1 a2
+  back (aft4 x (cons (nil a) r)) = bef3 x a r
+  back (aft4 x (nil a)) = bef4 x a
+
+  zig : (β : before) → back (fore β) == β
+  zig (bef1 (nil a)) = refl
+  zig (bef1 (cons (nil a) r)) = refl
+  zig (bef1 (cons (cons (nil a) q) r)) = refl
+  zig (bef1 (cons (cons (cons x p) q) r)) = refl
+  zig (bef2 a1 a2) = refl
+  zig (bef3 x a r) = refl
+  zig (bef4 x a) = refl
+
+  zag : (α : after) → fore (back α) == α
+  zag (aft1 a) = refl
+  zag (aft2 a r) = refl
+  zag (aft3 a (cons q r)) = refl
+  zag (aft4 x (cons (cons p q) r)) = refl
+  zag (aft3 a1 (nil a2)) = refl
+  zag (aft4 x (cons (nil a) r)) = refl
+  zag (aft4 x (nil a)) = refl
 </pre>
-This checks ok, and I'm confident that if I bothered to continue the development I could easily show these two functions are inverses, because one was textually constructed out of the other and still totality-checks.
   </body>
   <script>
 	 function go(body) { renderMathInElement( body, { strict: false,
