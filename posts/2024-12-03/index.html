@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Maps and Knots</title>
+  </head>
+
+  <body>
+    <h1>Maps and Knots</h1>
+
+I had the following thought the other day. suppose you have a
+trivalent planar map, i.e. every vertex has three edges. Suppose also
+that it comes with a chosen chosen face 4-coloring. There's a standard
+thing where you can turn a face 4-coloring into an edge 3-coloring, by
+calling the 4 colors $\{1, i, j, k\}$ as if they're quaternions, and
+letting each edge's color be the quotient of the colors of the faces
+it adjoins, ignoring the resulting sign.
+<p>
+This gives you edge colors in the set $\{i,j,k\}$. You should never
+get $1$, because the face 4-coloring should never have two adjacent
+faces with the same color! Also, around every vertex, you should get
+three <i>different</i> edge colors. For if you didn't, it would imply
+an equation of the form $i \cdot i = j$ or $k \cdot k = k$, which are
+both impossible.
+<p>
+Now with an edge 3-coloring in hand, we can notice that focusing on any one of those
+colors gives us a bunch of edges, each one of which can be thought of as
+<ul>
+<li>a little gadget
+<li>with four wires dangling out of it,
+<li>which is symmetric under $180\degree$ rotation
+</ul>
+and which collectively account for the whole graph. You know what else is
+a little gadget with four wires dangling out of it which is symmetric
+under $180\degree$ rotation? A crossing in a knot diagram!
+<p>
+So my thought is this: what happens if we replace all the edges
+of a particular color in an edge 3-coloring of a trivalent planar graph
+with knot crossings?
+<center><img src="diagram.png"></center>
+
+Answer: well, we get some tangle (maybe multi-stranded). But,
+unfortunately, I can't seem to find anything interesting beyond that!
+The translation doesn't seem to respect Reidemeister moves or
+colorability in any interesting way. Still, this smells like the shape
+of something that ought to have some interesting consequences. Maybe
+it's a nearby idea?
+
+    <a id="mark"></a>
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
