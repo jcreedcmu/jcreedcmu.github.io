@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>A Funny Definition of Groups</title>
+  </head>
+
+  <body>
+    <h1>A Funny Definition of Groups</h1>
+I was reading <a href="https://arxiv.org/abs/2305.13809">this paper of Oliver Lorscheid, "
+Towards the horizons of Tits's vision -- on band schemes, crowds and F1-structures"</a> on his recent work doing algebraic geometry over $\mathbb{F}_1$, and I rabbitholed a bit on his definition of "crowd", a generalization of groups.
+<p>
+The basic idea is we relax the group operation to be more relational than functional. Where a group says "given $a$ and $b$ we have a product $ab$" we instead say "given $a, b, c$, perhaps they have the property that we would otherwise describe as $abc = 1$, if we had a group product". So a crowd is a set $G$ with a distinguished element 1
+ and a ternary relation $R \subseteq G^3$
+satisfying some axioms
+\[x = 1 \iff (x, 1, 1)\]
+\[(x, y, 1) \iff (y, x, 1)\]
+\[(x, y, z) \iff (z, x, y)\]
+So this is kind of like a group, but the multiplication can be multi-valued.
+Then you get to prove the nice theorem that if you additionally impose a single-valuedness axiom like
+\[ \forall x, y. \exists !  z . (x, y, z)\]
+you have an actual honest-to-goodness group... or at least that's what I assumed, until I noticed
+Lorscheid's Proposition 5.7, whose condition (2) is basically imposing associativity. I found this
+a bit disappointing, as I hoped associativity should somehow come from the existing axioms for free.
+I guess it doesn't.
+<p>
+But! It was therefore a nice open-ended puzzle to come up with a variation on the definition of crowd
+that did somehow imply associativity if you tried to define groups in terms of it.
+<h2>Multicrowds</h2>
+Here's my attempt at doing exactly that. I think it helps me see why I was overoptimistic to expect associativity
+to be latent in Lorscheid's definition. Say a <em>multicrowd</em> is given by a set $G$, together with, for each $n \in \N$,
+a relation $R_n \subseteq G^n$, written $(a_1, \ldots, a_n)$ for $a_1, \ldots, a_n \in G$. There are three
+axioms:
+\[ {(a_1, \ldots, a_n) \over (a_n, a_1, \ldots, a_{n-1})}\pi\]
+\[ { (a_1, \ldots, a_n) \qquad (b_1, \ldots, b_m) \over (a_1, \ldots, a_n, b_1, \ldots, b_m)}\iota\]
+\[ { (a_1, \ldots, a_n, b_1, \ldots, b_m) \qquad (b_1, \ldots, b_m) \over (a_1, \ldots, a_n)}\delta\]
+The axiom $\pi$ says we can cyclically <b>permute</b> facts in the relation, $\iota$ says we can <b>insert</b>
+a related tuple, and $\delta$ says we can <b>delete</b> a related tuple. Note that insertions and deletions
+seem to be done only at the end of tuples, but permutation can be used to insert them anywhere.
+<p>
+Say a multicrowd is <em>functional</em> if for every $n$ and
+$a_1, \ldots, a_n \in G$, there is a unique $b$ such that $(a_1,
+\ldots, a_n, b)$. Then we should have
+<p>
+<b>Theorem</b>: <em>A functional multicrowd is the same thing as a group.</em><br>
+<b>Proof</b>: To make a functional multicrowd from a group, define
+\[(a_1, \ldots, a_n) \iff a_1\cdots a_n = 1\]
+and check $\pi, \iota, \delta$ and functionality are satisfied.<p>
+In the other direction, to make a group from a functional multicrowd, we first define some notation. Let
+\[[a_1, \ldots, a_n]\]
+ be the unique $b$ such that $(a_1, \ldots, a_n)$, and define the group structure $(G, \cdot, 1, {&mdash;}^{-1})$
+by
+\[1 = [] \qquad
+a^{-1} = [a] \qquad
+a\cdot b = [[a,b]]\]
+Most of the group axioms are easy to show. Let's show associativity.
+We must show $(ab)c = a(bc)$, in other words
+\[[[[[a,b]],c]] = [[a, [[b,c]]]] \tag{*}\]
+First of all notice that
+\[   (a,               [[b, c]], [a,[[b,c]]])\]
+holds by definition of $[\cdots]$. Since $(b, c, [b,c])$, we can insert it to obtain
+\[(a, b, c, [b, c], [[b, c]], [a,[[b,c]]])\]
+Since $[b, c], [[b, c]]$, we can delete it to obtain
+\[(a, b, c, [a,[[b,c]]])\]
+By the uniqueness part of functionality, we have shown
+\[[a, b, c] = [a,[[b,c]]]\]
+So it would suffice to show that also
+\[[a, b, c] = [[[a,b]],c] \tag{**}\]
+We can do this as follows. First take
+\[ (              [[a,b]], c, [[[a,b]],c])\]
+which is true by definition. Insert $(a, b, [a, b])$ to get
+\[ (a, b, [a, b],    [[a,b]], c, [[[a,b]],c])\]
+Now delete $([a, b],    [[a,b]])$ to get
+\[ (a, b,  c, [[[a,b]],c])\]
+Hence we have shown $(**)$ and it follows that $(*)$, as required. $\cqed$
+
+<h2> Why did this definition give us associativity?</h2> It was
+critical that we had more "room" in our tuples to move things around,
+and also my axioms intrinsically involve list concatenation, which is
+another way of sneaking associativity in. But I still find these axioms
+pleasant and symmetric.
+    <a id="mark"></a>
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
