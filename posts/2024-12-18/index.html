@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>The Pentagonal Icositetrahedron as a 24-sided Die</title>
+  </head>
+
+  <body>
+    <h1>The Pentagonal Icositetrahedron as a 24-sided Die</h1>
+<a href="">David</a> and I were talking about polyhedra, as one does, and the dual of the snub cube,
+the <a href="https://en.wikipedia.org/wiki/Pentagonal_icositetrahedron">Pentagonal Icositetrahedron</a> came
+up somehow. I noticed it had 24 faces and was <a href="https://en.wikipedia.org/wiki/Isohedral_figure">isohedral</a>
+so I was like... oh, is this the standard shape for a 24-sided die? Turns out not. <a href="https://www.youtube.com/watch?v=oVBG1IQDe8I">Henry Segerman</a> here shows off what is, the deltoidal icositetrahedron.
+
+<p>
+I wondered "why not also the Pentagonal Icositetrahedron?" and it
+became quite clear after
+I <a href="https://github.com/jcreedcmu/rupert/blob/main/src/pent-icos.ts">wrote
+some quick and dirty typescript</a> to generate an .stl/.obj and
+3d-printed it:
+<center><img src="die.jpg"></center>
+Just like the tetrahedral d4, when a face lies flat on the table, you don't get a canonical face pointing
+up, but rather a vertex! So it's annoying to write numbers around the vertices.
+<p>
+But then I wondered whether you could assign numbers
+to faces such that the sum of the three upmost faces would give you a unique number 1-24.
+This was easy thing to ask z3. Assuming this diagram is correct:
+<center><img src="diagram.png"></center>
+and assuming I correctly transcribed it to <a href="find-die.smt2.txt">this smt2 file</a>, z3
+finds the solution
+<pre>
+sat
+((min 1)
+ (max 24))
+((a 5)
+ (b 0)
+ (c 0)
+ (d 8)
+ (e 4)
+ (f 2)
+ (g 2)
+ (h (- 1))
+ (i 8)
+ (j 2)
+ (k (- 3))
+ (l 1)
+ (m (- 1))
+ (n (- 4))
+ (o 14)
+ (p 1)
+ (q 2)
+ (r 0)
+ (s 17)
+ (t 3)
+ (u 18)
+ (v 0)
+ (w 19)
+ (x 3))
+((sum1 17)
+ (sum2 11)
+ (sum3 7)
+ (sum4 1)
+ (sum5 8)
+ (sum6 10)
+ (sum7 5)
+ (sum8 6)
+ (sum9 12)
+ (sum10 18)
+ (sum11 2)
+ (sum12 9)
+ (sum13 19)
+ (sum14 16)
+ (sum15 3)
+ (sum16 4)
+ (sum17 13)
+ (sum18 14)
+ (sum19 15)
+ (sum20 20)
+ (sum21 21)
+ (sum22 22)
+ (sum23 23)
+ (sum24 24))
+</pre>
+    <a id="mark"></a>
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>

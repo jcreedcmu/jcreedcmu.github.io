@@ -1,0 +1,165 @@
+(declare-const a Int)
+(declare-const b Int)
+(declare-const c Int)
+(declare-const d Int)
+(declare-const e Int)
+(declare-const f Int)
+(declare-const g Int)
+(declare-const h Int)
+(declare-const i Int)
+(declare-const j Int)
+(declare-const k Int)
+(declare-const l Int)
+(declare-const m Int)
+(declare-const n Int)
+(declare-const o Int)
+(declare-const p Int)
+(declare-const q Int)
+(declare-const r Int)
+(declare-const s Int)
+(declare-const t Int)
+(declare-const u Int)
+(declare-const v Int)
+(declare-const w Int)
+(declare-const x Int)
+(declare-const min Int)
+(declare-const max Int)
+
+
+(define-const sum1 Int (+ a e d))
+(define-const sum2 Int (+ a e f))
+(define-const sum3 Int (+ a b g))
+(define-const sum4 Int (+ b g h))
+(define-const sum5 Int (+ b i c))
+(define-const sum6 Int (+ c i j))
+(define-const sum7 Int (+ c d k))
+(define-const sum8 Int (+ d k l))
+(define-const sum9 Int (+ f n o))
+(define-const sum10 Int (+ f o g))
+(define-const sum11 Int (+ h p q))
+(define-const sum12 Int (+ h i q))
+(define-const sum13 Int (+ j r s))
+(define-const sum14 Int (+ j k s))
+(define-const sum15 Int (+ l t m))
+(define-const sum16 Int (+ l e m))
+(define-const sum17 Int (+ m n u))
+(define-const sum18 Int (+ n u v))
+(define-const sum19 Int (+ o p v))
+(define-const sum20 Int (+ v p w))
+(define-const sum21 Int (+ q r w))
+(define-const sum22 Int (+ r w x))
+(define-const sum23 Int (+ s t x))
+(define-const sum24 Int (+ t u x))
+
+
+(assert (and
+         (= max (+ min 23))
+         (= min 1)
+
+         (<= sum1 max)
+         (<= sum2 max)
+         (<= sum3 max)
+         (<= sum4 max)
+         (<= sum5 max)
+         (<= sum6 max)
+         (<= sum7 max)
+         (<= sum8 max)
+         (<= sum9 max)
+         (<= sum10 max)
+         (<= sum11 max)
+         (<= sum12 max)
+         (<= sum13 max)
+         (<= sum14 max)
+         (<= sum15 max)
+         (<= sum16 max)
+         (<= sum17 max)
+         (<= sum18 max)
+         (<= sum19 max)
+         (<= sum20 max)
+         (<= sum21 max)
+         (<= sum22 max)
+         (<= sum23 max)
+         (<= sum24 max)
+
+         (>= sum1 min)
+         (>= sum2 min)
+         (>= sum3 min)
+         (>= sum4 min)
+         (>= sum5 min)
+         (>= sum6 min)
+         (>= sum7 min)
+         (>= sum8 min)
+         (>= sum9 min)
+         (>= sum10 min)
+         (>= sum11 min)
+         (>= sum12 min)
+         (>= sum13 min)
+         (>= sum14 min)
+         (>= sum15 min)
+         (>= sum16 min)
+         (>= sum17 min)
+         (>= sum18 min)
+         (>= sum19 min)
+         (>= sum20 min)
+         (>= sum21 min)
+         (>= sum22 min)
+         (>= sum23 min)
+         (>= sum24 min)
+
+         (distinct
+          sum1
+          sum2
+          sum3
+          sum4
+          sum5
+          sum6
+          sum7
+          sum8
+          sum9
+          sum10
+          sum11
+          sum12
+          sum13
+          sum14
+          sum15
+          sum16
+          sum17
+          sum18
+          sum19
+          sum20
+          sum21
+          sum22
+          sum23
+          sum24
+          )
+         ))
+(check-sat)
+
+
+(get-value (min max))
+(get-value (a b c d e f g h i j k l m n o p q r s t u v w x))
+(get-value (
+            sum1
+            sum2
+            sum3
+            sum4
+            sum5
+            sum6
+            sum7
+            sum8
+            sum9
+            sum10
+            sum11
+            sum12
+            sum13
+            sum14
+            sum15
+            sum16
+            sum17
+            sum18
+            sum19
+            sum20
+            sum21
+            sum22
+            sum23
+            sum24))
