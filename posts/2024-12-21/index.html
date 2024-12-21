@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Thoughts About a Directed Interval</title>
+  </head>
+
+  <body>
+    <h1>Thoughts About a Directed Interval</h1>
+
+   I started wondering what happens if you try to define a directed
+    interval type that only has one closed, global, describable point ---
+    the final point --- and bind your own hands and say that the only
+    way you can talk about the "initial point" is indirectly, via
+    global sections.
+    <h2>Functions as Spaces over the Interval</h2>
+      Here's a picture of what I'm thinking about:
+<center><img src="diagram1.png"></center>
+Consider some function $f : A \to B$, for example $A = 3$ and $B = 4$
+and $f$ is the map pictured. My goal is that we should be able to equivalently think of
+this as a space $X$ that lies over a directed interval $\I$, via a projection map $p$.
+Axiomatically, the directed
+interval has one point $i_1$. I'm picturing agda code like
+<pre>
+postulate
+    𝕀 : Set
+    i₁ : 𝕀
+</pre>
+and intuitively the interval has a single directed feature that we call a
+"transition" somewhere away from $i_1$. I'm drawing it in the diagram as a tick mark with directed arrows.
+The type $\I$ has no other closed points.
+We think of time as having an end, but no beginning.
+<p>
+Now the type $X$ (over $\I$) is supposed to capture structure of $f$ as a directed type.
+Over the pre-transition part of $\I$, it looks like $A$, and over the post-transition
+part of $\I$, it looks like $B$.
+<h2>Functions from Fibered Spaces</h2>
+So here's a putative recipe for recovering the types $A, B$ and the map $f : A \to B$,
+given a type $X$ a map $X \to \I$
+
+We say $A$ is the set of global sections of the projection $p$.
+<center><img src="diagram2.png"></center>
+The intuition is that each global section of $p$ has to be a path through $X$ with a "transition" inside $X$ lying over the single transition in $\I$. So it uniquely picks out a blob
+of $X$ to the left of a transition.
+<pre>
+record func : Set₁ where
+ constructor
+  cfunc
+ field
+  A B : Set
+  f : A → B
+
+funcOfFibered : (X : Set) (p : X → 𝕀) → func
+funcOfFibered X p = record { A = Σ[ g : 𝕀 → X ] p ∘ g ≡ id , … }
+</pre>
+Then $B$ is simply the set of points of $X$ lying in the fiber of $p$ over $i_1$.
+<center><img src="diagram3.png"></center>
+<pre>
+funcOfFibered : (X : Set) (p : X → 𝕀) → func
+funcOfFibered X p = record { A = Σ[ g : 𝕀 → X ] p ∘ g ≡ id ,
+                               B = Σ[ y : X ] p y ≡ i₁ , … }
+</pre>
+Finally, the function $f : A → B$ can be computed as the evaluation at $i_1$.
+Given a $g$ such that $pg = \rid$, we can compute $g(i_1)$, and observe
+that this is in the fiber of $p$ over $i_1$, because $p(g(i_1)) = (p \o g) (i_1)
+= \rid(i_1) = i_1$.
+<h2>Fibered Spaces from Functions</h2>
+We could also go in the opposite direction. Given a function $f : A \to B$,
+it seems plausible to piece together the space $X$ as a pushout.
+<center><img src="diagram4.png"></center>
+For each point of $A$, we add in a copy of $\I$, so $A \x \I$ is one arm of the pushout.
+We also want to make sure that $B$ is included in $X$, so $B$ is the other arm.
+We then want to glue the endpoint of each copy of $\I$ in $A \x \I$ to the point
+of $B$ that $f$ carries it to. This means that we want to take the pushout of the
+morphism $\langle id, i_1 \rangle : A \to A \x \I$ that takes each point of $A$
+to the endpoint of its interval-copy, and the morphism $f : A \to B$ that takes
+each point of $A$ to its image under $B$.
+<p>
+Subsequently we can arrive at the projection $p$ by using the pushout UMP.
+The composite of the constant-$i_1$ map $i_1 : B\to \I$ with $f : A \to B$
+gives us the constantly-$i_1$ map $i_1 \o f : A \to \I$, and the
+map $\pi_2  \langle id, i_1 \rangle$ is also constantly-$i_1$. So we get
+a unique map $p : X \to \I$ making the diagram commute.
+<h2>What Can Be Proven?</h2>
+Given postulated $\I : Set$ and $i_1 : \I$,
+I can definitely at this point write down constructions
+<pre>
+funcOfFibered : (Σ[ X : Set ] X → 𝕀) → (Σ[ A : Set ] Σ[ B : Set ] A → B)
+fiberedOfFunc : (Σ[ A : Set ] Σ[ B : Set ] A → B) → (Σ[ X : Set ] X → 𝕀)
+</pre>
+but I tried for a little bit and I failed to prove that either composite of them is the identity. The next best move I assume would be to take one and postulate it is an equivalence.
+But is one or the other more useful to take as a primitive equivalence? Not sure what the consequences are.
+<p>
+I would also hope that a map $X \to \I \x \I$ would correspond to a commutative
+square, but tentative thinking in that direction suggests that might not easily
+follow from any of the proposed postulates above either.
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\I": "{\\mathbb I}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
