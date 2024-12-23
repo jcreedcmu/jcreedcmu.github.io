@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>A Postulate for Internalized Parametricity</title>
+  </head>
+
+  <body>
+    <h1>A Postulate for Internalized Parametricity</h1>
+    I had the follow-up thought about the <a href="https://jcreedcmu.github.io/posts/2024-12-21/">previous post</a>, and though I have no particular confidence
+that it is consistent and/or novel, I thought I'd write it down anyways.
+    <p>
+      Suppose we postulate first of all that there is a "bridge interval"
+      (to borrow a term of <a href="https://dl.acm.org/doi/pdf/10.1145/3632850">this paper</a>, which I have not fully digested, and which may for all I know do everything I'm doing here but better) type $\I$ that has two known points
+      $i_0, i_1 : \I$.
+      From any type family $V : \I \to \rset$ we can derive a (binary, proof-relevant) relation. I'm
+      going to use record notation and say the type of relations is
+      \[\rrel := \{ A_0 : \rset, A_1 :\rset, R : \rset, \pi_0 : R \to A_0, \pi_1 : R \to A_1 \}\]
+Then we can make some definitions
+<p><table>
+<tr><td>$A_0 : (V : \I \to \rset) \to \rset$</td><td>$ A_0\ V = V\ i_0$</tr>
+<tr><td>$A_1 : (V : \I \to \rset) \to \rset$</td><td>$ A_1\ V = V\ i_1$</tr>
+<tr><td>$R : (V : \I \to \rset) \to \rset$</td><td>$  R\ V = (i:\I)\to V\ i$</tr>
+<tr><td>$\pi_0 : (V : \I \to \rset) \to R\ V \to A_0\ V$</td><td>$ \pi_0\ V\ r =  r\ i_0$</tr>
+<tr><td>$\pi_1 : (V : \I \to \rset) \to R\ V \to A_1\ V$</td><td>$ \pi_1\ V\ r =  r\ i_1$</tr>
+</table>
+<p>
+And bundle all this up as
+<div style="margin-left: 4em;">
+$mkr : (\I \to \rset) \to \rrel$<br>
+$ mkr\ V = \{$<br>
+$\qquad A_0 = A_0\ V,\  A_1 = A_1\ V,R = R\ V, \pi_0 = \pi_0\ V,\ \pi_1 = \pi_1\ V$<br>
+$\}$
+</div>
+The set $A_0$ is the fiber over $i_0$, the set $A_1$ is the fiber over $i_1$,
+and the $R$ consists of the <em>global</em> elements of the indexed set $V$.
+Each global element can be instantiated to give an element of $A_0$ or $A_1$,
+so we really do have a span across $A_0, A_1$.
+<center><img src="diagram.png"></center>
+<h2>The Postulate</h2>
+Now consider what happens if we postulate that
+<center style="border: 1px solid blue; background-color: #def; margin: 2em 10em; padding: 2em 0em;">
+$mkr$ is an equivalence
+</center>
+That is, $mkr$ has some inverse
+\[mkr^{-1} : \rrel \to \I \to \rset\]
+and so every relation arises as the $mkr$ of some $\I \to \rset$.
+<h2>Preserving Relations</h2>
+Next we we want to observe that whenever we have $V, W : \I \to \rset$,
+ every map of the form
+\[ h : (i:\I) \to V\ i \to W\ i \]
+induces a relation-preserving map.
+Namely, the map
+\[\lambda m.\lambda i. h\ i\ (m\ i) : ((i:\I)\to V\ I) \to ((i:\I)\to W\ I)\]
+goes by definition also $R\ V \to R\ W$, and can be seen to commute
+with the maps
+\[h\ i_0 : V\ i_0 \to W\ i_0 = A_0\ V \to A_0\ W\]
+\[h\ i_1 : V\ i_1 \to W\ i_1 = A_1\ V \to A_1\ W\]
+In other words, we have a commutative diagram
+<center><img src="diagram2.png"></center>
+or equivalently by definition,
+<center><img src="diagram3.png"></center>
+<h2>Parametricity</h2>
+Suppose we'd like to show the canonical example free theorem that
+\[j : (A : \rset) \to A \to A \]
+must be the identity function.
+We can do this by showing that $j$ appropriately commutes with any
+function $f : A \to B$, i.e. by showing
+\[(f : A \to B) \to f \o j\ A = j\ B \o f \tag{*}\]
+because if that were true, then for any $a : A$ we could set $f$ to
+$K\ a$, the constantly-$a$ function $A \to A$, and find that
+\[(a : A) \to K a \o j\ A = j\ A \o K\ a\]
+and therefore
+\[(a : A) \to a = j\ A\ a\]
+so $j$ would be the identity function.
+<p>
+Now to show (*), define $\rho : \rrel$ to be the underyling relation
+of the function $f$, i.e.
+\[\rho = \{ A_0 = A,\  A_1 = B,\  R = (a : A) (b : B) \x f\ a \equiv b,\]
+\[\pi_0\langle a, b, q \rangle = a,\ \pi_1\langle a,b,q\rangle = b  \}\]
+What happens when
+we apply $j$ to the type $mkr^{-1}\ \rho \ i$ for various $i:\I$?
+We obtain
+\[ h = \lambda i . j\ (mkr^{-1}\ \rho \ i) : (i:\I) \to mkr^{-1}\ \rho \ i \to mkr^{-1}\ \rho \ i\]
+This is an example of an $h$ from the previous section about preserving relations!
+So we obtain a commutative diagram, where the top and bottom horizontal maps
+are $h\ i_0$ and $h\ i_1$. But in particular our $h\ i_0$ is equal to
+\[ j\ (mkr^{-1}\ \rho \ i_0) = j\ (A_0\ (mkr^{-1}\ \rho))\]
+\[= j\ ((mkr (mkr^{-1}\ \rho)).A_0)\]
+\[= j\ (\rho.A_0)\]
+\[= j\ A\]
+and likewise \[h\ i_1 = j\ B\]
+So what we have is a commutative diagram
+<center><img src="diagram4.png"></center>
+which can be massaged into
+<center><img src="diagram5.png"></center>
+as required.
+
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Set}",
+              "\\rrel": "\\mathsf {Rel}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\I": "{\\mathbb I}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
