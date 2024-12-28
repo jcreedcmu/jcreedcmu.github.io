@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+<style type="text/css"><!--
+pre { padding: 1em; text-decoration: none;    font-stretch: normal;  font-weight: nil;  font-style: normal;  color: #fdf6e3;  background: #002b36;  font-size: 10pt; }
+
+span.agda2-highlight-inductive-constructor-face-0014   { text-decoration: none;  color: #29cc29;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   }
+span.agda2-highlight-inductive-constructor-face-0014 a {  color: #29cc29;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   text-decoration: underline; }
+span.agda2-highlight-symbol-face-0013   { text-decoration: none;  color: #bfbfbf;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   }
+span.agda2-highlight-symbol-face-0013 a {  color: #bfbfbf;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   text-decoration: underline; }
+span.agda2-highlight-function-face-0012   { text-decoration: none;  color: #8080ff;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   }
+span.agda2-highlight-function-face-0012 a {  color: #8080ff;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   text-decoration: underline; }
+span.comment-face-0011   { text-decoration: none;  color: #fc523f;  font-style: italic;    font-stretch: normal;  font-weight: nil;  background: #002b36;   }
+span.comment-face-0011 a {  color: #fc523f;  font-style: italic;    font-stretch: normal;  font-weight: nil;  background: #002b36;   text-decoration: underline; }
+span.agda2-highlight-pragma-face-0010   { text-decoration: none;    font-stretch: normal;  font-weight: nil;  font-style: normal;  color: #fdf6e3;  background: #002b36;   }
+span.agda2-highlight-pragma-face-0010 a {    font-stretch: normal;  font-weight: nil;  font-style: normal;  color: #fdf6e3;  background: #002b36;   text-decoration: underline; }
+span.agda2-highlight-operator-face-0009   { text-decoration: none;    font-stretch: normal;  font-weight: nil;  font-style: normal;  color: #fdf6e3;  background: #002b36;   }
+span.agda2-highlight-operator-face-0009 a {    font-stretch: normal;  font-weight: nil;  font-style: normal;  color: #fdf6e3;  background: #002b36;   text-decoration: underline; }
+span.agda2-highlight-bound-variable-face-0008   { text-decoration: none;    font-stretch: normal;  font-weight: nil;  font-style: normal;  color: #fdf6e3;  background: #002b36;   }
+span.agda2-highlight-bound-variable-face-0008 a {    font-stretch: normal;  font-weight: nil;  font-style: normal;  color: #fdf6e3;  background: #002b36;   text-decoration: underline; }
+span.agda2-highlight-symbol-face-0007   { text-decoration: none;  color: #bfbfbf;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   }
+span.agda2-highlight-symbol-face-0007 a {  color: #bfbfbf;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   text-decoration: underline; }
+span.agda2-highlight-primitive-face-0006   { text-decoration: none;  color: #8080ff;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   }
+span.agda2-highlight-primitive-face-0006 a {  color: #8080ff;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   text-decoration: underline; }
+span.agda2-highlight-postulate-face-0005   { text-decoration: none;  color: #8080ff;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   }
+span.agda2-highlight-postulate-face-0005 a {  color: #8080ff;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   text-decoration: underline; }
+span.agda2-highlight-module-face-0004   { text-decoration: none;  color: #cd80ff;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   }
+span.agda2-highlight-module-face-0004 a {  color: #cd80ff;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   text-decoration: underline; }
+span.agda2-highlight-pragma-face-0003   { text-decoration: none;    font-stretch: normal;  font-weight: nil;  font-style: normal;  color: #fdf6e3;  background: #002b36;   }
+span.agda2-highlight-pragma-face-0003 a {    font-stretch: normal;  font-weight: nil;  font-style: normal;  color: #fdf6e3;  background: #002b36;   text-decoration: underline; }
+span.agda2-highlight-keyword-face-0002   { text-decoration: none;  color: #ff9932;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   }
+span.agda2-highlight-keyword-face-0002 a {  color: #ff9932;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   text-decoration: underline; }
+span.agda2-highlight-symbol-face-0000   { text-decoration: none;  color: #bfbfbf;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   }
+span.agda2-highlight-symbol-face-0000 a {  color: #bfbfbf;    font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;   text-decoration: underline; }
+span.comment   { text-decoration: none;  color: #fc523f;  font-style: italic;    font-stretch: normal;  font-weight: nil;  background: #002b36;   }
+span.comment a {  color: #fc523f;  font-style: italic;    font-stretch: normal;  font-weight: nil;  background: #002b36;   text-decoration: underline; }
+ --></style>
+    <title>An Exciting Internalized Parametricity Gotcha</title>
+  </head>
+
+  <body>
+    <h1>An Exciting Internalized Parametricity Gotcha</h1>
+
+Since the
+last <a href="https://jcreedcmu.github.io/posts/2024-12-21/">couple</a> <a href="https://jcreedcmu.github.io/posts/2024-12-23/">posts</a>
+I've been getting excited about actually maybe understanding some of
+the recent research on the general theme of directed programming,
+specifically internalized parametricity, which I think is a crucial,
+foundational part of it. (side note: why do I believe internalized
+parametricity counts as directed programming, even if the bridge
+relation is reversible? because of the directedness from the relation
+itself to its arms)
+<p>
+Anyway <a href="https://mastodon.social/@cbaberle@mathstodon.xyz">C.B.</a>
+and <a href="https://mastodon.social/@ecavallo@mathstodon.xyz">Evan</a>
+have been a huge help lately in explaining their work and answering my
+questions. The latest step in my own understanding is finally appreciating a
+little better the motivation for substructurality in <a href="https://staff.math.su.se/evan.cavallo/works/phd-thesis-latest.pdf">Evan's thesis</a>.
+That is,
+<center style="border: 1px solid blue; background-color: #def; margin: 2em 10em; padding: 2em 0em;">
+What goes wrong if you can
+use variables of type $\I$ unrestrictedly instead of affinely?
+</center>
+
+The point of this note is mostly to exposit my digested version of the answer to this question,
+for my own benefit if nothing else.
+<h2>The Problem</h2>
+Let's get to the point. Here's a toy version of the machinery I care about, and a counterexample that can be derived from it:
+<pre>
+<span class="agda2-highlight-symbol-face-0000">{-#</span><span class="region-0001"> </span><span class="agda2-highlight-keyword-face-0002">OPTIONS</span><span class="region-0001"> </span><span class="agda2-highlight-pragma-face-0003">--rewriting</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">#-}</span><span class="region-0001">
+</span><span class="agda2-highlight-keyword-face-0002">open</span><span class="region-0001"> </span><span class="agda2-highlight-keyword-face-0002">import</span><span class="region-0001"> </span><span class="agda2-highlight-module-face-0004">Agda.Builtin.Equality</span><span class="region-0001">
+</span><span class="agda2-highlight-keyword-face-0002">open</span><span class="region-0001"> </span><span class="agda2-highlight-keyword-face-0002">import</span><span class="region-0001"> </span><span class="agda2-highlight-module-face-0004">Agda.Builtin.Equality.Rewrite</span><span class="region-0001">
+
+</span><span class="agda2-highlight-keyword-face-0002">module</span><span class="region-0001"> </span><span class="agda2-highlight-module-face-0004">counterexample</span><span class="region-0001"> </span><span class="agda2-highlight-keyword-face-0002">where</span><span class="region-0001">
+
+</span><span class="agda2-highlight-keyword-face-0002">postulate</span><span class="region-0001">
+  </span><span class="agda2-highlight-postulate-face-0005">I</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-primitive-face-0006">Set</span><span class="region-0001">
+  </span><span class="agda2-highlight-postulate-face-0005">i0</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">i1</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">I</span><span class="region-0001">
+
+</span><span class="agda2-highlight-keyword-face-0002">module</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0007">_</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">{</span><span class="agda2-highlight-bound-variable-face-0008">ℓ</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">Agda.Primitive.Level</span><span class="agda2-highlight-symbol-face-0000">}</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">I</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-primitive-face-0006">Set</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">ℓ</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001"> </span><span class="agda2-highlight-keyword-face-0002">where</span><span class="region-0001">
+  </span><span class="agda2-highlight-keyword-face-0002">postulate</span><span class="region-0001">
+    </span><span class="agda2-highlight-postulate-face-0005">Bridge</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">i0</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">i1</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-primitive-face-0006">Set</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">ℓ</span><span class="region-0001">
+
+</span><span class="agda2-highlight-keyword-face-0002">module</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0007">_</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">{</span><span class="agda2-highlight-bound-variable-face-0008">ℓ</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">Agda.Primitive.Level</span><span class="agda2-highlight-symbol-face-0000">}</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">{</span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">I</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-primitive-face-0006">Set</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">ℓ</span><span class="agda2-highlight-symbol-face-0000">}</span><span class="region-0001"> </span><span class="agda2-highlight-keyword-face-0002">where</span><span class="region-0001">
+  </span><span class="agda2-highlight-keyword-face-0002">postulate</span><span class="region-0001">
+    </span><span class="agda2-highlight-postulate-face-0005">pabs</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-bound-variable-face-0008">f</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-bound-variable-face-0008">i</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">I</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">i</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">Bridge</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-bound-variable-face-0008">f</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">i0</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-bound-variable-face-0008">f</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">i1</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001">
+    </span><span class="agda2-highlight-postulate-face-0005">papp</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">{</span><span class="agda2-highlight-bound-variable-face-0008">a0</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">i0</span><span class="agda2-highlight-symbol-face-0000">}</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">{</span><span class="agda2-highlight-bound-variable-face-0008">a1</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">i1</span><span class="agda2-highlight-symbol-face-0000">}</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">Bridge</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">a0</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">a1</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-bound-variable-face-0008">i</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">I</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">i</span><span class="region-0001">
+
+</span><span class="agda2-highlight-keyword-face-0002">module</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0007">_</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">{</span><span class="agda2-highlight-bound-variable-face-0008">ℓ</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">Agda.Primitive.Level</span><span class="agda2-highlight-symbol-face-0000">}</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">{</span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">B</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-primitive-face-0006">Set</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">ℓ</span><span class="agda2-highlight-symbol-face-0000">}</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-bound-variable-face-0008">R</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">B</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-primitive-face-0006">Set</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">ℓ</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001"> </span><span class="agda2-highlight-keyword-face-0002">where</span><span class="region-0001">
+  </span><span class="agda2-highlight-keyword-face-0002">postulate</span><span class="region-0001">
+    </span><span class="agda2-highlight-postulate-face-0005">Gel</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-bound-variable-face-0008">i</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">I</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-primitive-face-0006">Set</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">ℓ</span><span class="region-0001">
+    </span><span class="agda2-highlight-postulate-face-0005">Gel0</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">Gel</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">i0</span><span class="region-0001"> </span><span class="agda2-highlight-operator-face-0009">≡</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="region-0001">
+    </span><span class="agda2-highlight-symbol-face-0000">{-#</span><span class="region-0001"> </span><span class="agda2-highlight-keyword-face-0002">REWRITE</span><span class="region-0001"> </span><span class="agda2-highlight-pragma-face-0010">Gel0</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">#-}</span><span class="region-0001">
+    </span><span class="agda2-highlight-postulate-face-0005">Gel1</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">Gel</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">i1</span><span class="region-0001"> </span><span class="agda2-highlight-operator-face-0009">≡</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">B</span><span class="region-0001">
+    </span><span class="agda2-highlight-symbol-face-0000">{-#</span><span class="region-0001"> </span><span class="agda2-highlight-keyword-face-0002">REWRITE</span><span class="region-0001"> </span><span class="agda2-highlight-pragma-face-0010">Gel1</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">#-}</span><span class="region-0001">
+
+    </span><span class="comment-face-0011">-- Gel intro</span><span class="region-0001">
+    </span><span class="agda2-highlight-postulate-face-0005">gel</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">{</span><span class="agda2-highlight-bound-variable-face-0008">a</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="agda2-highlight-symbol-face-0000">}</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">{</span><span class="agda2-highlight-bound-variable-face-0008">b</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">B</span><span class="agda2-highlight-symbol-face-0000">}</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">R</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">a</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">b</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-bound-variable-face-0008">i</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">I</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">Gel</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">i</span><span class="region-0001">
+    </span><span class="agda2-highlight-postulate-face-0005">gel0</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">{</span><span class="agda2-highlight-bound-variable-face-0008">a</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="agda2-highlight-symbol-face-0000">}</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">{</span><span class="agda2-highlight-bound-variable-face-0008">b</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">B</span><span class="agda2-highlight-symbol-face-0000">}</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-bound-variable-face-0008">r</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">R</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">a</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">b</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">gel</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">r</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">i0</span><span class="region-0001"> </span><span class="agda2-highlight-operator-face-0009">≡</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">a</span><span class="region-0001">
+    </span><span class="agda2-highlight-symbol-face-0000">{-#</span><span class="region-0001"> </span><span class="agda2-highlight-keyword-face-0002">REWRITE</span><span class="region-0001"> </span><span class="agda2-highlight-pragma-face-0010">gel0</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">#-}</span><span class="region-0001">
+    </span><span class="agda2-highlight-postulate-face-0005">gel1</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">{</span><span class="agda2-highlight-bound-variable-face-0008">a</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="agda2-highlight-symbol-face-0000">}</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">{</span><span class="agda2-highlight-bound-variable-face-0008">b</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">B</span><span class="agda2-highlight-symbol-face-0000">}</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-bound-variable-face-0008">r</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">R</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">a</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">b</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">gel</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">r</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">i1</span><span class="region-0001"> </span><span class="agda2-highlight-operator-face-0009">≡</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">b</span><span class="region-0001">
+    </span><span class="agda2-highlight-symbol-face-0000">{-#</span><span class="region-0001"> </span><span class="agda2-highlight-keyword-face-0002">REWRITE</span><span class="region-0001"> </span><span class="agda2-highlight-pragma-face-0010">gel1</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">#-}</span><span class="region-0001">
+
+    </span><span class="comment-face-0011">-- Gel elim</span><span class="region-0001">
+    </span><span class="agda2-highlight-postulate-face-0005">ungel</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">{</span><span class="agda2-highlight-bound-variable-face-0008">a</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">A</span><span class="agda2-highlight-symbol-face-0000">}</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">{</span><span class="agda2-highlight-bound-variable-face-0008">b</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">B</span><span class="agda2-highlight-symbol-face-0000">}</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">Bridge</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">Gel</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">a</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">b</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">R</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">a</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">b</span><span class="region-0001">
+
+</span><span class="agda2-highlight-function-face-0012">I-surprise</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-bound-variable-face-0008">R</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">I</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">I</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-primitive-face-0006">Set</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-bound-variable-face-0008">R-refl</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-bound-variable-face-0008">i</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">I</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">R</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">i</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">i</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">R</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">i0</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">i1</span><span class="region-0001">
+</span><span class="agda2-highlight-function-face-0012">I-surprise</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">R</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">R-refl</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">=</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">ungel</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">R</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-postulate-face-0005">pabs</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">λ</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">i</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">gel</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">R</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-bound-variable-face-0008">R-refl</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">i</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001"> </span><span class="agda2-highlight-bound-variable-face-0008">i</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001">
+
+</span><span class="agda2-highlight-function-face-0012">I-collapse</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">:</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">i0</span><span class="region-0001"> </span><span class="agda2-highlight-operator-face-0009">≡</span><span class="region-0001"> </span><span class="agda2-highlight-postulate-face-0005">i1</span><span class="region-0001">
+</span><span class="agda2-highlight-function-face-0012">I-collapse</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">=</span><span class="region-0001"> </span><span class="agda2-highlight-function-face-0012">I-surprise</span><span class="region-0001"> </span><span class="agda2-highlight-operator-face-0009">_≡_</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">(</span><span class="agda2-highlight-symbol-face-0000">λ</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0013">_</span><span class="region-0001"> </span><span class="agda2-highlight-symbol-face-0000">→</span><span class="region-0001"> </span><span class="agda2-highlight-inductive-constructor-face-0014">refl</span><span class="agda2-highlight-symbol-face-0000">)</span><span class="region-0001">
+</span></pre>
+We postulate that there is an interval type $\I$ with two points $i_0,i_1$.
+<center><img src="interval.png"></center>
+The type $\mathtt{Bridge}\ A\ a\ b$ is really just a convenient way of writing
+"a global section $f : (i : \I) \to A\ i$ such that $f\ i_0 \equiv a$ and $f\ i_1 \equiv b$",
+and $\mathtt{pabs}$ and $\mathtt{papp}$ are abstraction and application for that
+function type.
+<p>
+By introducing $\mathtt{Gel}$ we assume that every relation can be converted to a bridge
+in the universe.
+<center><img src="gel.png"></center>
+Looking at this picture it's intuitively plausible that every <i>global</i> element of the gel-type lying over $\I$
+has to correspond to some line drawn between related elements of $A$ and $B$. But &mdash; and this is a key thing
+that I feel like I just gained a new appreciation for &mdash; <em>this is only true if $A$ and $B$ are bridge-discrete</em>.
+That is, $A$ and $B$ don't themselves have any maps $\I \to A$ or $\I \to B$ that don't factor $\I \to 1 \to A$ or $\I \to 1 \to B$, respectively.
+<p>
+Let's imagine the simplest case where that's not true: where $A$ and $B$ are both themselves the interval $\I$. We could
+then take as the relation the identity relation $(a :\I)(b: \I) \to a \equiv b$.
+<center><img src="gel-ident.png"></center>
+Now the gel introduction rule lets us convert any $i: \I$ and any point in the relation to an element of the gel type.
+So in particular, if we have $j : \I$, we can convert the point in the interval that <em>is</em> the arm of the relation,
+(i.e. letting it be the vertical coordinate in the diagram) at the point in time as we proceed across the relation
+that is also $j$ (i.e. letting it be the horizontal coordinate in the diagram).
+<center><img src="gel-point.png"></center>
+So we've described the diagonal
+across the square, which would be fine and normal and good...
+<center><img src="gel-diag.png"></center> except that $\mathtt{ungel}$
+promises us that any global element over $\I$ can be hoisted back to
+the relation. And our diagonal would therefore mean that the relation
+holds between its endpoints $i_0$ and $i_1$. And since the relation is
+the identity relation, it would mean $i_0 \equiv i_1$!
+
+<h2>Conclusion</h2>
+So this is a sufficiently small example of why substructurality shows up in Cavallo's
+(and indeed also in <a href="https://publications.lib.chalmers.se/records/fulltext/235758/235758.pdf">Moulin's</a>)
+work that I can actually comfortably fit in my brain.
+
+Still, since I guess my whole aesthetic in terms of type theories is <a href="http://jcreed.org/papers/thesis-final-color.pdf">embracing substructurality by compiling it away</a>,
+I wonder if the core idea of Bernardy-Moulin's <a href="https://dl.acm.org/doi/abs/10.1145/2544174.2500577">Type Theory in Color</a> approach could be resuscitated here fruitfully,
+retaining the "postulate a bag of useful postulates in agda" quality which I am so fond of.
+<p>
+What I have in mind isn't totally clear to me yet &mdash; although quite possibly someone's already been down this road &mdash;
+but I imagine refining the interval
+by saying that there is a type of directions (= "colors")
+\[\D : \rset\]
+and then indexing the interval type over that
+\[\I : \D \to \rset, i_0\ i_1 : (d : \D) \to \I\ d\]
+and asserting for any set that there is a direction that it is path-discrete for
+\[\_\#\_ : \rset \to \D \to \rset\]
+\[A \# d = \hbox{(every map $d \to A$ factors through $1$)}\]
+\[mkDisc : (A : Set) \to (\Sigma\ \D\ (\lambda d \to A\# d))\]
+Hmm actually I imagine you'd have to be sensitive to universe levels, and say $\D_n : \rset_{n+1}$,
+and
+\[mkDisc : (A : Set_n) \to (\Sigma\ \D_n\ (\lambda d \to A\# d))\]
+For you could try to sum all intervals
+\[ \Sigma\ \D_n\ \I \]
+This type has the property that there does <em>not</em> exist a $d \in D_n$ such that $( \Sigma\ \D_n\ \I) \# d$.
+But fortunately it belongs to $\rset_{n+1}$ not $\rset_n$, so
+we're allowed to reach for the next higher $\D_{n+1}$ to find a $d$ such that $( \Sigma\ \D_n\ \I) \# d$.
+<p>
+If you set up all that carefully, then maybe you could add a restriction to $\mathtt{ungel}$
+so restrict it to types that were already known to be path-discrete for the interval type involved.
+And since every type has <em>some</em> interval type for which it's path-discrete, then we still
+might hope for universally applicable parametricity free theorems.
+<p>
+What becomes of relativity theorems? I think you could still get fairly strong equivalences between bridges
+in certain <em>subsets</em> of the universe and relations.
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+		        "\\I": "{\\mathbb I}",
+		        "\\D": "{\\mathbb D}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
