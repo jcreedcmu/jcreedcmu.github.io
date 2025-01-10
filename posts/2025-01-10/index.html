@@ -88,6 +88,26 @@ compatibility of the monoid structure $(*_A, e_A)$ on $Z(A)$
 with the monad structure is given by:
 \[\alpha_A (e_A) = \eta_A\]
 \[\alpha_A(x*_A y) = \mu_A \o T\alpha_A(x) \o \alpha_A(y)\]
+<h2>The Special Case I Thought Was Interesting</h2>
+Let $R$ be a commutative semiring.
+Let $R^\pm$ be the commutative semiring whose
+underlying set is $R \x R$ and where multiplication
+is given by
+\[(a,b) (c, d) = (ac+bd, ad+bc)\]
+to simulate negatives. Let $- : R^\pm \to R^\pm$ be
+defined by swapping components.
+Let $R^i$ be the commutative semiring whose underlying
+set is $R^\pm \x R^\pm$ and where multiplication is given by
+\[(a,b) (c, d) = (ac-bd, ad+bc)\]
+to simulate complex numbers. There is a homomorphism
+of the multiplicative groups $R^i \to R^\pm$
+given by squared norm:
+\[\| (a, b) \|^2 = a^2 + b^2\]
+Although we don't get commutativity on the nose:
+<center><img src="diagram5.png"></center>
+we can nonetheless achieve:
+<center><img src="diagram6.png"></center>
+Which is kind of like establishing a lax 2-cell across the first square?
   </body>
   <script>
 	 function go(body) { renderMathInElement( body, { strict: false,
