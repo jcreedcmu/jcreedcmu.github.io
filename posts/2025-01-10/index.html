@@ -62,6 +62,17 @@ If it satisfies
 <li> If $\phi \in Z$ and $\psi \in Z$, then $\phi \square \psi\in Z$
 </ul>
 Then the subset of morphisms of the above category where $\phi \in Z$ is a subcategory.
+
+<h2>A Monadic Generalization</h2>
+Suppose we have a monad $T : \C \to \C$ and a monad algebra $\cdot : TM \to M$. Suppose for each $A$ there is subset of the morphisms $A \to TA$ that are designated "$T$-boring". They are required to satisfy the following axioms:
+<ul>
+<li> $\eta_A$ is $T$-boring.
+<li> If $f, g : A \to TA$ are $T$-boring, then their kleisli composition $\mu_A \o Tg \o f$ is.
+<li> If $\psi : B \to TB$ is $T$-boring, and $k : A \to B$ is any map,
+then there exists a $T$-boring map $\phi : A \to TA$ such that $\phi \o k = Tk \o \psi$.
+</ul>
+Then we define a category whose objects are maps into $M$, and whose morphisms from $f : A \to M$ to $g : B \to M$ consist of a map $k : A \to B$ and a $T$-boring map $\phi : A \to TA$ such that $g \o k = a\o Tf \o \phi$. Identities and composition work by the following diagrams:
+<center><img src="diagram4.png"></center>
   </body>
   <script>
 	 function go(body) { renderMathInElement( body, { strict: false,
