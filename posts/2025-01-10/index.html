@@ -73,6 +73,21 @@ then there exists a $T$-boring map $\phi : A \to TA$ such that $\phi \o k = Tk \
 </ul>
 Then we define a category whose objects are maps into $M$, and whose morphisms from $f : A \to M$ to $g : B \to M$ consist of a map $k : A \to B$ and a $T$-boring map $\phi : A \to TA$ such that $g \o k = a\o Tf \o \phi$. Identities and composition work by the following diagrams:
 <center><img src="diagram4.png"></center>
+<h2>Dinatural Generalization</h2>
+Suppose as before that we have a monad $T : \C \to \C$ and
+$\cdot : TM \to M$. Zeroness is represented by a monoid-valued
+presheaf
+$Z : \C^\op \to \rmon$. Define $Z' : \C^\op \x \C \to \rset$
+by
+\[Z'(C_1, C_2) = U(Z(C_1))\]
+for the forgetful $U : \rmon \to \rset$.
+Require a dinatural transformation
+\[\alpha :  Z' \to \hom(\dash, T\dash)\]
+For each $A$,
+compatibility of the monoid structure $(*_A, e_A)$ on $Z(A)$
+with the monad structure is given by:
+\[\alpha_A (e_A) = \eta_A\]
+\[\alpha_A(x*_A y) = \mu_A \o T\alpha_A(x) \o \alpha_A(y)\]
   </body>
   <script>
 	 function go(body) { renderMathInElement( body, { strict: false,
@@ -85,11 +100,14 @@ Then we define a category whose objects are maps into $M$, and whose morphisms f
               "\\blue": "\\textcolor{5b37a9}",
               "\\<": "\\langle",
               "\\>": "\\rangle",
+              "\\dash": "-",
               "\\adjust": "\\bigg|",
-              "\\rset": "\\mathsf {Type}",
+              "\\rset": "\\mathsf {Set}",
+              "\\rmon": "\\mathsf {Mon}",
               "\\P": "{\\mathsf P}",
               "\\C": "{\\mathbb C}",
               "\\o": "\\circ",
+              "\\op": "\\mathrm{op}",
 		        "\\B": "{\\mathsf B}",
 		        "\\cc": "\\mathop{::}",
 		        "\\ee": "\\varepsilon",
