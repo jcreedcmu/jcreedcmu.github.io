@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+<style type="text/css"><!--
+pre { padding: 1em; }
+pre { text-decoration: none;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  color: #fdf6e3;  background: #002b36;  font-size: 11pt; }
+span.default   { text-decoration: none;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  color: #fdf6e3;  background: #002b36;  font-size: 11pt; }
+span.default a {  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  color: #fdf6e3;  background: #002b36;  font-size: 11pt; text-decoration: underline; }
+span.agda2-highlight-field-face   { text-decoration: none;  color: #f570b7;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; }
+span.agda2-highlight-field-face a {  color: #f570b7;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; text-decoration: underline; }
+span.agda2-highlight-record-face   { text-decoration: none;  color: #8080ff;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; }
+span.agda2-highlight-record-face a {  color: #8080ff;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; text-decoration: underline; }
+span.comment   { text-decoration: none;  color: #fc523f;  font-style: italic;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  background: #002b36;  font-size: 11pt; }
+span.comment a {  color: #fc523f;  font-style: italic;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  background: #002b36;  font-size: 11pt; text-decoration: underline; }
+span.agda2-highlight-inductive-constructor-face   { text-decoration: none;  color: #29cc29;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; }
+span.agda2-highlight-inductive-constructor-face a {  color: #29cc29;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; text-decoration: underline; }
+span.agda2-highlight-primitive-face   { text-decoration: none;  color: #8080ff;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; }
+span.agda2-highlight-primitive-face a {  color: #8080ff;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; text-decoration: underline; }
+span.agda2-highlight-postulate-face   { text-decoration: none;  color: #8080ff;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; }
+span.agda2-highlight-postulate-face a {  color: #8080ff;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; text-decoration: underline; }
+span.agda2-highlight-bound-variable-face   { text-decoration: none;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  color: #fdf6e3;  background: #002b36;  font-size: 11pt; }
+span.agda2-highlight-bound-variable-face a {  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  color: #fdf6e3;  background: #002b36;  font-size: 11pt; text-decoration: underline; }
+span.agda2-highlight-datatype-face   { text-decoration: none;  color: #8080ff;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; }
+span.agda2-highlight-datatype-face a {  color: #8080ff;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; text-decoration: underline; }
+span.agda2-highlight-function-face   { text-decoration: none;  color: #8080ff;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; }
+span.agda2-highlight-function-face a {  color: #8080ff;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; text-decoration: underline; }
+span.agda2-highlight-module-face   { text-decoration: none;  color: #cd80ff;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; }
+span.agda2-highlight-module-face a {  color: #cd80ff;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; text-decoration: underline; }
+span.agda2-highlight-pragma-face   { text-decoration: none;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  color: #fdf6e3;  background: #002b36;  font-size: 11pt; }
+span.agda2-highlight-pragma-face a {  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  color: #fdf6e3;  background: #002b36;  font-size: 11pt; text-decoration: underline; }
+span.agda2-highlight-keyword-face   { text-decoration: none;  color: #ff9932;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; }
+span.agda2-highlight-keyword-face a {  color: #ff9932;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; text-decoration: underline; }
+span.agda2-highlight-symbol-face   { text-decoration: none;  color: #bfbfbf;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; }
+span.agda2-highlight-symbol-face a {  color: #bfbfbf;  font-family: "Iosevka";  font-stretch: normal;  font-weight: nil;  font-style: normal;  background: #002b36;  font-size: 11pt; text-decoration: underline; }
+ --></style>
+    <title>Constructing Parametricity Gel Type as Pushout</title>
+  </head>
+
+  <body>
+    <h1>Constructing Parametricity Gel Type as Pushout</h1>
+I slapped together <a href="https://github.com/jcreedcmu/parametricity">some agda code</a> so I could ask the following question:
+<blockquote>
+Is it a workable strategy to <b>define</b> a Gel type as a pushout of copies of an internalized parametricity interval, rather than <b>postulate</b> its existence, or otherwise bake it into the type theory one is working in?
+</blockquote>
+The agda code is part of an attempt at convincing myself the answer might be "yes", but it's not a complete answer. If anyone knows if the literature already has a "yes" or "no" answer, I'd love to hear!
+<p>
+
+<h2>Axioms</h2>
+The idea is to try to only axiomatize some things about the interval type itself. I don't have confidence I understand typical model-construction arguments well enough to avoid having made a mistake here or there in thinking these axioms are justified. I have a vague picture of the presheaf category of reflexive graphs in my head, and the axioms seem plausible to me in that light.
+<p>
+So let's take a look at what's going on in <a href="https://github.com/jcreedcmu/parametricity/blob/main/Interval/Axioms.agda">Interval/Axioms.agda</a>.
+<p>
+We first postulate the interval type itself. I'm writing it a binary operator that takes two Set arguments. The argument $S$ is its "shape". We can take $S = 2$ as a running example. In this case the interval is the "walking binary relation". It has two points, and some kind of cohesion between them. The argument $D$ is a notion of color in the sense of Bernadry-Moulin's "<a href="https://dl.acm.org/doi/abs/10.1145/2544174.2500577">Type Theory in Color</a>". We have as many colors as there are types.
+
+<pre>
+<span class="agda2-highlight-keyword-face">postulate</span>
+  <span class="comment">-- D ▻ S is an interval type of &quot;direction&quot; D and &quot;shape S&quot;</span>
+  <span class="agda2-highlight-postulate-face">_▻_</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">ℓ1</span> <span class="agda2-highlight-bound-variable-face">ℓ2</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-postulate-face">Level</span><span class="agda2-highlight-symbol-face">}</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">D</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-primitive-face">Set</span> <span class="agda2-highlight-bound-variable-face">ℓ1</span><span class="agda2-highlight-symbol-face">)</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">S</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-primitive-face">Set</span> <span class="agda2-highlight-bound-variable-face">ℓ2</span><span class="agda2-highlight-symbol-face">)</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-primitive-face">Set</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-primitive-face">ℓ-max</span> <span class="agda2-highlight-bound-variable-face">ℓ1</span> <span class="agda2-highlight-bound-variable-face">ℓ2</span><span class="agda2-highlight-symbol-face">)</span>
+</pre>
+
+Next we abbreviate $T = D \triangleright S$ and postulate that the endpoints of the interval are included in the interval itself.
+
+
+<pre>
+<span class="agda2-highlight-keyword-face">module</span> <span class="agda2-highlight-module-face">_</span> <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">ℓ1</span> <span class="agda2-highlight-bound-variable-face">ℓ2</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-postulate-face">Level</span><span class="agda2-highlight-symbol-face">}</span> <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">D</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-primitive-face">Set</span> <span class="agda2-highlight-bound-variable-face">ℓ1</span><span class="agda2-highlight-symbol-face">}</span> <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">S</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-primitive-face">Set</span> <span class="agda2-highlight-bound-variable-face">ℓ2</span><span class="agda2-highlight-symbol-face">}</span> <span class="agda2-highlight-keyword-face">where</span>
+  <span class="agda2-highlight-keyword-face">private</span>
+    <span class="agda2-highlight-function-face">ℓ</span> <span class="agda2-highlight-symbol-face">=</span> <span class="agda2-highlight-primitive-face">ℓ-max</span> <span class="agda2-highlight-bound-variable-face">ℓ1</span> <span class="agda2-highlight-bound-variable-face">ℓ2</span>
+    <span class="agda2-highlight-function-face">T</span> <span class="agda2-highlight-symbol-face">=</span> <span class="agda2-highlight-bound-variable-face">D</span> <span class="agda2-highlight-postulate-face">▻</span> <span class="agda2-highlight-bound-variable-face">S</span>
+  <span class="agda2-highlight-keyword-face">postulate</span>
+    <span class="agda2-highlight-postulate-face">end</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-bound-variable-face">S</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-function-face">T</span>
+</pre>
+
+In the running example of $S = 2$, we can picture this as:
+<center><img src="diagram.png"></center>
+What's more, we suppose this map is an embedding, (i.e. although there is more bridge-like cohesion in the interval, we obtain no new equality paths after traversing the map) and that it <b>isn't</b> an equivalence.
+<pre>
+    <span class="agda2-highlight-postulate-face">endIsEmbed</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">isEmbedding</span> <span class="agda2-highlight-postulate-face">end</span>
+    <span class="agda2-highlight-postulate-face">endNonTriv</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">¬</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-record-face">isEquiv</span> <span class="agda2-highlight-postulate-face">end</span><span class="agda2-highlight-symbol-face">)</span>
+</pre>
+Next we suppose that the type $D$ really is discrete for $T$.
+This <a href="https://github.com/jcreedcmu/parametricity/blob/main/Interval/Discreteness.agda#L21-L23">is defined as meaning</a> the constant map $D \to (T \to D)$ is an equivalence.
+<pre>
+    <span class="agda2-highlight-postulate-face">▻Discrete</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">bridgeDiscrete</span> <span class="agda2-highlight-function-face">T</span> <span class="agda2-highlight-bound-variable-face">D</span>
+</pre>
+<h3>Commuting with Discrete Pushouts</h3>
+Finally &mdash; and this is the postulate I'm least confident in, because I made some other attempts that took me a minute to realize they were inconsistent &mdash; we assume that maps out of the interval commute with certain pushouts.
+<pre>
+  <span class="agda2-highlight-function-face">pushMap</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">k1</span> <span class="agda2-highlight-bound-variable-face">k2</span> <span class="agda2-highlight-bound-variable-face">k3</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-postulate-face">Level</span><span class="agda2-highlight-symbol-face">}</span>
+            <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">A</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">T</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-primitive-face">Type</span> <span class="agda2-highlight-bound-variable-face">k1</span><span class="agda2-highlight-symbol-face">}</span> <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">B</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">T</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-primitive-face">Type</span> <span class="agda2-highlight-bound-variable-face">k2</span><span class="agda2-highlight-symbol-face">}</span> <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">C</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">T</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-primitive-face">Type</span> <span class="agda2-highlight-bound-variable-face">k3</span><span class="agda2-highlight-symbol-face">}</span>
+            <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">f</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">t</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">T</span><span class="agda2-highlight-symbol-face">}</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-bound-variable-face">C</span> <span class="agda2-highlight-bound-variable-face">t</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-bound-variable-face">A</span> <span class="agda2-highlight-bound-variable-face">t</span><span class="agda2-highlight-symbol-face">)</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">g</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">t</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">T</span><span class="agda2-highlight-symbol-face">}</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-bound-variable-face">C</span> <span class="agda2-highlight-bound-variable-face">t</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-bound-variable-face">B</span> <span class="agda2-highlight-bound-variable-face">t</span><span class="agda2-highlight-symbol-face">)</span>
+            <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">p</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-datatype-face">Push</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-symbol-face">λ</span> <span class="agda2-highlight-bound-variable-face">k</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">t'</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">T</span><span class="agda2-highlight-symbol-face">)</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-bound-variable-face">f</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">k</span> <span class="agda2-highlight-bound-variable-face">t'</span><span class="agda2-highlight-symbol-face">)</span><span class="agda2-highlight-symbol-face">)</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-symbol-face">λ</span> <span class="agda2-highlight-bound-variable-face">k</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-bound-variable-face">g</span> <span class="agda2-highlight-function-face">∘</span> <span class="agda2-highlight-bound-variable-face">k</span><span class="agda2-highlight-symbol-face">)</span><span class="agda2-highlight-symbol-face">)</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">t</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">T</span><span class="agda2-highlight-symbol-face">)</span>
+              <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-datatype-face">Push</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">f</span> <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">t</span><span class="agda2-highlight-symbol-face">}</span><span class="agda2-highlight-symbol-face">)</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">g</span> <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">t</span><span class="agda2-highlight-symbol-face">}</span><span class="agda2-highlight-symbol-face">)</span>
+  <span class="agda2-highlight-function-face">pushMap</span> <span class="agda2-highlight-bound-variable-face">f</span> <span class="agda2-highlight-bound-variable-face">g</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-inductive-constructor-face">pinl</span> <span class="agda2-highlight-bound-variable-face">a</span><span class="agda2-highlight-symbol-face">)</span> <span class="agda2-highlight-bound-variable-face">t</span> <span class="agda2-highlight-symbol-face">=</span> <span class="agda2-highlight-inductive-constructor-face">pinl</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">a</span> <span class="agda2-highlight-bound-variable-face">t</span><span class="agda2-highlight-symbol-face">)</span>
+  <span class="agda2-highlight-function-face">pushMap</span> <span class="agda2-highlight-bound-variable-face">f</span> <span class="agda2-highlight-bound-variable-face">g</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-inductive-constructor-face">pinr</span> <span class="agda2-highlight-bound-variable-face">b</span><span class="agda2-highlight-symbol-face">)</span> <span class="agda2-highlight-bound-variable-face">t</span> <span class="agda2-highlight-symbol-face">=</span> <span class="agda2-highlight-inductive-constructor-face">pinr</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">b</span> <span class="agda2-highlight-bound-variable-face">t</span><span class="agda2-highlight-symbol-face">)</span>
+  <span class="agda2-highlight-function-face">pushMap</span> <span class="agda2-highlight-bound-variable-face">f</span> <span class="agda2-highlight-bound-variable-face">g</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-inductive-constructor-face">ppath</span> <span class="agda2-highlight-bound-variable-face">c</span> <span class="agda2-highlight-bound-variable-face">i</span><span class="agda2-highlight-symbol-face">)</span> <span class="agda2-highlight-bound-variable-face">t</span> <span class="agda2-highlight-symbol-face">=</span> <span class="agda2-highlight-inductive-constructor-face">ppath</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">c</span> <span class="agda2-highlight-bound-variable-face">t</span><span class="agda2-highlight-symbol-face">)</span> <span class="agda2-highlight-bound-variable-face">i</span>
+
+    <span class="agda2-highlight-postulate-face">▻Commute</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">k1</span> <span class="agda2-highlight-bound-variable-face">k2</span> <span class="agda2-highlight-bound-variable-face">k3</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-postulate-face">Level</span><span class="agda2-highlight-symbol-face">}</span>
+            <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">A</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">T</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-primitive-face">Type</span> <span class="agda2-highlight-bound-variable-face">k1</span><span class="agda2-highlight-symbol-face">}</span> <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">B</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">T</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-primitive-face">Type</span> <span class="agda2-highlight-bound-variable-face">k2</span><span class="agda2-highlight-symbol-face">}</span> <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">C</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">T</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-primitive-face">Type</span> <span class="agda2-highlight-bound-variable-face">k3</span><span class="agda2-highlight-symbol-face">}</span>
+            <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">Adisc</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">t</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">T</span><span class="agda2-highlight-symbol-face">)</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-function-face">bridgeDiscrete</span> <span class="agda2-highlight-function-face">T</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">A</span> <span class="agda2-highlight-bound-variable-face">t</span><span class="agda2-highlight-symbol-face">)</span><span class="agda2-highlight-symbol-face">)</span>
+            <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">Bdisc</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">t</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">T</span><span class="agda2-highlight-symbol-face">)</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-function-face">bridgeDiscrete</span> <span class="agda2-highlight-function-face">T</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">B</span> <span class="agda2-highlight-bound-variable-face">t</span><span class="agda2-highlight-symbol-face">)</span><span class="agda2-highlight-symbol-face">)</span>
+            <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">Cdisc</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">t</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">T</span><span class="agda2-highlight-symbol-face">)</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-function-face">bridgeDiscrete</span> <span class="agda2-highlight-function-face">T</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">C</span> <span class="agda2-highlight-bound-variable-face">t</span><span class="agda2-highlight-symbol-face">)</span><span class="agda2-highlight-symbol-face">)</span>
+            <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">f</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">t</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">T</span><span class="agda2-highlight-symbol-face">}</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-bound-variable-face">C</span> <span class="agda2-highlight-bound-variable-face">t</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-bound-variable-face">A</span> <span class="agda2-highlight-bound-variable-face">t</span><span class="agda2-highlight-symbol-face">)</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-bound-variable-face">g</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-symbol-face">{</span><span class="agda2-highlight-bound-variable-face">t</span> <span class="agda2-highlight-symbol-face">:</span> <span class="agda2-highlight-function-face">T</span><span class="agda2-highlight-symbol-face">}</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-bound-variable-face">C</span> <span class="agda2-highlight-bound-variable-face">t</span> <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-bound-variable-face">B</span> <span class="agda2-highlight-bound-variable-face">t</span><span class="agda2-highlight-symbol-face">)</span>
+            <span class="agda2-highlight-symbol-face">→</span> <span class="agda2-highlight-record-face">isEquiv</span> <span class="agda2-highlight-symbol-face">(</span><span class="agda2-highlight-function-face">pushMap</span> <span class="agda2-highlight-symbol-face">{</span>A <span class="agda2-highlight-symbol-face">=</span> <span class="agda2-highlight-bound-variable-face">A</span><span class="agda2-highlight-symbol-face">}</span> <span class="agda2-highlight-bound-variable-face">f</span> <span class="agda2-highlight-bound-variable-face">g</span><span class="agda2-highlight-symbol-face">)</span>
+</pre>
+This is expressing something about the fact that the interval should be a "<a href="https://ncatlab.org/nlab/show/tiny+object">tiny object</a>". I'm vaguely aware that this can't be fully captured internally without using modalities, but I'm curious whether this special case is acceptable.
+<p>
+What this postulate is saying is the following. If we have
+three types $A, B, C$ indexed over $T$, and some maps
+\[f : (t : T) \to C\ t \to A\ t\]
+\[g : (t : T) \to C\ t \to B\ t\]
+then there definitely at least exists a map (called <tt>pushMap</tt> above) from
+the pushout of global elements of these types
+to the global elements of the pushout of these types.
+That is, in the below diagram, there is a map \[P \to (t : T) \to Q\ t\] which comes directly from the pushout UMP.
+<center><img src="diagram2.png"></center>
+The postulate is that this map is an equivalence. My intuition for why this is "safe" is that the set of edges in a pushout of some graphs is never any bigger than the set of edges in the components being glued together.
+<center><img src="diagram3.png"></center>
+There are some subtleties about the internal hom, but I think they might be addressed by the assumptions that all the components of the pushout are (fibrewise) bridge-discrete to start with.
+<h2>Consequences</h2>
+Keeping with the running example of $S = 2$, suppose I
+have a relation defined as a set $R$ with two projections $\pi_0 : R \to A_0$ and $\pi_1 : R \to A_1$. I can think of my sets $A_0$ and $A_1$ equivalently as one unified object
+\[A : (t : T) (e : E\ t) \to \rset\]
+where $E$ is the mere proposition on $t$ that says whether $t$ is an endpoint. And I can think of my projects equivalently as a function \[f : (t : T) (e : E\ t) \to R \to A\ t\ e\]
+
+From these I can <b>define</b> a gel type
+\[ \mathsf{Gel} : T \to \rset \]
+by saying that, for each $t : T$, it is the pushout of
+$R$ with $(e : E\ t) \x A\ t\ e$.
+<center><img src="diagram4.png"></center>
+At each endpoint we glue a copy of the appropriate $A\ t\ e$ along $f$. Because of the assumption that $T \Rightarrow {-}$ commutes
+with pushouts &mdash; as long as $R$ and $A$ are bridge-discrete &mdash; we have that the <i>only</i> global elements of $(t: T) \to \mathsf{Gel}\ t$ are elements of the $R$ component, and in fact
+correspond to mere <b>points</b> in $R$ and not bridges on $R$.
+So we can define
+\[\mathsf{gel} : R \to ((t: T) \to \mathsf{Gel}\ t)\]
+\[\mathsf{ungel} : ((t: T) \to \mathsf{Gel}\ t) \to R  \]
+and can prove that they compose to identities both ways,
+and appropriately commute with taking endpoints.
+This is shown in <a href="https://github.com/jcreedcmu/parametricity/blob/main/Interval/Gel.agda#L132-L142">Interval/Gel.agda</a>.
+<h3>Functoriality</h3>
+One can also prove that maps between Gel types uniform in $T$ are the same thing as relation homomorphisms, cf. <a href="https://mastodon.social/@cbaberle@mathstodon.xyz/113705412341256590">the postulate Ωfunctor in this toot</a>.
+<p>
+This is because the Gel type being a pushout lets us do case analysis to any term of it. By the pushout UMP, we know that
+\[(t : T) \to \mathsf{Gel}_{R_1} \to  \mathsf{Gel}_{R_2} \tag{\dag}\]
+is the same thing as a pair of maps, one living in
+\[(t : T) \to R_1 \to  \mathsf{Gel}_{R_2} \tag{*}\]
+and one living in
+\[(t : T) \to ((e : E\ t) \x A_1\ t\ e) \to  \mathsf{Gel}_{R_2} \tag{**}\]
+satisfying a compatibility condition.
+But (*) is equivalent to
+\[  R_1 \to (t : T) \to  \mathsf{Gel}_{R_2} \]
+and therefore also to
+\[  R_1 \to R_2 \tag{*'}\]
+and (**) is equivalent to
+\[(t : T) (e : E\ t) (a : A_1\ t\ e) \to  \mathsf{Gel}_{R_2} \]
+and therefore also to
+\[(t : T) (e : E\ t) (a : A_1\ t\ e) \to  A_2\ t\ e \tag{**'}\]
+So a uniform map $(\dag)$ is the same thing as a map $(*')$ between relations,
+with a map $(**')$ saying how it behaves on endpoints, which are suitably compatible,
+i.e. a relation homomorphism. This is proved in <a href="Interval/Functoriality.agda">https://github.com/jcreedcmu/parametricity/blob/main/Interval/Functoriality.agda#L210</a>.
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
