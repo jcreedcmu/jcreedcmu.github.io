@@ -167,18 +167,18 @@ This is shown in <a href="https://github.com/jcreedcmu/parametricity/blob/main/I
 One can also prove that maps between Gel types uniform in $T$ are the same thing as relation homomorphisms, cf. <a href="https://mastodon.social/@cbaberle@mathstodon.xyz/113705412341256590">the postulate Ωfunctor in this toot</a>.
 <p>
 This is because the Gel type being a pushout lets us do case analysis to any term of it. By the pushout UMP, we know that
-\[(t : T) \to \mathsf{Gel}_{R_1} \to  \mathsf{Gel}_{R_2} \tag{\dag}\]
+\[(t : T) \to \mathsf{Gel}_{R_1}\ t \to  \mathsf{Gel}_{R_2}\ t \tag{\dag}\]
 is the same thing as a pair of maps, one living in
-\[(t : T) \to R_1 \to  \mathsf{Gel}_{R_2} \tag{*}\]
+\[(t : T) \to R_1 \to  \mathsf{Gel}_{R_2}\ t \tag{*}\]
 and one living in
-\[(t : T) \to ((e : E\ t) \x A_1\ t\ e) \to  \mathsf{Gel}_{R_2} \tag{**}\]
+\[(t : T) \to ((e : E\ t) \x A_1\ t\ e) \to  \mathsf{Gel}_{R_2}\ t \tag{**}\]
 satisfying a compatibility condition.
 But (*) is equivalent to
-\[  R_1 \to (t : T) \to  \mathsf{Gel}_{R_2} \]
+\[  R_1 \to (t : T) \to  \mathsf{Gel}_{R_2}\ t \]
 and therefore also to
 \[  R_1 \to R_2 \tag{*'}\]
 and (**) is equivalent to
-\[(t : T) (e : E\ t) (a : A_1\ t\ e) \to  \mathsf{Gel}_{R_2} \]
+\[(t : T) (e : E\ t) (a : A_1\ t\ e) \to  \mathsf{Gel}_{R_2}\ t \]
 and therefore also to
 \[(t : T) (e : E\ t) (a : A_1\ t\ e) \to  A_2\ t\ e \tag{**'}\]
 So a uniform map $(\dag)$ is the same thing as a map $(*')$ between relations,
