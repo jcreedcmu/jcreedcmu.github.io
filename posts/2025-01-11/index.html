@@ -77,7 +77,7 @@ The idea is to try to only axiomatize some things about the interval type itself
 <p>
 So let's take a look at what's going on in <a href="https://github.com/jcreedcmu/parametricity/blob/main/Interval/Axioms.agda">Interval/Axioms.agda</a>.
 <p>
-We first postulate the interval type itself. I'm writing it a binary operator that takes two Set arguments. The argument $S$ is its "shape". We can take $S = 2$ as a running example. In this case the interval is the "walking binary relation". It has two points, and some kind of cohesion between them. The argument $D$ is a notion of color in the sense of Bernadry-Moulin's "<a href="https://dl.acm.org/doi/abs/10.1145/2544174.2500577">Type Theory in Color</a>". We have as many colors as there are types.
+We first postulate the interval type itself. I'm writing it a binary operator that takes two Set arguments. The argument $S$ is its "shape". We can take $S = 2$ as a running example. In this case the interval is the "walking binary relation". It has two points, and some kind of cohesion between them. The argument $D$ is a notion of color in the sense of Bernardy-Moulin's "<a href="https://dl.acm.org/doi/abs/10.1145/2544174.2500577">Type Theory in Color</a>". We have as many colors as there are types.
 
 <pre>
 <span class="agda2-highlight-keyword-face">postulate</span>
