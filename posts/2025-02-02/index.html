@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+      blockquote {
+        background-color: #eeffee;
+        border: 1px solid #0a7200;
+        padding: 1em;
+      }
+    </style>
+    <title>Parametricity and Comma Categories</title>
+  </head>
+
+  <body>
+    <h1>Parametricity and Comma Categories</h1>
+    Here's something that seems to work. I like it because it seems to do what category theory
+    does best: tell you what your definitions <em>ought</em> to be.
+    <h3>Shapes</h3>
+    Let's say a <em>preshape</em> is a functor $G : \D \to \C$ that preserves finite limits between
+    two categories that have all finite limits.
+    We say a preshape extends to a full <em>shape</em> whenever there exists
+    <ol>
+    <li> A functor $F : \C \to \D$ going in the opposite direction that preserves
+    "just about every finite structure". I'm going to leave this unspecified for now, but imagine
+    that it means finite limits, finite colimits, exponentials, universe structure, etc.
+    <li> A natural transformation $\eta : \rid_\C \to GF$.
+    </ol>
+    In other words: <em>almost</em> an adjunction $F \dashv G$, but missing the counit.
+
+    <h3>An Example To Think Of</h3>
+    The role of a shape is to answer, in an abstract way, the question: what's the $n$
+    for which we're doing parametricity with $n$-ary relations? An example of a shape is
+    the pair of functors (that actually <em>are</em> adjoint) $F = \Delta$ and $G = \prod$
+    that have types
+    \[ \Delta : \rset \to \rset^n : \prod\]
+    and exhibit how you ($\Delta$) take a set to an $n$-tuple of sets by duplicating it,
+    and ($\prod$) how you take the cartesian product of $n$ sets.
+
+    <h3>Shape Morphisms</h3>
+
+    A morphism from a shape $(F', G', \eta')$ to a shape $(F, G, \eta)$
+    consists of a functor $\delta$ (which, like $F$ and $F'$, should
+    "preserve just about all finite structure") and a natural transformation $\gamma$
+    that fits in the left diagram below, such that the right diagram below commutes
+    (maybe up to some natural isomorphism that I'm not going to concern myself with right now)
+
+    <center><img src="diagram1.png"></center>
+
+    <h3>Moving to the Comma Category</h3>
+    Given a preshape $G : \D \to \C$, we can define another preshape $G' : \D' \to \C$ from it.
+    We set $\D'$ to the
+    <a href="https://en.wikipedia.org/wiki/Comma_category">comma category</a> $\rid_\C / G$.
+
+    The objects of $\D'$ are tuples $(C, D, f : C \to GD)$,
+    and its morphisms are commutative squares arising
+    from choices of morphisms in $\C$ and $\D$. The functor $G'$ we set to the projection $\D' \to \C$
+    that picks out the $C$-part of the tuple.
+    <p>
+    We note that we already have some candidate data from which to build a shape morphism
+    from $(?, G', ?)$ to $(F, G, \eta)$, if only we had an $F'$ and $\eta'$.
+    For we could define $\partial : \D' \to \D$ to be the projection that picks out the
+    $D$-part of the tuple, and $\gamma : G' \to G \o \partial$ to be the projection
+    that picks out the $f$-part of the tuple.
+    <p>
+    What is this situation really about, in the case of our example?
+    $\D'$ is the category of $n$-ary relations and relation homomorphisms.
+    $G'$ projects out the type of the total space. $\partial$ projects out the boundary;
+    the $n$ types that the relation is among, as an object in $\D$. $G$ takes those types
+    and yields their product. $\gamma$ tells us how to map from a point in the total space
+    of the relation to its coordinates in the boundary types.
+
+    <h3>Parametricity</h3>
+    I claim that $G'$ is a preshape; check that it is a functor preserving finite limits.
+    Also, for many structures of interest (exponentials, universes, etc.) it seems that if $\C$
+    and both $\D$ have that structure, then $\D'$ has it in a sensible way. So we can make the definition:
+
+   <blockquote>
+    $\C$ <em>has parametricity</em> of shape $(F, G, \eta)$ if we can find $F', \eta'$
+    that
+    <ul>
+    <li> make the preshape $G'$ into a shape $(F', G', \eta')$
+    <li> make $(\delta, \gamma)$ as defined above a shape morphism $(F', G', \eta') \to (F, G, \eta)$.
+    </ul>
+   </blockquote>
+
+    (Perhaps we might even ask for there to be a <em>unique</em> $F', \eta'$ that fulfill these conditions?)
+
+    <p>
+    Why do I think this has anything to do with parametricity theorems?
+    If I have an object $C \in \C$, then the property above says that there is some morphism
+    $\eta'_C : C \to G'F'C$. This takes the object $C$ to a point in the total space of a relation
+    &mdash; the relation being the object $F'C \in \D'$. The map $\partial$ carries $F'C$ over
+    to $\D$, where I find that it is the same as $FC$, the 'all-$C$' boundary. So $\eta'$ is
+    really telling me that any element of $C$ belongs to the identity relation on $C$.
+    <p>
+    The real points get scored because $F'$ is supposed to "preserve all structure".
+    I don't have to creatively <i>decide</i> what parametricity should say about function types,
+    because I can extract the ump of the exponential.
+    What happens if $C$ is an internal hom-object, like $C_1 \imp C_2$?
+    $F$ is supposed to preserve "all structure", so $F(C_1 \imp C_2) = FC_1 \imp FC_2$
+    But that latter $\imp$ is taking place in $\D'$, and I can simply investigate what the
+    exponential structure in that category <em>must be</em> (up to isomorphism),
+    taking exponential structure in $\C$ and $\D$ as given.
+    <p>
+    Fortunately, it turns out to be exactly the "two functions are related if they map related
+    things to related things" definition that we'd expect. And I think the right thing
+    happens as well with universes. It goes something like: you supply a category $\C$
+    with some extra structure that stratifies its morphisms into levels, intuitively
+    'according to the size of their fibers'. A level-$i$ universe is a map
+    $e_i : \E_i \to \U_i$ such that that any size-$i$ map arises uniquely
+    as a pullback of it. We suppose $\C$ and $\D$ have universes for every level, and that
+    $F$ preserves them, and we can describe them in $\rid_C/G$ &mdash finding that they are
+    essentially types of codes for relations in the same way ordinary universes are types of codes
+    for sets &mdash; and require that $F'$ preserve
+    them.
+    <a id="mark"></a>
+
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Set}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbf C}",
+              "\\D": "{\\mathbf D}",
+              "\\E": "{\\mathcal E}",
+              "\\U": "{\\mathcal U}",
+              "\\imp": "{\\Rightarrow}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
