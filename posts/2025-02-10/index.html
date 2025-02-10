@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>An Imperfect Graph Representation</title>
+  </head>
+
+  <body>
+    <h1>An Imperfect Graph Representation</h1>
+    Let's say "the type of (directed, reflexive) graphs" is
+    \[ \mathsf{Grph} : \rset_1 \]
+    \[ \mathsf{Grph} = (\E : \rset) (\partial : 2 \to \E) \to \rset \]
+    The intuition here is that a graph is something which, if
+    you give it a type $\E$ to represent an "edge",
+    and you tell it where the domain and codomain are supposed to be inside $\E$,
+    will spit out a type that is supposed to be the result of gluing together one copy of $\E$
+    for every edge.
+    <p>
+      There are some constructions we can do from here that seem consistent with this intuition.
+      We can define the one-edge and one-vertex graphs:
+\[ \mathsf{edgeGrph} : \mathsf{Grph} \qquad \mathsf{edgeGrph}\  \E\  \partial = \E\]
+\[ \mathsf{vertGrph} : \mathsf{Grph} \qquad \mathsf{vertGrph}\  \E\  \partial = 1\]
+Let's say the "graph homomorphisms" $G_1 \imp G_2$ between two graphs $G_1\ G_2 : \mathsf{Grph}$ are the
+maps that work uniformly for all $\E$, $\partial$, i.e. maps in
+      \[ (\E : \rset) (\partial : 2 → \E) → G_1\ \E\ \partial \to G_2\ \E\ \partial\]
+      Then we can say the vertices of $G$ are the homomorphisms from $\mathsf{vertGrph}$ to $G$
+      and the edges of $G$ are the homomorphisms from $\mathsf{edgeGrph}$ to $G$.
+      <h2>Faithfulness from Parametricity</h2>
+      With parametricity, we can confirm some expected facts such as:
+      the edge graph has exactly two vertices, its domain and codomain, and three edges, the reflexivity
+      edges at its domain and codomain, and its one nontrivial edge. Why is this so? A vertex
+      of the edge graph is a homomorphism from the vertex graph to the edge graph, so a function of type:
+      \[ (\E : \rset) (\partial : 2 \to \E) \to 1 \to \E\]
+      If the elements of the type $2$ are named $t_0, t_1$, then the only two functions of this type are
+      $\lambda \E \partial \_ . \partial\ t_0$ and $\lambda \E \partial \_ . \partial\ t_1$.
+      An edge of the edge graph is a function of the type
+      \[ (\E : \rset) (\partial : 2 \to \E) \to \E \to \E\]
+      And the only elements of this type are
+      \[\begin{array}{l}
+\lambda \E \partial \_ . \partial\ t_0\\
+\lambda \E \partial \_ . \partial\ t_1\\
+\lambda \E \partial e . e
+\end{array}\]
+For any chosen $V : \rset$ of vertices and $E : \rset$ of edges, and boundary function $d : 2\x E \to V$,
+if we also have $\E : \rset$ and $\partial : 2 \to \E$,
+we can define $G(V, E, d)$ to be the type which makes a pushout square of:
+\[\begin{CD}
+     2 \x E @>d>> V \\
+      @V{\partial \x E}VV @VVV\\
+      \E \x E @>>> G(V, E, d)
+\end{CD}\]
+If we write $[V, E, d] = \lambda \E \partial . G(V, E, d)$, then $[V,
+E, d]$ is a $\mathsf{Grph}$.
+<p>
+By using parametricity we should be able to see that a graph homomorphism
+\[[V_1, E_1, d_1] \imp [V_2, E_2, d_2]\]
+is actually the same thing as a pair of maps $V_1 \to V_2$ and $E_1 \to E_2 + V_2$ that are compatible with $d_1$ and $d_2$.
+(The $+ V_2$ is present because it is allowed to map an edge in $E_1$ into the reflexivity edge of a vertex)
+By the pushout UMP, the main things we need to confirm are that
+\[(\mathsf{vertGrph} \imp [V_2, E_2, d_2]) = V_2 \tag{*}\]
+\[(\mathsf{edgeGrph} \imp [V_2, E_2, d_2]) = E_2 + V_2\tag{**}\]
+In the $\mathsf{vertGrph}$ case, the only terms of the pushout that
+we can build given $(\E : \rset) (\partial : 2 \to \E)$ are either $\binr v$ for some
+$v \in V_2$, or else $\binl \langle \partial t, e\rangle$ for $t : 2$ and $e : E_2$.
+But the latter is equal to $\binr (d_2 e)$ by the imposed pushout equality. So
+the only real possibilities are $\binr v$, and we see the isomorphism $(*)$ holds.
+<p>
+In the $\mathsf{edgeGrph}$ case, we have one additional variable in the context, and we're
+trying to build a term of the pushout given $(\E : \rset) (\partial : 2 \to \E) (\varepsilon : \E)$.
+We can make $\binr v$ for $v : V_2$ as before, or else $\binl \langle \partial t, e\rangle$ for $t : 2$ and $e : E_2$
+as before, which doesn't add any new real terms, but now we can do $\binl \langle \varepsilon, e\rangle$
+for any $e : E_2$. So the isomorphism $(**)$ holds.
+
+<h2>...But Not Adequacy</h2>
+
+If the proof sketch above isn't mistaken, we have a <i>faithful</i> embedding of reflexive graphs into
+the type $\mathsf{Grph}$ and the defined notion of homset  $\imp$. The homs between any two encoded
+graphs are exactly the ones you expect.
+This is superficially similar to taking the category $\G$ with two objects $V, E$ and two inclusions
+$\mathsf{dom}, \mathsf{cod} : V \to E$ and one degeneracy $\mathsf{refl} : E \to V$ and considering the presheaf
+category $\mathsf{Set}^{\G^\mathsf{op}}$.
+<p>
+But unlike that presheaf category, whose objects are <i>exactly</i> the reflexive graphs, there's a lot more junk lying
+around in $\mathsf{Grph}$! For consider the "graph"
+\[g_{???} : \mathsf{Grph} \qquad g_{???} = \lambda \E \partial . (\E \to \E)\]
+Now consider the maps from this into the edge graph:
+\[g_{???} \imp \mathsf{edgeGraph} = (\E : \rset) (\partial : 2 \to \E) \to (\E \to \E) \to \E\]
+This is the church encoding of a type that is two copies of the natural numbers.
+<p>
+So this weird exotic graph object knows how to "fit into" each vertex in countably many different ways?
+<center><img src="diagram.png"></center>
+What's going on here? I don't have a clear idea.
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\E": "{\\mathcal E}",
+		        "\\G": "{\\mathbb G}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\imp": "\\Rightarrow",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
