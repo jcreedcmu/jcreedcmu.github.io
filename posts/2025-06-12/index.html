@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Typed Geometry</title>
+  </head>
+
+  <body>
+    <h1>Typed Geometry</h1>
+    I wanted to jot down some notes about some ideas that came from trying
+    to teach myself a little about algebraic geometry again.
+    <h2>Geometry from Algebra</h2> My beginner understanding of the
+    big picture is that, by viewing rings "backwards", through the
+    lens of a contravariant equivalence functor $\spec :
+    \mathbf{Rng}^\mathsf{op} \to \mathbf{AffSch}$, we discover a
+    landscape of interesting
+      <i>geometric</I> objects: for example, the spectrum $\spec(\R[x,y])$ of the
+      ring $\R[x,y]$ of
+      real-coefficient polynomials in two variables feels like a
+      2-dimensional space, even more so if we think of the important
+      object as being the ring homomorphism that injects constants
+      $\R$ into $\R[x,y]$. For if we pose the question of what $f$ in $\mathbf{Rng}^\mathsf{op}$
+      make the diagram
+    \[
+    \begin{CD}
+      \spec(\R[t]) @&gt;{\spec(f)}&gt;&gt; \spec(\R[x,y]) \\
+      @VVV @VVV\\
+      \spec(\R) @= \spec(\R) \\
+      \end{CD}
+    \]
+      commute, we find that they are exactly the <i>curves</i> parametrized by polynomials
+      that tell how to algebraically embed a one-dimensional space $\R[t]$ into a two-dimensional
+      space $\R[x,y]$. This is because the diagram back in $\mathbf{Rng}$, namely
+    \[
+    \begin{CD}
+      \R[t] @&lt;{f}&lt;&lt; \R[x,y] \\
+      @AAA @AAA\\
+      \R @= \R \\
+      \end{CD}
+    \]
+      asks us for a ring homomorphism $\R[x,y] \to \R[t]$ that preserves $\R$: so the
+      only choices we can make are assigning $x$ and $y$ to polynomials in $t$, just the right
+      data to tell us how a curve wiggles around as we change the time variable.
+      <h2>Geometry from Types</h2>
+      I'm to understand that much of the interest of actual algebraic geometry is what happens
+      when you take this idea and profoundly generalize it, studying also schemes (i.e. affine schemes
+      patched together like you patch together copies of $\R^n$ to get manifolds)
+      and quasicoherent sheaves and probably more things I haven't heard of.
+    <p>
+      I don't (yet) have any ambition to understand all that stuff
+      type-theoretically, but I noticed the following interesting fact
+      about types and parametricity and Grothendieck's "functor of points" approach.
+    <p>
+      Observe that we can straightforwardly write down, in dependent type theory, the type of rings as
+      a record type.
+      \[ \begin{array}{l}
+      \mathsf{Ring} : \rset_1\\
+      \mathsf{Ring} := \mathbf{record}\ \{\\
+\qquad S : \rset \\
+\qquad 0\ 1 : S \\
+\qquad \_{+}\_\quad \_{\cdot}\_ : S\x S \to S \\
+\qquad {-} : S \to S \\
+\qquad \mathsf{plus\_assoc} : (a\ b\ c : S) \to a+ (b + c) \equiv (a + b) + c \\
+\qquad \mathsf{times\_assoc} : (a\ b\ c : S) \to a\cdot (b \cdot c) \equiv (a \cdot b) \cdot c \\
+\qquad \cdots\\
+\}\\
+\end{array}
+\]
+as well as the type of ring homomorphisms:
+      \[
+ \begin{array}{l}
+      \mathsf{Hom} : (R_1\ R_2 : \mathsf{Ring}) \to \rset\\
+      \mathsf{Hom}\ R_1\ R_2 := \mathbf{record}\ \{\\
+\qquad h : R_1.S \to R_2.S \\
+\qquad \mathsf{pres\_0} : f\ R_1.0 \equiv R_2.0\\
+\qquad \mathsf{pres\_plus} : (a\ b : R_1.S) \to f\ (R_1.\_{+}\_\ a\ b) = R_2.\_{+}\_\ (f\ a)\ (f\ b)\\
+\qquad \cdots\\
+\}\\
+\end{array}
+\]
+Therefore we can define $\spec$ as
+      \[
+ \begin{array}{l}
+\spec  : \mathsf{Ring} \to \rset_1\\
+\spec\ A = (R : \mathsf{Ring}) \x \mathsf{Hom}\ A\ R
+\end{array}
+\]
+Now consider what functions $f$ there are that make the diagram
+  \[
+    \begin{CD}
+      \spec(A) @&gt;{f}&gt;&gt; \spec(B) \\
+      @VVV @VVV\\
+      \mathsf{Ring} @= \mathsf{Ring} \\
+      \end{CD}
+    \]
+commute, for rings $A$ and $B$, and for the evident projection from $\spec(\hbox{&mdash;})$ to $\mathsf{Ring}$.
+Since $\spec(A)$ contains a type field (namely $A.S$) it's relevant to suppose that $f$ is parametric
+polymorphic over that type.
+<p>
+In fact, we claim:
+<blockquote style="background-color: #def; padding: 1em;">
+<b>Claim</b>: asking for a <i>parametric</i> $f$ that fits in the above diagram is the same thing as asking
+for a ring homomorphism $B \to A$.  That is, $\spec$ contravariantly faithfully embeds rings in the slice category of
+types over $\mathsf{Ring}$.
+</blockquote>
+<!--
+data ℕ : Set where
+  zero : ℕ
+  succ : ℕ → ℕ
+
+pred : ℕ → ℕ
+pred zero     = zero
+pred (succ k) = k
+
+record Ring : Set₁ where
+ field
+   S : Set
+
+record Hom (R1 R2 : Ring) : Set where
+ open Ring
+ field
+  f : R1 .S → R2 .S
+
+Spec : Ring → Set₁
+Spec A = (R : Ring) → Hom A R
+-->
+Let's show that this claim is true.
+<p>
+The commutativity of the diagram means that the $\mathsf{Ring}$ part of $\spec$ is preserved,
+so the essential data of $f$ we care about is really just a function
+\[ g :\{R : \mathsf{Ring}\} \to \mathsf{Hom}\ A\ R \to \mathsf{Hom}\ B\ R\]
+
+Let's construct the two directions of the equivalence we're claiming.
+If we have a $g$, we can invoke it at the identity ring homomorphism $A \to A$,
+and it outputs ring homomorphism $g\ \rid_A : B \to A$. In the other direction,
+if we have a ring homomorphism $h : B \to A$, then all it takes is ring homomorphism composition
+to make
+\[ \lambda\  \{R\}\  k  . k \o h :  \{R : \mathsf{Ring}\} \to \mathsf{Hom}\ A\ R \to \mathsf{Hom}\ B\ R\]
+<p>
+Now we want to show both round trips are the identity. One round trip is easy,
+the other one needs parametricity. The easy round trip is that if we start with $h : B \to A$,
+lift to $\lambda k . k \o h$, and then apply to the identity, we get $\rid_A \o h = h$.
+<p>
+In the other direction, we start with $g$, we instantiate to get $g\ \rid_A : B \to A$, then we
+lift, and we want to check that
+\[ g \equiv \lambda\ \{R\}\  k  . k \o (g\ \rid_A) \]
+with that equality taking place at the type $\{R : \mathsf{Ring}\} \to \mathsf{Hom}\ A\ R \to \mathsf{Hom}\ B\ R$.
+By extensionality, we need to show
+ \[(R: \mathsf{Ring}) (k : \mathsf{Hom}\ A\ R) \to  g\ k \equiv k \o (g\ \rid_A) \]
+or in fact by another step of extensionality on the underlying function of $k$, this is
+ \[(R: \mathsf{Ring}) (k : \mathsf{Hom}\ A\ R) (b : B) \to  g\ k\ b \equiv k\ ( g\ \rid_A\ b) \]
+
+Now we turn the parametricity crank and find that the free theorem for $g$ is:
+<blockquote>
+Suppose we have two rings $R_1, R_2$, and a relation between them,
+$\_\sim\_ : R_1.S \to R_2.S \to \rset$ <br>
+Suppose the relation is compatible with all the algebraic operations, for example
+$0 \sim 0 $, and whenever $a \sim a'$ and $b \sim b'$, we have $a + b \sim a' + b'$.
+<br>
+Suppose we have two ring homomorphisms $h_1 : A \to R_1$ and $h_2 : A \to R_2$ that are
+pointwise related: for any $a : A$ we have $h_1(a) \sim h_2(a)$.
+<br> Then $g\ h_1$ and $g\ h_2$ are pointwise related, i.e. for all $b : B$, we have
+$g\ h_1\ b \sim g\ h_2\ b$.
+</blockquote>
+
+So we make the following choices:
+\[R_1 := R\qquad R_2 := A \qquad h_1 := k\qquad h_2 := \rid_A\]
+\[(r \sim a) := (r \equiv k\ a)\]
+and the free theorem pops out $g\ k\ b \equiv k\ ( g\ \rid_A\ b)$, just what we needed.
+<h2>What Have We Done?</h2>
+
+Arguably this seems like merely a silly type-brained
+way of proving the Yoneda lemma. I just demonstrated that the only way
+to go from $\hom_{\mathbf{Rng}}(A, \hbox{&mdash;})$ to
+$\hom_{\mathbf{Rng}}(B, \hbox{&mdash;})$ is by composition with $B \to
+A \in \mathbf{Rng}$. No surprise there!
+<p>
+But! Something about this seems interesting to me in that it seems <i>really easy</i>
+to talk about things other than rings in this way. I'm aware that there's
+an active field of research into "<a href="https://en.wikipedia.org/wiki/Field_with_one_element">what
+ the field with one element could be</a>" and I get the sense it's got a lot to do with
+choosing alternate foundations for defining what an algebra-geometric object is other than
+the category of rings. Some crumbs from this story that I think I understand are
+the fact that $\Z$, the initial object in $\mathsf{Rng}$, has somehow "too much structure",
+and we'd prefer <a href="https://ncatlab.org/nlab/show/Borger%27s+absolute+geometry">a world in which</a> even the schemes that we call "absolute" are more relative,
+e.g.  where $\spec\ \Z$ was "over" something else, call it $\mathbb F_1$.
+<p>
+While I don't think the above discussion provides any answers to the question of what that other foundation is,
+it does seem to me like potentially a nice way to organize such answers if other people have them. Maybe
+things like change-of-base by pullback across different such foundations makes sense. And it's one more
+nice application of parametricity, which I am always happy to add to my collection.
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+              "\\spec": "\\mathsf{Spec}",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
