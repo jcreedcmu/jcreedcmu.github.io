@@ -95,8 +95,14 @@
           </blockquote>
           We want to show
           \[ h \equiv (\lambda b x . b(h\ \C[C, \hbox{&mdash;}]\ \rid_C)\ x) \]
-          and by function extensionality it suffices to show
-          \[ (b : B) (x : b(C)) \to h\ b\ x \equiv b\ (h\ \C[C, \hbox{&mdash;}]\ \rid_C)\ x \]
+          By function extensionality it suffices to show for any $b: B$ and $x:b(C)$ that
+          \[  h\ b\ x \equiv b\ (h\ \C[C, \hbox{&mdash;}]\ \rid_C)\ x \tag{*}\]
+          So we invoke the free theorem at
+          \[\begin{array}{ll} b_1 := b & x_1 := x \\ b_2 := \C[C, \hbox{&mdash;}] & x_2 := \rid_C\end{array}\]
+          and the relation defined by
+          \[y_1 \sim y_2 \quad :\Longleftrightarrow\quad y_1 \equiv b(y_2) (x)\]
+          <p/>
+          The result of invoking the parametricity theorem is exactly $(*)$, as required.
       </ol>
       <a id="mark"></a>
   </body>
