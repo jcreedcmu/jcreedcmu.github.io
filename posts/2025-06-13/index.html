@@ -42,7 +42,7 @@
     $T_C$ and a morphism $p_C : T_C \to B$, such that the functions $f$
     that fit in the diagram
     \[\begin{CD}
-      T_{C} @&gt;{f}&gt;&gt; T_{D} \\
+      T_{C} @&gt;{g}&gt;&gt; T_{D} \\
       @V{p_C}VV @VV{p_D}V\\
       B @= B \\
       \end{CD}\]
@@ -63,7 +63,7 @@
           \[T_C = (b : B) \x b(C) \qquad p_C\ \langle b, x\rangle = b\]
         <li> Fix two objects $C, D \in \C$. Define the type $H$ by
           \[ H := (b : B) \to  b(C)  \to b(D)\]
-          Observe that asking for an $f$ that fits in the commutative diagram above is equivalent
+          Observe that asking for an $g$ that fits in the commutative diagram above is equivalent
           to asking for a term of type of $H$.
           <!-- \[  (b : B) \to ( y{C} \nto b)  \to ( y{D} \nto b)\] -->
           <!-- and by the yoneda lemma, this is the same thing as -->
@@ -75,10 +75,14 @@
           \[ h\ \C[C, \hbox{&mdash;}]\ \rid_C \in \C[C, D] \]
           The round trip starting from a morphism, converting to $H$, and converting back
           to a morphism is easily seen to be the identity.
-          The other direction requires parametricity.
+          The other round trip requires parametricity.
           <p/>
-          Let $h : H$ be given.
-          Consider the parametricity free theorem for $h$.
+          So let's prove that now. Let $h : H$ be given.
+          We want to show
+          \[ h \equiv (\lambda b x . b(h\ \C[C, \hbox{&mdash;}]\ \rid_C)\ x) \]
+          By function extensionality it suffices to show for any $b: B$ and $x:b(C)$ that
+          \[  h\ b\ x \equiv b\ (h\ \C[C, \hbox{&mdash;}]\ \rid_C)\ x \tag{*}\]
+          Now consider the parametricity free theorem for $h$.
           It tells us:
           <blockquote style="background-color: #def; padding: 1em;">
             Suppose we have presheaves $b_1, b_2 : B$, and a family of relations
@@ -93,16 +97,10 @@
             $x_1 \sim_C x_2$.<br>
             Then $h\ b_1\ x_1 \sim_D h\ b_2\ x_2$.
           </blockquote>
-          We want to show
-          \[ h \equiv (\lambda b x . b(h\ \C[C, \hbox{&mdash;}]\ \rid_C)\ x) \]
-          By function extensionality it suffices to show for any $b: B$ and $x:b(C)$ that
-          \[  h\ b\ x \equiv b\ (h\ \C[C, \hbox{&mdash;}]\ \rid_C)\ x \tag{*}\]
-          So we invoke the free theorem at
+          We obtain $(*)$ by invoking the free theorem at
           \[\begin{array}{ll} b_1 := b & x_1 := x \\ b_2 := \C[C, \hbox{&mdash;}] & x_2 := \rid_C\end{array}\]
           and the relation defined by
           \[y_1 \sim y_2 \quad :\Longleftrightarrow\quad y_1 \equiv b(y_2) (x)\]
-          <p/>
-          The result of invoking the parametricity theorem is exactly $(*)$, as required.
       </ol>
 
   </body>
