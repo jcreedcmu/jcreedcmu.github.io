@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Another Parametricity Construction</title>
+  </head>
+
+  <body>
+    <h1>Another Parametricity Construction</h1>
+    I wanted to write down another very cute construction that seems to work thanks to parametricity.
+    <p>
+      <b>Claim:</b>
+    For any category $\C$, there exists a type $B$, and for each object $C \in \C$ a type
+    $T_C$ and a morphism $p_C : T_C \to B$, such that the functions $f$
+    that fit in the diagram
+    \[\begin{CD}
+      T_{C_1} @&gt;{f}&gt;&gt; T_{C_2} \\
+      @VVV @VVV\\
+      B @= B \\
+      \end{CD}\]
+      are exactly the morphisms $C_1 \to C_2 \in \C$.
+    <p>
+      In short, we can find a type $B$ such that we can faithfully embed $\C$ in types-over-$B$.
+    <p>
+      Here's how it works.
+      <ol><li>
+          We set $B$ to be the type of all
+          presheaves over $\C$, i.e. functors $\C^\op \to \rset$.
+          <p/>Simply
+          encode all the data and requirements in the evident way in type
+          theory. If $\C$ is the category whose objects are natural numbers
+          with morphisms being $\le$, then it would suffice to set
+          \[B = (B : \N \to \rset) \x (f : (n : \N) \to B\ (n+1) \to B\ n) \]
+          Notice that $B$ is a $\rset_1$. I don't think this causes problems, I just wanted to be honest
+          about the level-jump that is required.
+        <li> We set $T_C$ to be the type
+          \[(b : B) \x (yC \nto b)\]
+          where $\nto$ indicates the type of natural transformations, and $yC = \C[\hbox{&mdash;}, C]: B$ is the
+          representable functor of the object $C$.
+        <li> We consider that any $f$ that fits in the commutative diagram above is effectively equivalent
+          to asking for a term of type
+          \[  (b : B) \to ( y{C_1} \nto b)  \to ( y{C_2} \nto b)\]
+          and by the yoneda lemma, this is the same thing as
+          \[  (b : B) \to  b(C_1)  \to b(C_2)\]
+          So let's assume we have an $h$ of that type, and consider its parametricity free theorem.
+          It tells us:
+          <blockquote style="background-color: #def; padding: 1em;">
+            Suppose we have presheaves $b_1, b_2 : B$, and a family of relations
+            \[\_{\sim_C}\_ : b_1(C) \to b_2(C) \to \rset\]
+            indexed by objects of $\C$. Suppose these relations are compatible with presheaf restriction in the sense
+            that for any morphism $f : C \to D$ we have that
+            \[x \sim_D y \Rightarrow x|_f \sim_C y|_f \]
+            for any $x \in b_1(D), y\in b_2(D)$.
+          </blockquote>
+      </ol>
+      <a id="mark"></a>
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+              "\\op": "\\mathsf{op}",
+              "\\nto": "\\overset{\\hbox{\\(\\cdot\\)}}{\\to}",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
