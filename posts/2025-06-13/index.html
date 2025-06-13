@@ -34,24 +34,24 @@
   <body>
     <h1>Another Parametricity Construction</h1>
     I wanted to write down another very cute construction that seems to work thanks to parametricity.
-    <p>
-      <b>Claim:</b>
-    For any category $\C$, there exists a type $B$, and for each object $C \in \C$ a type
+ <blockquote style="background-color: #def; padding: 1em;">
+   <b>Claim:</b>
+    For any category $\C$, there exists a type $B$ such that we can faithfully embed $\C$ into types-over-$B$.
+   </blockquote>
+    That is, for each object $C \in \C$ there exists a type
     $T_C$ and a morphism $p_C : T_C \to B$, such that the functions $f$
     that fit in the diagram
     \[\begin{CD}
       T_{C} @&gt;{f}&gt;&gt; T_{D} \\
-      @VVV @VVV\\
+      @V{p_C}VV @VV{p_D}V\\
       B @= B \\
       \end{CD}\]
       are in bijective correspondence to the morphisms $C \to D \in \C$.
-    <p>
-      In short, we can find a type $B$ such that we can faithfully embed $\C$ in types-over-$B$.
+
     <p>
       Here's how it works.
       <ol><li>
-          We set $B$ to be the type of all
-          presheaves over $\C$, i.e. functors $\C^\op \to \rset$.
+          Let $B$ be the type of presheaves over $\C$, i.e. functors $\C^\op \to \rset$.
           <!-- <p/>Simply -->
           <!-- encode all the data and requirements in the evident way in type -->
           <!-- theory. If $\C$ is the category whose objects are natural numbers -->
@@ -59,8 +59,8 @@
           <!-- \[B = (B : \N \to \rset) \x (f : (n : \N) \to B\ (n+1) \to B\ n) \] -->
           <!-- Notice that $B$ is a $\rset_1$. I don't think this causes problems, I just wanted to be honest -->
           <!-- about the level-jump that is required. -->
-        <li> For each $C\in\C$, we set $T_C$ to be the type
-          \[(b : B) \x b(C)\]
+        <li> For each $C\in\C$, set
+          \[T_C = (b : B) \x b(C) \qquad p_C\ \langle b, x\rangle = b\]
         <li> Observe that asking for an $f$ that fits in the commutative diagram above is equivalent
           to asking for a term
           <!-- \[  (b : B) \to ( y{C} \nto b)  \to ( y{D} \nto b)\] -->
