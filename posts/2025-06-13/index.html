@@ -51,7 +51,7 @@
     <p>
       Here's how it works.
       <ol><li>
-          Let $B$ be the type of presheaves over $\C$, i.e. functors $\C^\op \to \rset$.
+          Let $B$ be the type of copresheaves over $\C$, i.e. functors $\C \to \rset$.
           <!-- <p/>Simply -->
           <!-- encode all the data and requirements in the evident way in type -->
           <!-- theory. If $\C$ is the category whose objects are natural numbers -->
@@ -61,11 +61,23 @@
           <!-- about the level-jump that is required. -->
         <li> For each $C\in\C$, set
           \[T_C = (b : B) \x b(C) \qquad p_C\ \langle b, x\rangle = b\]
-        <li> Observe that asking for an $f$ that fits in the commutative diagram above is equivalent
-          to asking for a term
+        <li> Fix two objects $C, D \in \C$. Define the type $H$ by
+          \[ H := (b : B) \to  b(C)  \to b(D)\]
+          Observe that asking for an $f$ that fits in the commutative diagram above is equivalent
+          to asking for a term of type of $H$.
           <!-- \[  (b : B) \to ( y{C} \nto b)  \to ( y{D} \nto b)\] -->
           <!-- and by the yoneda lemma, this is the same thing as -->
-          \[h:  (b : B) \to  b(C)  \to b(D)\]
+
+          Given any morphism $f : C \to D$, we can construct a term
+          \[ (\lambda b x . b(f)\ x) : H\]
+          from it, by using functoriality of $b$. Conversely, given any term $h : H$, we can
+          compute
+          \[ h\ \C[C, \hbox{&mdash;}]\ \rid_C \in \C[C, D] \]
+          The round trip starting from a morphism, converting to $H$, and converting back
+          to a morphism is easily seen to be the identity.
+          The other direction requires parametricity.
+          <p/>
+          Let $h : H$ be given.
           Consider the parametricity free theorem for $h$.
           It tells us:
           <blockquote style="background-color: #def; padding: 1em;">
@@ -76,10 +88,15 @@
             for any morphism $f : C \to D$ we have that \[x \sim_D y
             \Rightarrow x|_f \sim_C y|_f \] for any $x \in b_1(D),
             y\in b_2(D)$.
-            <p/>
-            For any $x_1 \in b_1(C)$ and $x_2 \in b_2(C)$, if
-            $x_1 \sim_C x_2$, then $h\ b_1\ x_1 \sim_D h\ b_2\ x_2$.
+            <br>
+            Suppose $x_1 \in b_1(C)$ and $x_2 \in b_2(C)$ and
+            $x_1 \sim_C x_2$.<br>
+            Then $h\ b_1\ x_1 \sim_D h\ b_2\ x_2$.
           </blockquote>
+          We want to show
+          \[ h \equiv (\lambda b x . b(h\ \C[C, \hbox{&mdash;}]\ \rid_C)\ x) \]
+          and by function extensionality it suffices to show
+          \[ (b : B) (x : b(C)) \to h\ b\ x \equiv b\ (h\ \C[C, \hbox{&mdash;}]\ \rid_C)\ x \]
       </ol>
       <a id="mark"></a>
   </body>
