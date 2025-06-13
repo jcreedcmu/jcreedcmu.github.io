@@ -40,11 +40,11 @@
     $T_C$ and a morphism $p_C : T_C \to B$, such that the functions $f$
     that fit in the diagram
     \[\begin{CD}
-      T_{C_1} @&gt;{f}&gt;&gt; T_{C_2} \\
+      T_{C} @&gt;{f}&gt;&gt; T_{D} \\
       @VVV @VVV\\
       B @= B \\
       \end{CD}\]
-      are exactly the morphisms $C_1 \to C_2 \in \C$.
+      are in bijective correspondence to the morphisms $C \to D \in \C$.
     <p>
       In short, we can find a type $B$ such that we can faithfully embed $\C$ in types-over-$B$.
     <p>
@@ -52,31 +52,33 @@
       <ol><li>
           We set $B$ to be the type of all
           presheaves over $\C$, i.e. functors $\C^\op \to \rset$.
-          <p/>Simply
-          encode all the data and requirements in the evident way in type
-          theory. If $\C$ is the category whose objects are natural numbers
-          with morphisms being $\le$, then it would suffice to set
-          \[B = (B : \N \to \rset) \x (f : (n : \N) \to B\ (n+1) \to B\ n) \]
-          Notice that $B$ is a $\rset_1$. I don't think this causes problems, I just wanted to be honest
-          about the level-jump that is required.
-        <li> We set $T_C$ to be the type
-          \[(b : B) \x (yC \nto b)\]
-          where $\nto$ indicates the type of natural transformations, and $yC = \C[\hbox{&mdash;}, C]: B$ is the
-          representable functor of the object $C$.
-        <li> We consider that any $f$ that fits in the commutative diagram above is effectively equivalent
-          to asking for a term of type
-          \[  (b : B) \to ( y{C_1} \nto b)  \to ( y{C_2} \nto b)\]
-          and by the yoneda lemma, this is the same thing as
-          \[  (b : B) \to  b(C_1)  \to b(C_2)\]
-          So let's assume we have an $h$ of that type, and consider its parametricity free theorem.
+          <!-- <p/>Simply -->
+          <!-- encode all the data and requirements in the evident way in type -->
+          <!-- theory. If $\C$ is the category whose objects are natural numbers -->
+          <!-- with morphisms being $\le$, then it would suffice to set -->
+          <!-- \[B = (B : \N \to \rset) \x (f : (n : \N) \to B\ (n+1) \to B\ n) \] -->
+          <!-- Notice that $B$ is a $\rset_1$. I don't think this causes problems, I just wanted to be honest -->
+          <!-- about the level-jump that is required. -->
+        <li> For each $C\in\C$, we set $T_C$ to be the type
+          \[(b : B) \x b(C)\]
+        <li> Observe that asking for an $f$ that fits in the commutative diagram above is equivalent
+          to asking for a term
+          <!-- \[  (b : B) \to ( y{C} \nto b)  \to ( y{D} \nto b)\] -->
+          <!-- and by the yoneda lemma, this is the same thing as -->
+          \[h:  (b : B) \to  b(C)  \to b(D)\]
+          Consider the parametricity free theorem for $h$.
           It tells us:
           <blockquote style="background-color: #def; padding: 1em;">
             Suppose we have presheaves $b_1, b_2 : B$, and a family of relations
             \[\_{\sim_C}\_ : b_1(C) \to b_2(C) \to \rset\]
-            indexed by objects of $\C$. Suppose these relations are compatible with presheaf restriction in the sense
-            that for any morphism $f : C \to D$ we have that
-            \[x \sim_D y \Rightarrow x|_f \sim_C y|_f \]
-            for any $x \in b_1(D), y\in b_2(D)$.
+            indexed by objects $C$ of $\C$. Suppose these relations
+            are compatible with presheaf restriction in the sense that
+            for any morphism $f : C \to D$ we have that \[x \sim_D y
+            \Rightarrow x|_f \sim_C y|_f \] for any $x \in b_1(D),
+            y\in b_2(D)$.
+            <p/>
+            For any $x_1 \in b_1(C)$ and $x_2 \in b_2(C)$, if
+            $x_1 \sim_C x_2$, then $h\ b_1\ x_1 \sim_D h\ b_2\ x_2$.
           </blockquote>
       </ol>
       <a id="mark"></a>
