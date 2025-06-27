@@ -44,7 +44,12 @@ export function getIndex(posts: Post[]): string {
     <link rel="stylesheet" href="style/default.css">
   </head>
   <body>
-    <div class="topbar">jcreed blog</div>
+    <div class="topbar">
+      <div>jcreed blog</div>
+      <div style="flex-grow: 1;"></div>
+<div style="margin-top: 0.2em;">
+ <a href="https://github.com/jcreedcmu/"><img style="height: 1.75em;" src="style/github.svg"></a></div>
+      </div>
     <div class="horiz">
       <div>
         <div class="header">POSTS</div>
