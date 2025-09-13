@@ -64,8 +64,24 @@ The edges of the graph represent $\sim_0$ (black) $\sim_1$ (light blue) and $\si
 between flags of the carrier set. The small colored dots near the flags represent them belonging
 to $C_0$ (black) $C_1$ (light blue) and/or $C_2$ (red).
 
+<h2>Defining Opetopes</h2>
+We inductively define the conditions for an $n$-preopetope to be an $n$-opetope.
+To make this definition make sense, we need to define $\btriv$, $\bleaf$, $\bnode$, and $\bglue$,
+which we do in the following section.
+We say:
+<ul>
+<li>$\btriv$ is an $(-1)$-opetope.
+<li>If $\O$ is an $n$-opetope, then $\bleaf(\bnode(\O))$ is an $(n+2)$-opetope.
+<li>If $\O$ is an $n$-opetope, then $\bnode(\O)$ is an $(n+1)$-opetope.
+<li>If $\O = (X,\sim,C)$ and $\O' = (X',\sim',C')$ are $n$-opetopes for $n \ge 1$, and
+we have a subset $S' \subseteq   C'_n \setminus C'_{n-1} $,
+and a bijection $h : (C_{n} \cap C_{n-1}) \cong S'$ preserving all relations up
+to dimension $n-2$, then $\bglue(\O, \O', h)$ is an opetope.
+</ul>
+
+
 <h2>Constructions on Preopetopes</h2>
-Here are a few ways to make preopetopes.
+
 
 <h3>Trivial</h3>
 There is a trivial $(-1)$-preopetope $\btriv = (\{*\}, \cdot, \cdot)$
@@ -118,19 +134,6 @@ Here's an example:
 <center><img src="glue.png"></center>
 What happens is that we delete all of the flags in the domain and codomain of $h$,
 and we "patch up" all of the binary relations as appropriate.
-
-<h2>Defining Opetopes</h2>
-We inductively define the conditions for an $n$-preopetope to be an $n$-opetope.
-We say:
-<ul>
-<li>$\btriv$ is an $(-1)$-opetope.
-<li>If $\O$ is an $n$-opetope, then $\bleaf(\bnode(\O))$ is an $(n+2)$-opetope.
-<li>If $\O$ is an $n$-opetope, then $\bnode(\O)$ is an $(n+1)$-opetope.
-<li>If $\O = (X,\sim,C)$ and $\O' = (X',\sim',C')$ are $n$-opetopes for $n \ge 1$, and
-we have a subset $S' \subseteq   C'_n \setminus C'_{n-1} $,
-and a bijection $h : (C_{n} \cap C_{n-1}) \cong S'$ preserving all relations up
-to dimension $n-2$, then $\bglue(\O, \O', h)$ is an opetope.
-</ul>
 
 <h2>Understanding Low-Dimensional Cases</h2>
 <h3>(-1)-Opetopes</h3>
