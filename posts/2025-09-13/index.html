@@ -161,9 +161,27 @@ I'm going to be even less formal and more suggestive in this section.
 2-opetopes correspond to planar trees.
 
 The leaf case is the construction $\bleaf(\bnode(\bnode(\btriv)))$.
-It looks like this:
+I'm going to depict it three ways:
+On the left is what it is as a preopetope.
+In the center is an interpretation of the same structure as a tree, thought of
+as a string diagram. On the right is it presented as a commutative diagram.
+All three are labelled suggestively with names for the cells involved.
+<center><img src="2-leaf.png"></center>
 
-    <a id="mark"></a>
+<p>
+There's one node construction available to us for each $1$-opetope.
+Here's a sketch of $\bnode(P_0), \bnode(P_1), \bnode(P_2), \bnode(P_3)$...
+with the same three columns showing preopetope, string diagram, and pasting diagram.
+<center><img src="2-node.png"></center>
+
+Let's consider an interestingly nontrivial example of gluing now.
+We'll glue a 0-ary node to a 3-ary node:
+<center><img src="2-glue.png"></center>
+
+<h2>Future Work</h2>
+The obvious thing to try to do here is prove this is equivalent to some well-known
+category of opetopes. Morphisms of the above structures would surely be maps of the carrier
+that preserve all relations.
   </body>
   <script>
 	 function go(body) { renderMathInElement( body, { strict: false,
