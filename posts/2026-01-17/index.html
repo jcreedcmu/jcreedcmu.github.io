@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>Graph Geometry</title>
+  </head>
+
+  <body>
+    <h1>Graph Geometry</h1>
+    A while back I made a post about "<a href="../2024-03-13/">algebraic geometry without the algebra</a>", which
+    in some sense is merely of thinking about the category ${\bf Set}^{\mathrm{op}}$. Recently I noticed
+    that you can do some fun stuff if you think about ${\bf Grph}^{\mathrm{op}}$, too.
+    <p/>
+    The basic intuitions come straight out of Yoneda-ish reasoning: an object can be understood in terms
+    of the maps into or out of it. It's normal to think of maps into an object as "parts" of it.
+    In the category of graphs, maps $1 \to G$ pick out the vertices of the graph $G$ (where $1$ is the one-vertex graph)
+    and maps ${\bf 2} \to G$ are equivalent to edges in $G$ (where ${\bf 2}$ is the one-edge graph).
+    <p/>
+    What it means to investigate ${\bf Grph}^{\mathrm{op}}$ is to dually understand maps <em>out of $G$</em> as somehow
+    representing <i>parts</i> of a mirror-universe version of $G$. The algebro-geometric thing to do is to call this mirror-twin
+    $\spec(G)$. In this case, a map $G \to H$ is the same thing as a map $\spec(H) \to \spec(G)$, a "$\spec(H)$-shaped point
+    in the space $\spec(G)$".
+    <h2>Real Points</h2>
+    This is all very abstract; we can make it more concrete.
+    Give the real numbers $\R$ a graph structure by putting an edge between every two distinct numbers.
+    This graph is irreflexive: there are no self-edges.
+    We write finite graphs as a set of their vertices, and write their edges suggestively as inequalities.
+    For example, we can write the graph
+    <center><img src="diagram0.png"></center>
+    as $\{x, y, z, x \ne y, x \ne z\}$.
+    <p/>
+
+    Let us ask: what are the graph homomorphisms from $\{x, y\}$, (the
+    two-vertex, zero-edge graph) to $\R$? We must choose a real number
+    destination for each of the two vertices. So we get the cartesian
+    plane.
+    <img src="diagram1.png">
+    The object $\spec(\R)$ is a "real-shaped point", and $\spec(\{x, y\})$ is a space that has an $\R^2$-worth of such "points" in it.
+    <p/>
+    What does the one-edge graph look like, as a space? To find out what its real points are,
+    we ask for the graph homomorphisms $\{x,y,x\ne y\} \to \R$. There are as many of these as there are points in the plane
+    minus the diagonal:
+    <img src="diagram2.png">
+    For to have a graph homomorphism from the one-edge graph to $\R$, we must sent $x$ and $y$ to different real numbers,
+    because we gave $\R$ the irreflexive complete graph structure.
+    <p/>
+    It should be the case that the "plane minus the diagonal" fits into "the whole plane".
+    There should be an inclusion map $\spec(\{x, y, x \ne y\}) \to \spec(\{x, y\})$.
+    But this is the same thing as a graph homomorphism $\{x, y\} \to \{x, y, x \ne y\}$. And that does exist!
+    It's just the inclusion of the two-vertex graph into the one-edge graph.
+    <p/>
+    What's special about this is that we can say it's the <i>complement</i> of the inclusion of the diagonal.
+    For comparison, that's the map from the two-element graph to the one-element graph.
+    Contravariantly, we see that the diagonal itself has the type $\spec(\{t\}) \to \spec(\{x, y\})$.
+    <center><img src="diagram3.png"></center>
+    In what sense is the plane-missing-the-diagonal the complement of the diagonal itself?
+    I'd like to adapt Definition 2.19
+    from <a href="https://adebray.github.io/lecture_notes/m392c_Raskin_AG_notes.pdf">these
+    algebraic geometry notes</a>. For this purpose I'll have to cheat and assume $\spec$ actually means
+    the yoneda embedding $G \mapsto \hom_{\mathbf{Grph}}(G, \hbox{---})$.
+    We want to say that if $h : \spec(Z) \to
+    \spec(X)$ is an inclusion of spaces (i.e. a morphism in $\mathbf{Grph}^{\mathrm{op}}$)
+    then the complement of $Z$ in $X$ is going to be the subspace of $\spec(X)$ that are the morphisms <em>incompatible</em>
+    with $h$.
+    <p>
+      So a graph homomorphism $f : Z \to G$ is considered to be in $X\setminus Z$ if and only if there does not
+      exist $H$ and suitable arrows making
+      \[\begin{CD}
+      Z @&gt;{f}&gt;&gt; G  \\
+      @V{h}VV @VV{}V\\
+      X @&gt;&gt;{}&gt; H \\
+      \end{CD}\]
+      a commutative square.
+
+      Now we have enough information to make the claim
+      <blockquote>
+        the graph homomorphism including $\{x, y\}$ into $\{x, y, x \ne y\}$
+        is the complement of the graph homomorphism taking $\{x, y\}$ to $\{t\}$.
+        In other words, it "really is" the plane minus the diagonal.
+      </blockquote>
+      It becomes:
+    <blockquote>
+      For any $G$, the graph homomorphisms $\{x, y\}$ to $G$ incompatible with $\{x, y\}$ to $\{t\}$
+      are in bijective correspondence to graph homomorphisms $\{x, y, x \ne y\}$ to $G$. Furthermore,
+      this bijection is compatible with composition with the map $\{x, y\}$ into $\{x, y, x \ne y\}$.
+    </blockquote>
+    <h2>Topology?</h2>
+    Because of the above reasoning, perhaps we can get away with saying that for any graph homomorphism
+    $h : G \to H$ we can say that $\spec(h) : \spec(H) \to \spec(G)$ is a closed embedding just in case
+    $h$ is simply carving out a subspace of $\spec(G)$ by imposing equations between variables... I think
+    this might be the same thing as requiring $h$ is a regular epimorphism, i.e. the coequalizer of some
+    pair of morphisms in $\mathbf{Grph}$?
+    <p/>
+    If we could do this, then we could say open embeddings are complements of closed embeddings, and maybe
+    start developing a notion of open cover, and "scheme" analogous to how the spaces discussed so far are like "affine schemes".
+
+    <h2>What does this have to do with Rings?</h2> I surmise that each
+    edge-forcing-an-inequality plays something like the role that $1
+    \ne 0$ plays in commutative algebra and algebraic geometry, but I
+    don't have any concrete way of saying this yet.
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+              "\\spec": "\\mathsf{Spec}",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
