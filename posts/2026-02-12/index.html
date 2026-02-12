@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      table.dictionary {
+        border-collapse: collapse;
+        margin: 1em 0;
+      }
+      table.dictionary th, table.dictionary td {
+        border: 1px solid #ccc;
+        padding: 4px 8px;
+        text-align: left;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>More Graph Geometry</title>
+  </head>
+
+  <body>
+    <h1>More Graph Geometry</h1>
+
+    I tried <a href="../posts/2026-01-17/">pushing on the thought I had before</a>
+    and seeing what ideas from algebraic geometry I could transport by replacing commutative
+    rings with graphs. Still not sure it's particularly useful, but it's a fun exercise!
+    <p/>
+    As a reminder, the setting is undirected graphs with no loops, and no multiple edges.
+    The main intuition I'm squeezing is trying to pay attention to when we care, in algebraic geometry
+    about the two concepts of <b>equality with zero</b> and <b>invertibility</b> and to replace them
+    with <b>merging two vertices</b> and <b>putting an edge between two vertices</b> in a graph.
+    We don't have any distinguished notion of zero among the vertices of a graph, so equality with zero
+    gets replaced by equality between any two vertices, and invertibility (which is a kind of "evidence of apartness from zero")
+    is replaced by some kind of evidence for apartness, which I'm choosing to represent as graph edges
+    <p/>
+    The fact that edges are supposed to mean apartness/disjointness is reflected by the fact that I demanded there
+    aren't any loop edges in the graphs.
+
+    <h2>The Dictionary So Far</h2>
+    Here's an attempt at building up a little dictionary of familiar concepts in AG and some alleged analoges in graph theory.
+    The first question I started with was, ok, what do prime ideals of a ring become?
+    <a href="https://mastodon.social/@jcreed/116018331320350492">It makes sense to me to see a prime ideal as</a> saying
+    "I want to force these elements (the elements in the ideal) to be equal to zero, and all other elements to be invertible".
+    <p/>
+    I figured maybe the graph analog of that is "consistent
+    partition", i.e. a partition of its vertex set into blocks such
+    that no edge connects two vertices in the same block. It's a set
+    of equations we can consistently force, without running afoul of
+    any edge that asserts inequality, and also assert inequality of
+    everything else
+
+    <table class="dictionary">
+      <tr><th>Algebraic Geometry</th><th>Graph Theory</th></tr>
+      <tr><td>Commutative ring $R$</td><td>Graph $G$</td></tr>
+      <tr><td>Ring hom $R \to S$</td><td>Graph hom $G \to H$</td></tr>
+      <tr><td>Ideal $\mathfrak{a} \subseteq R$</td><td>Set of potential edges $S$ on vertex set $V(G)$</td></tr>
+      <tr><td>Quotient $R/\mathfrak{a}$</td><td>Contraction $G/S$</td></tr>
+      <tr><td>Localization $R[f^{-1}]$</td><td>Edge addition $G \cup \{e\}$</td></tr>
+      <tr><td>Prime ideal $\mathfrak{p} \subseteq R$</td><td>Consistent partition $K$ of $G$</td></tr>
+      <tr><td>$\mathfrak{p}_1 \supseteq \mathfrak{p}_2$ (specialization)</td><td>$K_1$ is coarser than $K_2$</td></tr>
+      <tr><td>Generic point $(0)$</td><td>Discrete partition (every vertex in its own block)</td></tr>
+    </table>
+
+    These partitions can be seen as colorings, except quotiented out by the coloring set.
+    This means that the natural analog of a maximal ideal is a graph minimal in this specialization order, and is a way
+    of identifying a minimal coloring of a graph. Since we can build up a chain of progressively coarser and coarser partitions
+    on the way to a maximal ideal, the "Krull dimension" of a graph has the same information as its chromatic number! That's kind of neat.
+    <table class="dictionary">
+      <tr><th>Algebraic Geometry</th><th>Graph Theory</th></tr>
+      <tr><td>Maximal ideal</td><td>Minimal coloring (can't merge any two blocks)</td></tr>
+      <tr><td>Krull dimension</td><td>$|V(G)| - \chi(G)$</td></tr>
+    </table>
+
+    I think the thing that plays the role of fields is complete graphs. In a field everything that can be invertible (which
+    excludes zero) is invertible,
+    and in a complete graph, every edge that can exist, (which excludes self-edges) does exist.
+    The "residue field" of a "prime ideal" is what we get by contracting every required contraction in the partition,
+    and adding edges everywhere else: it's the complete graph on the set of blocks in the partition.
+    The local ring $R_\mathfrak{p}$ is what we get if we invert everything outside the prime ideal,
+    so in graphs it should be what we get if we add edges between any two vertices that aren't in the same block,
+    so a complete multipartite graph. Working "over a field $\mathbb{k}$" becomes working over
+    <table class="dictionary">
+      <tr><th>Algebraic Geometry</th><th>Graph Theory</th></tr>
+      <tr><td>Field</td><td>Complete graph $K_n$</td></tr>
+      <tr><td>Residue field $\kappa(\mathfrak{p})$</td><td>$K_{|K|}$ (the complete graph on as many vertices as $K$ has blocks)</td></tr>
+      <tr><td>Local ring $R_\mathfrak{p}$</td><td>Complete multipartite graph arising from $K$</td></tr>
+    </table>
+
+    <h2>The Spectrum</h2>
+    We can try to recapitulate the construction of the spectrum as a locally ringed space in AG, instead constructing a "locally graphed space".
+    <p/>
+    Given a graph $G$, define $\mathsf{Spec}(G)$ as a topological space whose points are consistent partitions of $G$.
+    The topology is generated by basic closed sets: for each pair of vertices $i, j$,
+    $$V(i\text{---} j) = \{ K \in \mathsf{Spec}(G) : K \text{ places } i \text{ and } j \text{ in the same block} \}$$
+    The complementary basic open sets are
+    $$D(i\text{---}j) = \{ K \in \mathsf{Spec}(G) : K \text{ places } i \text{ and } j \text{ in different blocks} \}$$
+    The open set $D(i\text{---}j)$ is the locus where the inequality demanded by the edge $i\text{---}j$ is respected,
+    analogous to the Zariski basic open $D(f)$, the locus where $f$ is nonzero.
+
+    <h2>The Structure Sheaf</h2>
+    For any open $U \subseteq \mathsf{Spec}(G)$, define $\mathcal{O}(U)$ to be the graph on vertex set $V(G)$ with edge set
+    $$E(G) \;\cup\; \{ i\text{---}j : \text{every partition in } U \text{ separates } i \text{ and } j \}$$
+    Smaller opens have more edges, just as smaller opens in Zariski have more invertible elements. Restriction maps are edge-inclusion homomorphisms. This is a sheaf: an edge belongs to $\mathcal{O}(U)$ iff it belongs to $\mathcal{O}(U_\alpha)$ for every element of a cover.
+    <p/>
+    Global sections recover the graph, as we'd expect: $\mathcal{O}(\mathsf{Spec}(G)) = G$.
+    <p/>
+    Stalks are complete multipartite graphs. The stalk $\mathcal{O}_K$ at a coloring $K$ is the complete multipartite graph on the blocks of $K$.
+
+
+    <h2>The Chromatic Polynomial as Point-Counting</h2>
+    A graph homomorphism $G \to K_k$ is exactly a $k$-coloring of $G$, a function to $k$ colors. So
+    if we instead adopted a functorial view of $\mathsf{Spec}$, we'd have a nice expression for the chromatic polynomial of $G$:
+    $$P(G, k) = |\mathsf{Hom}(G, K_k)| = |\mathsf{Spec}(G)(K_k)|$$
+   The chromatic polynomial is the point-counting function evaluated at the "field" $K_k$, which seems
+   analogous to $|\mathsf{X}(\mathbb{F}_q)|$ for a scheme $X$.
+
+
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\C": "{\\mathbb C}",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+                        setTimeout(() => jump('mark'), 400);
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
