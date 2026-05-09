@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+.block {
+  margin-left: 4em;
+}
+    </style>
+    <title>A Proof-Irrelevant Tiny Object</title>
+  </head>
+
+  <body>
+    <h1>A Proof-Irrelevant Tiny Object</h1>
+<h2>Motivation</h2>
+    I was enjoying reading Mitchell Riley's
+    "<a href="https://arxiv.org/abs/2403.01939">A Type Theory with a
+    Tiny Object</a>" the other day.
+<p>
+It describes a type theory where you have a type $\T$ where you get a sequence
+of three adjoint functors:
+  \[ (\T \x \dash) \adjoint (\T \to \dash) \adjoint \sqrt{}\]
+It's kind of unusual in general that a type $\T$ should have a right adjoint to its function space like this;
+it's sometimes called an <a href="https://ncatlab.org/nlab/show/amazing+right+adjoint">Amazing Right Adjoint</a>.
+
+<h2>Presheaf Category over the Arrow</h2>
+ I started wondering what would happen to the syntax of the type theory
+ if we examined a special case of this situation; in particular
+    the very special case where we're imagining the "intended model"
+    being $\mathsf{Type}^{\bullet \to \bullet}$ and $\T$ is
+    specifically the functor $0 \to 1$.
+<p>
+Mostly I was wondering; would it get simpler and nicer somehow?
+    <p>
+      In this setting, we're living inside a "big" type theory where every type is a function $f : A \to B$
+      from one "ordinary" type to another. Since $\T = 0 \to 1$, we can explicitly compute some of these functors:
+  <div style="display:grid; grid-template-columns: max-content auto; gap: 0 0.5em;">
+    <div>The functor $\T \x \dash$ takes $f : A \to B$ to</div><div>the unique arrow $0 \to B$.</div>
+    <div>The functor $\T \to \dash$ takes $f : A \to B$ to</div><div>the identity  $B \to B$.</div>
+    <div>The functor $\sqrt{}$ takes $f : A \to B$ to</div><div>the identity  $A \to A$.</div>
+  </div>
+and in this special case there's an additional right adjoint to $\sqrt{}$, call it $U$;
+  <div style="display:grid; grid-template-columns: max-content auto; gap: 0 0.5em;">
+    <div>The functor $U$ takes $f : A \to B$ to</div><div>the unique arrow  $A \to 1$.</div>
+  </div>
+  which makes for a very pleasing sequence of four adjoint functors.
+<p>
+Also in this setting $\T$ is a "mere proposition", i.e. its terms are "proof irrelevant". Any two
+functions into $\T$ are equal, despite it not being the terminal object of its category.
+So this is quite a special case!
+
+<h2>Proof Irrelevance</h2>
+Setting aside the functors $\sqrt{}$ and $U$, we can start exploring how Riley's system would react
+to just forcing $\T$ to be proof irrelevant. I think we can dispense with most of the context-locking mechanisms,
+and just keep track of whether each hypothesis "is locked" or not independently.
+    <p>
+As a general warning, the following bit of the story is pretty sketchy and extremely mutually recursive and full of forward references.
+<p>
+In fact, what I want to do is start with the idea that there
+are <b>two</b> distinct languages syntactically, one of which is the "main"
+type theory, and another one is the shadow of that theory after we've
+assumed at least some term of type $\T$ exists. This "reduced" or "erased" type theory is going to look pretty
+much like ordinary dependent type theory,
+\[\begin{array}{rlcl} \textrm{Erased Contexts} & \Gamma_0 &\cc=& \cdot \celse \Gamma_0, x : A_0 \\
+ \textrm{Erased Types} & A_0 &\cc=& \cdots \\
+  \textrm{Erased Terms} & M_0 &\cc=& \cdots \end{array}\]
+and then the "main" type theory we care about has some extra features on top of normal dependent type theory:
+\[\begin{array}{rlcl} \textrm{Contexts} & \Gamma &\cc=& \cdot \celse \Gamma, x : A \celse \Gamma, x :: A_0 \\
+ \textrm{Types} & A &\cc=& \cdots \celse \T \\
+  \textrm{Terms} & M &\cc=& \cdots \end{array}\]
+
+This new context former $x :: A_0$ is analogous to the locking that Riley is doing; intuitively
+a variable $x :: A_0$ has a type something like $\T \to A_0$. It's "locked behind" needing to provide a term
+of type $\T$. This is how we should eventually be able to give formation and introduction rules for $\sqrt{}$,
+by judgmentally applying its left adjoint $\T \to \dash$ to the context.
+<p>
+But before we even get to that point, we can think about how to even set up the context formation rule for $x :: A_0$.
+We posit:
+  \[{\vdash \Gamma\ \ms{ctx} \qquad \Gamma^0 \vdash A_0 : \ms{type} \over \vdash (\Gamma, x \cc A_0)\ \ms{ctx}}\]
+Using an operation $\Gamma \mapsto \Gamma^0$ that we haven't defined yet, whose purpose is to take a "main" $\Gamma$
+to an erased one. The idea is that to the extent that $x :: A_0$ is like $x : \T \to A_0$, the context
+in which $A_0$ makes sense is $\Gamma$ <em>extended</em> with a term of type $\T$, i.e. something like $\Gamma, t : \T$.
+This is morally what $\Gamma^0$ is supposed to be: the moment we assume a term of type $\T$ exists, various of things collapse.
+For example, assumptions $x :: A_0$ become ordinary assumptions $x : A_0$,
+because the obligation to come up with a term of type $\T$  to unlock them is now satisfied.
+    <p>
+Here's a definition of a few of the more interesting cases of erasure:
+    <div class="block">
+      $(\Gamma, x : A)^0 = (\Gamma^0, x : A^0)$<br>
+      $(\Gamma, x \cc A_0)^0 = (\Gamma^0, x : A_0)$<br>
+      $(x\llbracket t \rrbracket)^0 = x$<br>
+      $(x)^0 = x$
+    </div>
+This mentions a term former we haven't discussed yet. There is a special term former for locked variables, whose
+typing rule is:
+    \[{\Gamma \vdash t : \T \qquad x \cc A_0 \in \Gamma \over \Gamma \vdash x\llbracket t \rrbracket : A_0[t \star \Gamma]}\]
+We can 'unlock' locked variables by actually providing a term of type $\T$.
+We impose definitional proof irrelevance of these terms: $x\llbracket t \rrbracket \equiv x\llbracket t' \rrbracket$ for all $t, t'$.
+This evidence is in fact erased by the erasure we defined immediately above.
+    </p>
+
+    <h3>The Rehydrating Substitution</h3>
+The immediately preceding variable typing rule introduces another piece of syntax, $[t \star \Gamma]$, which
+corresponds to a substitution principle that can hoist expressions (terms, types, contexts)
+from erased back to unerased, provided a term $t$. As a term function, this consists mostly of boring homomorphism cases
+like
+\[ (M N)[t\star \Gamma] = M[t\star \Gamma]\ N[t\star \Gamma])\]
+\[ (\lambda x . M)[t\star \Gamma] = \lambda x . (M[t\star \Gamma])\]
+    </p>
+The most interesting cases are when the subject of the substitution is a variable:
+ \[x[t \star \Gamma] = \begin{cases} x & \text{if } x : A \in \Gamma \\ x\llbracket t \rrbracket & \text{if } x
+  \cc A \in \Gamma \end{cases}\]
+What's happening here is that if $x$ was a locked variable originally, we put back in the "key" term $t$.
+<h3>Correctness Lemmas</h3>
+Having defined a bunch of things mutually recursively, let's now try to prove some of them make sense.
+
+  <hr><b>Lemma</b>: <i>Rehydrating substitution followed by erasure is the identity.
+    <div class="block">
+       $A_0 \equiv (A_0[t \star \Gamma])^0$<br>
+      $M_0 \equiv (M[t \star \Gamma])^0$
+    </div></i>
+ <br><b>Proof</b>:<br>
+The interesting case is the variable. Suppose $M_0 = x$ for $x ::A_0 \in \Gamma$.
+ Then $ M[t \star \Gamma] = x\llbracket t \rrbracket$ and $(M[t \star \Gamma])^0 = x$ as required. $\cqed$
+
+  <hr><b>Lemma</b>: <i>Erasure followed by the rehydrating substitution is the identity.
+ Suppose we have a term $\Gamma \vdash t : \T$. Then:
+    <div class="block">
+      if $\Gamma \vdash A : \ms{type}$, then $A \equiv A^0[t \star \Gamma]$<br>
+      if $\Gamma \vdash M : A$, then $M \equiv M^0[t \star \Gamma]$
+    </div></i>
+ <br><b>Proof</b>:<br>
+The interesting case is the variable.    Suppose $M = x\llbracket t' \rrbracket$ and $\Gamma = \Gamma_1, x \cc A_0, \Gamma_2$. Then we have
+
+    \[{\Gamma \vdash t' : \T \qquad x \cc A_0 \in \Gamma \over \Gamma \vdash x\llbracket t' \rrbracket : A_0[t \star \Gamma]}\]
+
+    We observe that the erasure is $M^0 = x$, and the erasure followed by rehydrating is
+    $M^0[t \star \Gamma] = x[t \star \Gamma] = x\llbracket t \rrbracket$.
+    So our obligation is to prove $x\llbracket t' \rrbracket \equiv x\llbracket t \rrbracket$, but this is true
+    by the definitional proof irrelevance we postulated. $\cqed$
+
+     <hr><b>Lemma</b>: <i>The rehydrating substitution is well-typed.
+
+    \[{\Gamma \vdash t : \T \qquad \Gamma^0 \vdash A_0 : \ms{type} \over \Gamma \vdash A_0[t \star \Gamma] : \ms{type}}\]
+
+    \[{\Gamma \vdash t : \T \qquad \Gamma^0 \vdash M_0 : A_0 \over \Gamma \vdash M_0[t \star \Gamma] : A_0[t \star \Gamma]}\]
+</i> <br><b>Proof</b>:<br>
+Again the variable cases are the interesting ones.
+<p>    Suppose $M_0 = x$ and $\Gamma = \Gamma_1, x \cc A_0, \Gamma_2$. Then we have
+    <div class="block">
+      $\Gamma \vdash t : \T \qquad \Gamma_1^0, x \cc A_0, \Gamma_2^0 \vdash x : A_0$
+    </div>
+    <p>and we're trying to show</p>
+    <div class="block">
+      $\Gamma_1, x \cc A_0, \Gamma_2 \vdash x\llbracket t \rrbracket : A_0[t \star \Gamma]$
+    </div>
+    <p>This follows immediately from the variable rule.</p>
+
+    <p>
+    Suppose instead that $M_0 = x$ for $\Gamma = \Gamma_1, x : A, \Gamma_2$. Then we have
+    </p>
+    <div class="block">
+      $\Gamma \vdash t : \T \qquad \Gamma_1^0, x : A^0, \Gamma_2^0 \vdash x : A^0$
+    </div>
+    <p>and we must show</p>
+    <div class="block">
+      $\Gamma \vdash x : A^0[t \star \Gamma]$
+    </div>
+    <p>
+    For this it suffices to show $A \equiv A^0[t \star \Gamma]$, which we have by the previous lemma. $\cqed$
+    </p>
+
+     <hr><b>Lemma</b>: <i>Erasure is well-typed.</i>
+<br><b>Proof</b>:<br>
+<ol>
+    <li> if $\vdash \Gamma\ \ms{ctx}$, then $\vdash \Gamma^0\ \ms{ctx}$<br>
+    <li> if $\Gamma \vdash A : \ms{type}$, then $\Gamma^0 \vdash A^0 : \ms{type}$<br>
+    <li> if $\Gamma \vdash M : A$, then $\Gamma^0 \vdash M^0 : A^0$
+</ol>
+
+    <p>1.</p>
+
+    <p>Suppose we have</p>
+
+    \[{\vdash \Gamma\ \ms{ctx} \qquad \Gamma^0 \vdash A_0 : \ms{type} \over \vdash (\Gamma, x \cc A_0)\ \ms{ctx}}\]
+
+    <p>then we can show</p>
+
+    \[{\vdash \Gamma^0\ \ms{ctx} \qquad \Gamma^0 \vdash A_0 : \ms{type} \over \vdash (\Gamma^0, x : A_0)\ \ms{ctx}}\]
+
+    <p>3.</p>
+
+    <p>Suppose $\Gamma = \Gamma_1, x :: A_0, \Gamma_2$, and $M = x\llbracket t\rrbracket$. Then we have
+
+    \[{\Gamma \vdash t : \T \qquad x \cc A_0 \in \Gamma \over \Gamma \vdash x\llbracket t \rrbracket : A_0[t \star \Gamma]}\]
+
+    <p>
+    and we need to show $\Gamma^0 \vdash x : (A_0[t \star \Gamma])^0$, so we need $x : (A_0[t \star \Gamma])^0 \in \Gamma^0$,
+    hence we need $(A_0[t \star \Gamma])^0 \equiv A_0$, but we have this by earlier lemma. $\cqed$
+    </p>
+
+    <h3>Defining the lock operation</h3>
+
+    <p>
+    Now I want to define an operation $\Gamma^🔒$ that takes a $\Gamma$ and makes everything in it locked behind the
+    $::$ context-former.
+    We define it as follows:
+
+    <div class="block">
+      $(\cdot)^🔒 = \cdot$<br>
+      $(\Gamma, x : A)^🔒 = (\Gamma^🔒, x \cc A^0)$<br>
+      $(\Gamma, x \cc A_0)^🔒 = (\Gamma^🔒, x \cc A_0)$
+    </div>
+
+If a hypothesis is already locked, don't do anything. Otherwise, lock it and erase the type.
+
+    <hr><b>Lemma</b>: <i>Locking then erasing is the same thing as erasing.
+\[(\Gamma^🔒)^0 \equiv \Gamma^0\]
+</i>
+<br><b>Proof</b>:<br>
+    <p><b>Case</b>: Suppose we have $(\Gamma, x : A)$.
+ \[((\Gamma, x : A)^🔒)^0 = (\Gamma^🔒, x \cc A^0)^0 = ((\Gamma^🔒)^0, x : A^0)\]
+\[ = (\Gamma^0, x : A^0) = (\Gamma, x : A)^0 \]
+    <p><b>Case</b>:Suppose we have $(\Gamma, x \cc A_0)$.
+ \[((\Gamma, x \cc A_0)^🔒)^0 = (\Gamma^🔒, x \cc A_0)^0 = ((\Gamma^🔒)^0, x : A_0)\]
+\[ = (\Gamma^0, x : A_0) = (\Gamma, x :: A_0)^0 \]
+
+     <hr><b>Lemma</b>: <i>Locking is well-typed.
+If $\vdash \Gamma\ \ms{ctx}$, then $\vdash \Gamma^🔒\ \ms{ctx}$.</i>
+<br><b>Proof</b>:<br>
+
+    <p><b>Case</b>: Suppose we have</p>
+
+    \[{\vdash \Gamma\ \ms{ctx} \qquad \Gamma \vdash A : \ms{type} \over \vdash (\Gamma, x : A)\ \ms{ctx}}\]
+
+    <p>then use the i.h. to get $\vdash \Gamma^🔒\ \ms{ctx}$, and the well-typedness of erasure to get
+$\Gamma^0 \vdash A^0 : \ms{type}$ and apply the previous lemma and the rule
+    \[{\vdash \Gamma^🔒\ \ms{ctx} \qquad (\Gamma^🔒)^0 \vdash A^0 : \ms{type} \over \vdash (\Gamma^🔒, x \cc A^0)\ \ms{ctx}}\]
+
+
+
+    <p><b>Case</b>: Suppose we have</p>
+
+    \[{\vdash \Gamma\ \ms{ctx} \qquad \Gamma^0 \vdash A_0 : \ms{type} \over \vdash (\Gamma, x \cc A_0)\ \ms{ctx}}\]
+
+      <p>then use the i.h. to get $\vdash \Gamma^🔒\ \ms{ctx}$, and use the previous lemma and rule
+
+    \[{\vdash \Gamma^🔒\ \ms{ctx} \qquad(\Gamma^🔒)^0 \vdash A_0 : \ms{type} \over \vdash (\Gamma^🔒, x \cc A_0)\ \ms{ctx}}\]
+
+    <p>to finish. $\cqed$ </p>
+
+
+
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\dash": "\\hbox{---}",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\T": "{\\mathbb T}",
+              "\\adjoint": "\\dashv",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathrel\\mathbf{unpack}",
+		        "\\bin": "\\mathrel\\mathbf{in}\\,",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
