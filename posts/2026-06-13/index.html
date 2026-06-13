@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>A Simpler Proof-Irrelevant Tiny Object</title>
+  </head>
+
+  <body>
+    <h1>A Simpler Proof-Irrelevant Tiny Object</h1>
+   I had some more thoughts about <a href="../2026-05-09">my previous post</a>. Here's a sketch of a little type theory
+    with one built-in type $\T$, and two modalities $\surd$ and $\blat$. It's simpler than the last post in two ways:
+first, that we only need to work in one language and not two, and second, that there are way fewer substitution principles involved,
+and so fewer lemmas to check about substitutions being compatible with one another. We push a bit more complexity into the structure
+of contexts, but I think it's a net win.
+
+<h2>Language</h2>
+Here's the language:
+
+\[\begin{array}{rlcl} \textrm{Contexts} & \Gamma &\cc=& \cdot \celse \emptyset \celse \Gamma, x : A \celse
+\Gamma, x :: A\celse \Gamma, x \div  A \celse \Gamma, \star \\
+ \textrm{Types} & A &\cc=& \cdots \celse \T \celse \surd A \celse \blat A \\
+  \textrm{Terms} & M &\cc=& \cdots
+ \celse \star \celse \blet \star = M \bin N
+ \celse \mathbf{in}_\surd M \celse \mathbf{el}_\surd M
+ \celse \mathbf{in}_\blat M \celse \mathbf{el}_\blat M
+ \end{array}\]
+
+A context can be empty $\cdot$ or it can be intrinsically contradictory $\emptyset$, and can be extended invarious ways.
+There are normal hypotheses $x : A$, and both <b>strong</b> $x :: A$ and <b>weak</b> $x \div A$ modal hypotheses. This notation
+is inspired by [<a href="https://www.cs.cmu.edu/~fp/papers/mtt01.pdf">Pfenning '01</a>], though don't take it too literally;
+in my case it's not the $\div$-hypotheses where proof-irrelevance shows up.
+<p>
+There's also the possibility of adding a marker $\star$ to a context.
+This <b>is</b> in fact where the proof irrelevance shows up! The
+presence or absence of $\star$ in a context is all that matters, and
+that's why I don't even give it a variable name. It's merely a marker:
+I say that $\Gamma, \star$ is definitionally equal to $\Gamma, \star,
+\star$, and also we understand there to be an exchange property, that
+$\star$ is mobile and can commute around other hypotheses in $\Gamma$
+without any discernible difference.
+
+<h2>The Dream</h2>
+With this vocabulary at least named, I can say what my motivation is. Perhaps with the right apparatus
+I can, internally to this type theory, prove things that feel like parametricity theorems.
+In particular, one thing I'm working up to convincing myself of is that there is, for any types $A$ and $B$,
+ an isomorphism between
+\[ \surd(A \to B) \]
+and the dependent record type
+\[ \begin{array}{l}
+\{\\
+\qquad f : (\T \to A) \to (\T \to B),\\
+\qquad g : \surd A \to \surd B,\\
+\qquad p : (a : \surd A) \to \lambda t . \mathbf{el}_\surd(g\ a) \equiv f\ (\lambda t.\mathbf{el}_\surd\ a)\\
+\}
+\end{array}
+\]
+The intuition I have for this isomorphism is that having a term of type $\surd(A \to B)$ is like having
+a nice, closed, parametric term of type $A \to B$. The dependent record type is then an unpacking of what
+this is supposed to mean: $f$ is the underlying function. The type operator $\T \to \hbox{---}$ is, for reasons
+that I haven't made clear yet, interpreted as taking a "type that comes equipped with a parametricity relation"
+and yielding the underlying type. The function $g$ is the data of the parametricity property of the function:
+it says that if we have a "nice" $A$, i.e. an element of $\surd A$, then we map it to a nice $B$. The equation
+$p$ then says that $f$ and $g$ are compatible: $g$'s mapping of nice $A$s to nice $B$s actually correspond's
+to $f$'s mapping of arbitrary underlying $A$s to arbitrary underlying $B$s.
+<p>
+Thus the dream is that this idea could not only be achieved but extended to the ability to internally
+reason about types like
+\[ \surd((X : \rtype) \to X \to X \]
+\[ \surd((X : \rtype) \to (X \to X) \to X \to X) \]
+etc. and say something interesting about how they must contain identity functions or church numerals or the like, perhaps
+under additional assumptions about the types they are applied to.
+<h2>Context Operations</h2>
+We have a couple of operations that take a context and yield a context: $\Gamma^\ominus$ demotes all $x : A$ to
+merely $x \div A$, and $\Gamma^\oplus$ promotes all $x : A$ to $x :: A$.
+Demotion deletes $\star$, and promotion yields a contradictory context if it encounters a $\star$.
+<div style="display: flex; flex-direction: row; gap: 3em; ">
+    <div class="block">
+      $(\Gamma, x : A)^\ominus = (\Gamma^\ominus, x \div A)$<br>
+      $(\Gamma, x :: A)^\ominus = (\Gamma^\ominus, x :: A)$<br>
+      $(\Gamma, x \div A)^\ominus = (\Gamma^\ominus, x \div A)$<br>
+      $(\Gamma, \star)^\ominus = \Gamma^\ominus$<br>
+    </div>
+    <div class="block">
+      $(\Gamma, x : A)^\oplus = (\Gamma^\oplus, x :: A)$<br>
+      $(\Gamma, x :: A)^\oplus = (\Gamma^\oplus, x :: A)$<br>
+      $(\Gamma, x \div A)^\oplus = (\Gamma^\oplus, x \div A)$<br>
+      $(\Gamma, \star)^\oplus = \emptyset$<br>
+    </div>
+</div>
+
+<h2>Context Formation</h2>
+\[
+{\prov \Gamma \rctx \qquad \Gamma \prov A : \rtype
+\over
+\prov (\Gamma, x : A)\rctx}
+\qquad
+{\prov \Gamma \rctx \qquad \Gamma^\ominus \prov A : \rtype
+\over
+\prov (\Gamma, x :: A)\rctx}
+\qquad
+{\prov \Gamma \rctx \qquad \Gamma, \star \prov A : \rtype
+\over
+\prov (\Gamma, x \div A)\rctx}
+\]
+<h2>Variable Typing</h2>
+When can we use a variable? Here are the rules.
+\[
+{x :A \in \Gamma
+\over
+\Gamma \prov x : A}
+\qquad
+{x :: A \in \Gamma
+\over
+\Gamma \prov x : A}
+\qquad
+{x \div A \in \Gamma \qquad \star \in \Gamma
+\over
+\Gamma \prov x : A}
+\]
+Normal hypotheses can be used normally. Strong hypotheses $x :: A$ can <i>also</i> be used normally; the way
+in which their strength is visible is not directly through the variable rule, but rather by how they interact with
+the context operation $\Gamma^\ominus$: strong hypotheses are resilient to being hit by $\Gamma^\ominus$, whereas normal
+hypotheses get demoted. Weak hypotheses can only be used if there is also a $\star$ marker currently in the context.
+Considering terminology of prior work with locks and keys, the $\star$ can be thought of as the "key" that "unlocks" $x \div A$,
+but we don't include any trace of this fact in the term language. I think that we can get away with this only because of the
+proof-irrelevance of the tiny object we're working with.
+<h2>Term Typing for Tiny Object</h2>
+Now we can give the intro and elim rules for the tiny type $\T$, which internalizes $\star$.
+\[
+{\star \in \Gamma
+\over
+\Gamma \prov \star : \T}
+\qquad
+{
+\Gamma \prov M : \T \qquad \Gamma, \star \prov N : A
+\over
+\Gamma \prov \blet \star = M \bin N : A}
+\]
+We can introduce $\T$ whenever $\star$ is in the context, and if we have a term of type $\T$,
+then we can eliminate it and build the remaining continuation assuming that we have $\star$ in the context.
+We have $\beta$ and $\eta$ equalities like so:
+\[\blet \star = \star \bin M \mapsto_\beta M \qquad (M : \T) \mapsto_\eta \blet \star = M \bin \star\]
+<h2>Term Typing for $\surd$</h2>
+\[
+{
+ \Gamma^\ominus \prov M : A
+\over
+\Gamma \prov \mathbf{in}_\surd\  M  : \surd A
+}
+\qquad
+{
+\Gamma, \star \prov M : \surd A
+\over
+\Gamma \prov \mathbf{el}_\surd\ M  : A
+}
+\]
+Somehow $\surd$ is kind of like a modal $\square$: $\surd A$ is stronger than $A$.
+The intro rule for $\surd$ is unlike a Pfenning-Davies $\square$, though, in that it doesn't
+<i>delete</i> every nonmodal hypothesis in the context on the way up, but it does <i>demote</i> them.
+Then in the elimination rule, because $\surd A$ is stronger than $A$,
+we grant a favor to the prover trying to eliminate from a $\surd$:
+if you can prove $\surd A$ even in a more permissive context that comes with a key (i.e. includes $\star$),
+you're allowed to conclude $A$.
+<p>
+These rules witness that $\T \to \dash \dashv \surd$: Applying $\dash^\ominus$ to the context is like
+hitting it with $\T \to \dash$, and the elimination rule is morally the counit $(\T \to \surd A) \to A$.
+<p>
+We have $\beta$ and $\eta$ equalities like so:
+\[\mathbf{el}_\surd\  \mathbf{in}_\surd\  M \mapsto_\beta M \qquad M \mapsto_\eta \mathbf{in}_\surd\  \mathbf{el}_\surd\  M\]
+<h2>Term Typing for $\blat$</h2>
+\[
+{
+ \Gamma^\oplus \prov M : A
+\over
+\Gamma \prov \mathbf{in}_\blat\  M  : \blat A
+}
+\qquad
+{
+\Gamma^\ominus \prov M : \blat A
+\over
+\Gamma \prov \mathbf{el}_\blat\ M  : A
+}
+\]
+The modality $\blat$ is a monad. $\blat A$ is weaker than $A$. So in the introduction rule,
+we give the prover more power. If you can prove $A$ in the promoted context $\Gamma^\oplus$,
+then that's good enough for $\blat A$. Conversely, we take away some power when eliminating.
+If you can prove the easier goal $\blat A$ in the more challenging environment $\Gamma^\ominus$,
+then that's good enough to establish $A$.
+<p>
+These rules witness that $  \surd \dashv \blat$: Applying $\dash^\oplus$ to the context is like
+hitting it with $\surd$, and the elimination rule is morally the counit $( \surd \blat A) \to A$.
+<p>
+We have $\beta$ and $\eta$ equalities like so:
+\[\mathbf{el}_\blat\  \mathbf{in}_\blat\  M \mapsto_\beta M \qquad M \mapsto_\eta \mathbf{in}_\blat\  \mathbf{el}_\blat\  M\]
+<h2>Steps Toward the Dream</h2>
+<h3>Easy Direction</h3>
+The easier direction is taking some function $h : \surd(A \to B)$ and trying to hack up the dependent record type I mentioned earlier.
+\[ \begin{array}{l}
+f : (\T \to A) \to (\T \to B)\\
+f\ k\ t\ = (\mathbf{el}_\surd\ h)\ (k\ t)\\
+\\
+g : \surd A \to \surd B\\
+g\ a = \mathbf{in}_\surd\ ((\mathbf{el}_\surd\ h)\ (\mathbf{el}_\surd\ a)) \\
+\end{array}
+\]
+and then if I focus on the equation I need for
+\[
+p : (a : \surd A) \to \lambda t . \mathbf{el}_\surd(g\ a) \equiv f\ (\lambda t.\mathbf{el}_\surd\ a)\\
+\]
+I can see that by function extensionality it's
+\[
+a : \surd A, t : \T \prov   \mathbf{el}_\surd(g\ a) \equiv f\ (\lambda t.\mathbf{el}_\surd\ a)\ t\\
+\]
+and then after substituting the definition of $f$ and $g$ I just gave,
+\[
+a : \surd A, t : \T \prov   \mathbf{el}_\surd(\mathbf{in}_\surd\ ((\mathbf{el}_\surd\ h)\ (\mathbf{el}_\surd\ a))) \equiv  (\mathbf{el}_\surd\ h)\ ((\lambda t.\mathbf{el}_\surd\ a)\ t) \\
+\]
+but by a $\sqrt\beta$ and an ordinary $\lambda\beta$ reduction, this is
+\[
+a : \surd A, t : \T \prov    (\mathbf{el}_\surd\ h)\ (\mathbf{el}_\surd\ a) \equiv  (\mathbf{el}_\surd\ h)\ (\mathbf{el}_\surd\ a) \\
+\]
+which is reflexivity.
+<h3>Hard Direction</h3>
+The harder direction is showing that the dependent record type is sufficient to reconstruct a $\surd (A \to B)$,
+not to mention the obligation of showing these two directions are mutually inverse, which I'm not going to attempt
+yet. For this I think I need a new rule or principle or something. Conjecturally, I like the following idea a lot:
+\[
+\Gamma, \star \prov M : B\qquad \Gamma^\oplus \prov N : B \qquad \Gamma^\oplus, \star \prov M \equiv N : B
+\over
+\Gamma \prov \langle\!\langle M, N\rangle\!\rangle : B
+\]
+This is saying in one sense that: If you can build a term $M$ with a bit of extra help (namely $\star$)
+and you can also build a term $N$ with a different bit of extra help (namely that the context has been promoted),
+and if those terms are really the same term if you weaken both of them to include <i>both</i> kinds of help,
+then we should be able to make a real term by pairing them together.
+<p>
+Examining the semantics that I haven't described yet,
+this is also saying that if I can build a term at "the underlying level" (under an assumption of $\star$),
+and "at the parametricity relation level" (under a promoted context), and the two are compatible, then I get
+a real full term of type $B$. This is a way of gluing together a pair of morphisms that form a commutative
+square into a genuine morphism in the presheaf category.
+<p>
+But it's obviously problematic to just throw in a new term constructor, because now I want to say how it should compute,
+and I'm not sure yet how to do that. Nonetheless, if I have something like this, I can imagine starting with the problem
+\[ f : (\T \to A) \to (\T \to B), g: \surd A \to \surd B, p : \cdots \prov \textbf{???} : \surd(A \to B)\]
+and applying $\surd$-introduction and $\to$-introduction to reduce my problem to
+\[ f \div (\T \to A) \to (\T \to B), g \div \surd A \to \surd B, p \div \cdots, a : A \prov \textbf{???} : B\]
+and now here I can use this conjectural pairing principle I just postulated, and split into three goals:
+\[ f \div (\T \to A) \to (\T \to B),  a : A, \star \prov M\textbf{?} : B\]
+\[ g \div \surd A \to \surd B,  a :: A \prov N\textbf{?} : B\]
+\[ f \div (\T \to A) \to (\T \to B), g \div \surd A \to \surd B,  a :: A \prov M \equiv N : B\]
+But now these $M$ and $N$ are easily filled in! I say:
+\[ f \div (\T \to A) \to (\T \to B),  a : A, \star \prov f\ (\lambda t.a)\ \star : B\]
+\[ g \div \surd A \to \surd B,  a :: A \prov \mathbf{el}_\surd\ (g\ (\mathbf{in}_\surd\ a)) : B\]
+and now I want to check
+\[ f \div (\T \to A) \to (\T \to B), g \div \surd A \to \surd B,  p : \cdots, a :: A \prov \]
+\[f\ (\lambda t.a)\ \star \equiv \mathbf{el}_\surd\ (g\ (\mathbf{in}_\surd\ a)) : B\]
+But recall that
+\[p : (a : \surd A) \to \lambda t . \mathbf{el}_\surd(g\ a) \equiv f\ (\lambda t.\mathbf{el}_\surd\ a)\]
+so let's apply it to $\mathbf{in}_\surd\ a$ and use congruence along applying to $\star$ (both of which
+are well-typed in the extended context we're working in to obtain the equation, which has both $\star$ and
+a strong $a :: A$) to get
+\[ \mathbf{el}_\surd(g\ (\mathbf{in}_\surd\ a)) \equiv f\ (\lambda t.\mathbf{el}_\surd\ (\mathbf{in}_\surd\ a))\ \star\]
+We do one $\beta$-reduction to get
+\[ \mathbf{el}_\surd(g\ (\mathbf{in}_\surd\ a)) \equiv f\ (\lambda t. a)\ \star\]
+and this is now exactly the equation we wanted!
+<h2>Semantics</h2>
+A lot of things here probably seem super mysterious and pulled out of nowhere, and this is partly because I've
+leaned on a certain interpretation of this syntax to guide my guesses.
+<p>
+In one sentence, I'd say this syntax has a "syntactic semantics" in ordinary type theory following, as a guide, the semantics of type theory in the presheaf category over the one-arrow category $\bullet \to \bullet$.
+<p>
+My preferred notation for this is that we define operations taking the syntax of our language here down to
+ordinary dependent type theory without $x :: A$, $x \div A$, $\star$, $\T$, $\surd$, $\blat$, etc.
+$\Gamma^*$ takes a context to a ordinary context.
+$A^*$ takes a type to a ordinary type.
+$M^*$ takes a term to a ordinary term.
+$\sem \Gamma$ takes a context to a ordinary context.
+$\sem A(M)$ takes a type and an ordinary term to a ordinary type.
+$\sem M$ takes a term to a ordinary term.
+<p>
+Generally speaking, $\dash^*$ is boring and does "what you expect" on familiar things, but its behavior
+on newly-introduced type operators is still interesting and relevant. The operation $\sem\dash$ captures
+parametricity properties. Under some circumstances variables $x$ translate to two associated variables $x^*$ and $\sem x$.
+
+    <div class="block">
+      $(\Gamma, x : A)^* = (\Gamma^*, x : A^*)$<br>
+      $(\Gamma, x :: A)^* = (\Gamma^*, x^* : A, \sem x : \sem A(x^*))$<br>
+      $(\Gamma, x \div A)^* = (\Gamma^*, x : A^*)$<br>
+     $(\Gamma, \star)^* = (\Gamma^*, \star : 1)$<br>
+    </div>
+    <div class="block">
+      $\sem {\Gamma, x : A} = (\sem\Gamma, x^* : A, \sem x : \sem A(x^*))$<br>
+      $\sem {\Gamma, x :: A} = (\sem\Gamma, x^* : A, \sem x : \sem A(x^*))$<br>
+      $\sem{\Gamma, x \div A} = (\sem\Gamma, x : A^*)$<br>
+     $\sem{\Gamma, \star} = (\Gamma^*, \star : 1, ☠ : 0)$<br>
+    </div>
+
+<p>
+Semantics of function types and term constructors goes like so:
+<p>
+    <div class="block">
+      $((x : A) \to B)^* = (x^* : A^*) \to B^*$<br>
+      $(\lambda x .M)^* = \lambda x^* . M^*$<br>
+      $(M\ N)^* = M*\  N^*$<br>
+      $\sem {(x : A) \to B}(f^*) = (x^* : A)(\sem x : \sem A(x^*)) \to \sem B(f^* x^*) $<br>
+      $\sem {\lambda x . M} = \lambda x^*.\lambda \sem x . \sem M $<br>
+      $\sem {M\ N} = \sem M\ N^*\ \sem N$<br>
+    </div>
+
+<p>Semantics of $\T$ goes like so: (assuming we have a unit type $1$ with unit value named $\langle\rangle$)<p>
+    <div class="block">
+      $\T^* = 1$<br>
+      $(\star)^* = \langle\rangle$<br>
+      $(\blet M = \star \bin N)^* = [\langle\rangle/\star]N$<br>
+      $\sem {\T}(\_) = 0 $<br>
+      $\sem {\star} = \babort(☠) $<br>
+      $\sem{\blet \star = M \bin N} = \babort(\sem M )$<br>
+    </div>
+
+<p>Semantics of $\surd$ goes like so: (assuming values of $\Sigma$ types are constructed with $\langle\dash,\dash\rangle$
+and projected with $\dash.1$ and $\dash.2$)<p>
+    <div class="block">
+      $(\surd A)^* = (a^* : A^*) \x \sem A(a^*)$<br>
+      $(\mathbf{in}_\surd\ M)^* = \langle M^*, \sem M \rangle$<br>
+      $(\mathbf{el}_\surd\ M)^* = (M^*).1$<br>
+      $\sem {\surd A}(\_) = 1 $<br>
+      $\sem {\mathbf{in}_\surd\ M} =\langle\rangle $<br>
+      $\sem{\mathbf{el}_\surd\ M} =  (M^*).2$<br>
+    </div>
+
+<p>Semantics of $\blat$ goes like so: (assuming values of $\Sigma$ types are constructed with $\langle\dash,\dash\rangle$
+and projected with $\dash.1$ and $\dash.2$)<p>
+    <div class="block">
+      $(\blat A)^* = 1$<br>
+      $(\mathbf{in}_\blat\ M)^* = \langle\rangle$<br>
+      $(\mathbf{el}_\blat\ M)^* = \sem M.1$<br>
+      $\sem {\blat A}(\_) = (a^* : A^*) \x \sem A(a^*) $<br>
+      $\sem {\mathbf{in}_\blat\ M} = \langle M^*, \sem M \rangle $<br>
+      $\sem{\mathbf{el}_\blat\ M} = \sem M.2$<br>
+    </div>
+<p>Semantics of the conjectural pairing operator goes like so:</p>
+    <div class="block">
+      $(\langle\!\langle M, N\rangle\!\rangle)^* = M^*$<br>
+      $\sem{\langle\!\langle M, N\rangle\!\rangle} = \sem N$<br>
+    </div>
+
+<!-- <p>Let's consider the semantics of the rule</p> -->
+<!-- \[ -->
+<!-- \Gamma, \star \prov M : B\qquad \Gamma^\oplus \prov N : B \qquad \Gamma^\oplus, \star \prov M \equiv N : B -->
+<!-- \over -->
+<!-- \Gamma \prov \langle\!\langle M, N\rangle\!\rangle : B -->
+<!-- \] -->
+<!-- we want to show -->
+<!-- \[\Gamma^* \prov M^* : B^*\] -->
+<!-- \[\sem \Gamma \prov \sem N : \sem B(M^*)\] -->
+<!-- By examining the premises, we have -->
+<!-- \[ \Gamma^* \prov M^* : B^*\] -->
+<!-- \[ \sem \Gamma \prov \sem N : \sem B(N^*)\] -->
+<!-- \[\sem \Gamma \prov M^* \equiv N^* : B^*\] -->
+
+
+
+<h2>Remaining Problems</h2>
+The big things I'd like to know how to deal with or fix are:
+<ul>
+<li>I feel based on the semantics that it should be provable that
+ $\blat 0 \dashv\vdash \T$. But I can't seem to prove this with the current set of rules! Maybe
+$\T$ or $\blat$'s rules are not the ones I want. More generally I think $\blat A$ should be a pushout of $A \leftarrow H \x A \to H$
+and I can't prove this either.
+<li> I actually don't know if $\blat$ plays an important role for my needs? I wrote it down because I can, and it's part of the chain of adjunctions, but it seems like more of the game is in $\surd$.
+<li> I don't know how pairing should compute.
+<li> I don't know what I should be proving about the universe for parametricity purposes: I definitely think
+$\surd \rtype$ should be isomorphic to something useful, and I have a hunch it might be
+\[\surd \rtype \cong (A : \T \to \rtype) \x (t : \T) (B : A\ t) \to \rtype \]
+but I get lost in formal details when I try to investigate this further.
+</ul>
+
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\prov": "\\vdash",
+              "\\rctx": "\\mathrel\\mathsf{ctx}",
+              "\\rtype": "\\mathsf{type}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\T": "{\\mathbb T}",
+              "\\blat": "●",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathbf{let}\\,",
+		        "\\bin": "\\mathrel\\mathbf{in}",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\babort": "\\mathbf{abort}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\sem": "[\\![#1]\\!]",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\dash": "\\hbox{---}",
+              "\\cqed": "\\ \\, \u25a0",
+            } } );
+
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
