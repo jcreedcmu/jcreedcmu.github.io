@@ -235,6 +235,95 @@ y :: \gg(x : 1). \surd 0 \prov \babort(\mathbf{el}_\surd\ ( y\tri 2)) :  \T
 y : \gg(x : 1). \surd 0 \prov {\triangle}(\babort(\mathbf{el}_\surd\ ( y\tri 2))) :  \T
 }
 \]
+<h2>A Guess for the Universe Isomorphism</h2>
+I'd like to make
+\[\surd \rtype \cong (A : \T \to \rtype) \x (t : \T) (a : A\ t) \to \rtype \]
+so I attempt
+\[\mathsf{fore}_1 : \surd \rtype \to  \T \to \rtype  \]
+\[\mathsf{fore}_1\ C\ t =  \mathbf{el}_\surd\ C \]
+\[\mathsf{fore}_2 : \surd \rtype \to (t : \T) (a : \mathsf{fore}_1\ C\ t) \to \rtype \]
+\[\mathsf{fore}_2\ C =  {\lambda t.\lambda a. (a' : \surd (\mathbf{el}_\surd C)) \x (\mathbf{el}_\surd\ a' \equiv a) } \]
+\[\mathsf{fore} : \surd \rtype \to (A : \T \to \rtype) \x (t : \T) (a : A\ t) \to \rtype \]
+\[\mathsf{fore}\ C = \pair { \mathsf{fore}_1\ C } { \mathsf{fore}_2\ C }\]
+
+\[\mathsf{back} : (A : \T \to \rtype) (B : (t : \T) (a : A\ t) \to \rtype )\to \surd \rtype   \]
+\[\mathsf{back}\ A\ B = \mathbf{in}_\surd\ (\gg(a : A\ \star).(B\ \star\ a)) \]
+<p>
+We can be careful and check that $\mathsf{fore}_2$ is really a type:
+\[
+\dfrac
+{
+\dfrac
+{
+\dfrac{
+\dfrac{}
+{
+C \div \surd \rtype, \star  \prov     C  :
+     \rtype
+}
+}
+{
+C \div \surd \rtype  \prov    \mathbf{el}_\surd C  :
+     \rtype
+}
+}
+{
+\cdots \prov   \surd (\mathbf{el}_\surd C)  :
+     \rtype
+}
+\quad
+\dfrac{
+\dfrac{
+\dfrac{}
+{
+\cdots, \star \prov  a'  : \surd(\mathsf{fore}_1\ C\ t)
+}
+}
+{
+\cdots  \prov \mathbf{el}_\surd\ a'  : \mathsf{fore}_1\ C\ t
+}
+\quad
+\dfrac{}
+{
+\cdots  \prov  a : \mathsf{fore}_1\ C\ t
+}
+}
+{
+\cdots, a' : \surd (\mathbf{el}_\surd C) \prov \mathbf{el}_\surd\ a' \equiv a :
+     \rtype
+}
+}
+{
+C : \surd \rtype, t : \T, a : \mathsf{fore}_1\ C\ t \prov  (a' : \surd (\mathbf{el}_\surd C)) \x (\mathbf{el}_\surd\ a' \equiv a) :
+     \rtype
+}
+\]
+Let's try to see if anything interesting happens when we do some round-trips.
+The computation of $\mathsf{back}$ of $\mathsf{fore}$ gives:
+\[\mathsf{back}\ (\mathsf{fore}_1\ C)\ (\mathsf{fore}_2\ C) \]
+\[= \mathbf{in}_\surd\ (\gg(a : \mathsf{fore}_1\ C\ \star).(\mathsf{fore}_2\ C\ \star\ a)) \]
+\[= \mathbf{in}_\surd\ (\gg(a : \mathbf{el}_\surd\ C).( (a' : \surd (\mathbf{el}_\surd C)) \x (\mathbf{el}_\surd\ a' \equiv a) ) \]
+so we'd want to show this is equal to $C$ at $\surd \rtype$. Although I can rely on univalence to tell me what
+equality of types means, I need to pin down what equality at $\surd$ means! Maybe there's some kind of extensionality; that
+all I need is equality under eliminations.
+<p>
+Is this equality plausible semantically? If I hit with $\dash^*$ I get
+\[(\mathbf{in}_\surd\ (\gg(a : \mathbf{el}_\surd\ C).( (a' : \surd (\mathbf{el}_\surd C)) \x (\mathbf{el}_\surd\ a' \equiv a) ))^* \]
+\[= \pair{X^*}{ \sem X} \]
+for
+\[ X = \gg(a : \mathbf{el}_\surd\ C).( (a' : \surd (\mathbf{el}_\surd C)) \x (\mathbf{el}_\surd\ a' \equiv a) ) \]
+and I'd find (using some very sketchy reasoning at certain steps, but I think this is still vaguely plausible. I need
+to be more careful reasoning about universes and elements, I think)
+\[ \pair{X^*}{ \sem X} = \pair {(\mathbf{el}_\surd\ C)^*} {\lambda a^* : (\mathbf{el}_\surd\ C)^* .  (a' : \surd (\mathbf{el}_\surd C)) \x (\mathbf{el}_\surd\ a' \equiv a)^* }\]
+\[  = \pair {C^*.1} {\lambda a^* : (C^*.1) .  ((a' : \surd (\mathbf{el}_\surd C)) \x (\mathbf{el}_\surd\ a' \equiv a))^* }\]
+\[  = \pair {C^*.1} {\lambda a^* : (C^*.1) .  ({a'}^* : (\surd (\mathbf{el}_\surd C))^*) \x (\mathbf{el}_\surd\ a' \equiv a)^* }\]
+\[  = \pair {C^*.1} {\lambda a^* : (C^*.1) .  ({a'}^* : (\surd (\mathbf{el}_\surd C))^*) \x ({a'}^*.1 \equiv a^*) }\]
+\[  = \pair {C^*.1} {\lambda a^* : (C^*.1) .  ({a'}^* : (y^* : (\mathbf{el}_\surd C)^*) \x \sem{\mathbf{el}_\surd C}(y^*)) \x ({a'}^*.1 \equiv a^*) }\]
+\[  = \pair {C^*.1} {\lambda a^* : (C^*.1) .  ({a'}^* : (y^* : C^*.1) \x C^*.2\ y^*) \x ({a'}^*.1 \equiv a^*) }\]
+\[  = \pair {C^*.1} {\lambda a^* : (C^*.1) .  ( C^*.2\ a^*)  }\]
+\[  = \pair {C^*.1} {C^*.2  }\]
+\[  = C\]
+
 <div style="height: 50em"></div>
   </body>
   <script>
