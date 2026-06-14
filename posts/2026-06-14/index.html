@@ -323,6 +323,16 @@ to be more careful reasoning about universes and elements, I think)
 \[  = \pair {C^*.1} {\lambda a^* : (C^*.1) .  ( C^*.2\ a^*)  }\]
 \[  = \pair {C^*.1} {C^*.2  }\]
 \[  = C\]
+Let's try the other direction. Assume $A : \T \to \rtype$ and $B : (t : \T)(a : A\ t) \to \rtype$.
+<!-- \[\mathsf{back}\ A\ B = \mathbf{in}_\surd\ (\gg(a : A\ \star).(B\ \star\ a)) \] -->
+We expect $\mathsf{fore}_1\ (\mathsf{back}\ A\ B)\ t = A\ t$ so we compute
+\[\mathsf{fore}_1\ (\mathsf{back}\ A\ B)\ t =  \mathbf{el}_\surd\ (\mathsf{back}\ A\ B) \]
+\[=  \mathbf{el}_\surd\ (\mathbf{in}_\surd\ (\gg(a : A\ \star).(B\ \star\ a))) \]
+\[=  \gg(a : A\ \star).(B\ \star\ a) \]
+Something has gone wrong here! This was supposed to be $A\ t$.
+
+
+
 
 <div style="height: 50em"></div>
   </body>
