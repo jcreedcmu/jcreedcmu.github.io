@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>One More Type in the Tiny Type Theory</title>
+  </head>
+
+  <body>
+    <h1>One More Type in the Tiny Type Theory</h1>
+   Continuing with <a href="../2026-05-09">the previous post</a>, I can
+define one more type constructor that I suspect to be important for constructing the backward direction of
+\[\surd \rtype \cong (A : \T \to \rtype) \x (t : \T) (B : A\ t) \to \rtype \]
+For that we would need to construct a genuine $\rtype$ in a context that looks like
+\[  A \div \rtype,  B \div  A \to \rtype \]
+<h2>Type Former</h2>
+So my guess is we want a somewhat $\Sigma$-like type former, call it $\gg$ for "glue":
+\[
+\Gamma, \star \prov A : \rtype \qquad \Gamma^\oplus, \star, x : A \prov B : \rtype
+\over
+\Gamma \prov \gg(x : A). B : \rtype
+\]
+It glues together two types, one of which carries "downstairs" information, namely $A$, and the other lives "upstairs", namely "B". The interpretation of this back into
+ordinary type theory is:
+    <div class="block">
+      $(\gg(x : A). B)^* = A^*$<br>
+      $\sem {\gg(x : A). B}(M^*) = [M^*/x^*]B^*$<br>
+    </div>
+Why are these well-typed? By induction hypothesis applying the translation
+$\dash^*$ to the premises, we'd have
+\[\Gamma^* \prov A^* : \rtype \tag{*}\]
+\[(\Gamma^\oplus)^*,  x^* : A^* \prov B^* : \rtype\]
+We can reason that $(\Gamma^\oplus)^*$ is the same thing as $\sem \Gamma$, so we have
+\[\sem \Gamma,  x^* : A^* \prov B^* : \rtype\tag{**}\]
+Showing
+\[ \Gamma^* \prov (\gg(x : A). B)^* : \rtype\]
+is just $(*)$, and then the obligation
+\[ \sem \Gamma, y^* :  (\gg(x : A). B)^* \prov \sem{\gg(x : A). B}(y^*) : \rtype\]
+reduces to
+\[ \sem \Gamma, y^* :  A^* \prov [y^*/x^*] B^* : \rtype\]
+and this is $(**)$ up to $\alpha$-equivalence.
+<h2>Term Formers</h2>
+Here's how I think we introduce $\gg$:
+\[
+\Gamma, \star \prov M : A \qquad \Gamma^\oplus, \star \prov N : [M/x]B
+\over
+\Gamma \prov \pair M N : \gg(x : A). B
+\]
+
+Here's how I think we eliminate $\gg$:
+\[
+{\Gamma \prov M  : \gg(x : A). B
+\over
+\Gamma, \star \prov M\tri 1 : A}
+\qquad
+{\Gamma \prov  M  : \gg(x : A). B
+\over
+\Gamma^\oplus, \star \prov M\tri 2 : [M\tri 1/x]B}
+\]
+
+We say that these interpret as follows:
+    <div class="block">
+      $(\pair M N)^* = M^*$<br>
+      $\sem {\pair M N}^* = N^*$<br>
+      $( M\tri 1)^* = M^*$<br>
+      $\sem{M\tri 1} = \babort(☠)$<br>
+      $( M\tri 2)^* = \sem M$<br>
+      $\sem{M\tri 2} = \babort(☠)$<br>
+    </div>
+
+Let's check that these interpretations are well-typed.
+
+<h3>Introduction</h3>
+Applying $\dash^*$ to the premises we get
+\[\Gamma^* \prov M^* : A^*\]
+\[\sem \Gamma \prov N^* : [M^*/x^*]B^*\]
+Applying $\sem\dash$ gives us nothing useful because $\star$ is present.
+Downstairs we need
+\[\Gamma^* \prov (\pair M N)^* : (\gg(x : A). B)^*\]
+which computes to
+\[\Gamma^* \prov  M^* : A^*\]
+which we have. Upstairs we need
+\[\sem\Gamma \prov \sem{\pair M N} : \sem{\gg(x : A). B}((\pair M N)^*)\]
+which computes to
+\[\sem\Gamma \prov N^* : [M^*/x^*]B^*\]
+which we also have.
+<h3>First Projection</h3>
+I.h. for $\dash^*$ on the premise gives
+\[\Gamma^* \prov M^*  : A^*\]
+We need
+\[(\Gamma^* \prov (M\tri 1)^* : A^* ) = (\Gamma^* \prov M^*  : A^*)\]
+and
+\[(\sem{\Gamma, \star} \prov \sem{M\tri 1} : \sem A((M\tri 1)^*)) =
+  (\sem \Gamma,☠ : 0 \prov \babort(☠) : \sem A(M^*))\]
+so we're good.
+<h3>Second Projection</h3>
+I.h. for $\sem\dash$ on the premise gives
+\[\sem \Gamma \prov \sem M :  \sem{\gg(x : A). B}(M^*) \]
+in other words
+\[\sem \Gamma \prov \sem M :  [M^*/x^*]B^* \]
+We need
+\[((\Gamma^\oplus, \star)^* \prov (M\tri 2)^* : ([M\tri 1/x]B)^* ) =
+(\sem \Gamma \prov \sem M : [M^*/x^*]B^* ) \]
+and
+\[(\sem{\Gamma^\oplus, \star} \prov \sem{M\tri 2} : \sem{[M\tri 1/x]B}((M\tri 2)^*) ) =
+  (\sem{\Gamma}, ☠ : 0  \prov \babort (☠) : \sem{[M\tri 1/x]B}((M\tri 2)^*) )  \]
+so we're good.
+
+<h2> $\blat$ is a special case of $\gg$</h2>
+I claim that $\blat A$ is equivalent to the type
+\[  \gg (x : 1) . \surd A\]
+It is correct semantically:
+\[ (\blat A)^* = 1 = (  \gg (x : 1) . \surd A)^*\]
+\[ \sem{\blat A}(\_) = (a^* : A^*) \x \sem A(a^*) = (\surd A)^* = \sem{ \gg (x : 1).\surd A}(\_)\]
+Or perhaps I should say 'subsumed by' since I'm suspicious that $\blat$ perhaps "doesn't have enough
+inference rules", but I think I can implement the $\blat A$ inference rules using those of $\gg$.
+So I might as well throw away $\blat$. Specifically, I can implement as derived rules:
+\[
+{
+ \Gamma^\oplus \prov M : A
+\over
+\Gamma \prov \pair {\langle\rangle} {\mathbf{in}_\surd\ M}  : \gg (x:1).\surd A
+}
+\]
+to replace $\mathbf{in}_\blat$, and
+\[
+{
+\Gamma^\ominus \prov M : \gg (x:1).\surd A
+\over
+\Gamma \prov \mathbf{el}_\surd( M\tri 2)  : A
+}
+\]
+In the second rule, I'm using weakening to get from $\Gamma^\ominus$ to $\Gamma$. Actually
+I could have actually asserted the stronger
+\[
+{
+\Gamma^\ominus \prov M : \gg (x:1).\surd A
+\over
+\Gamma^\ominus \prov \mathbf{el}_\surd( M\tri 2)  : A
+}
+\]
+This is still kosher semantically. We have from applying the $\sem \dash$ i.h. to the premise
+the fact that
+\[ \Gamma^* \prov \sem M : (a^* : A^*) \x \sem A(a^*) \tag{*}\]
+and we must show in the goal
+\[ \Gamma^* \prov (\mathbf{el}_\surd( M\tri 2))^* : A^*\]
+\[ \Gamma^* \prov \sem{\mathbf{el}_\surd( M\tri 2)} : \sem A((\mathbf{el}_\surd( M\tri 2))^*) \]
+But we compute
+\[ (\mathbf{el}_\surd( M\tri 2))^* = (M\tri 2)^*.1 = \sem M.1 \]
+\[ \sem {\mathbf{el}_\surd( M\tri 2)} = (M\tri 2)^*.2 = \sem M.2\]
+so our goals become
+\[ \Gamma^* \prov \sem M.1 : A^*\]
+\[ \Gamma^* \prov \sem M.2 : \sem A(\sem M.1) \]
+which fall directly out of $(*)$.
+<h2>Proving $\blat 0 \prov \T$</h2>
+I want to return to the challenge of proving $\blat 0 \prov \T$ now.
+With the above unpacking of $\blat$, this becomes
+\[\gg(x:1).\surd 0 \prov \T\]
+Let's take a look at pairing
+\[
+\Gamma, \star \prov M : B\qquad \Gamma^\oplus \prov N : B \qquad \Gamma^\oplus, \star \prov M \equiv N : B
+\over
+\Gamma \prov \langle\!\langle M, N\rangle\!\rangle : B
+\]
+and special case it to
+\[
+\Gamma, \star \prov \star : \T\qquad \Gamma^\oplus \prov N : \T \qquad \Gamma^\oplus, \star \prov M \equiv N : \T
+\over
+\Gamma \prov \langle\!\langle \star, N\rangle\!\rangle : \T
+\]
+This seems like this licenses a new intro rule for $\T$, something like
+\[
+\Gamma^\oplus \prov M : \T
+\over
+\Gamma \prov {\triangle}M : \T\]
+Then we can do:
+\[
+\dfrac
+{
+\dfrac
+{
+\dfrac
+{
+\dfrac
+{
+y : \gg(x : 1). \surd 0 \prov  y  : \gg(x : 1). \surd 0
+}{
+y :: \gg(x : 1). \surd 0, \star \prov y\tri 2 : \surd 0
+}}{
+y :: \gg(x : 1). \surd 0 \prov \mathbf{el}_\surd\ ( y\tri 2) :  0
+}}{
+y :: \gg(x : 1). \surd 0 \prov \babort(\mathbf{el}_\surd\ ( y\tri 2)) :  \T
+}}{
+y : \gg(x : 1). \surd 0 \prov {\triangle}(\babort(\mathbf{el}_\surd\ ( y\tri 2))) :  \T
+}
+\]
+<div style="height: 50em"></div>
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\prov": "\\vdash",
+              "\\tri": "\\triangleright",
+              "\\rctx": "\\mathrel\\mathsf{ctx}",
+              "\\rtype": "\\mathsf{type}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\adjust": "\\bigg|",
+              "\\rset": "\\mathsf {Type}",
+              "\\P": "{\\mathsf P}",
+              "\\T": "{\\mathbb T}",
+              "\\blat": "●",
+              "\\o": "\\circ",
+		        "\\B": "{\\mathsf B}",
+		        "\\cc": "\\mathop{::}",
+		        "\\ee": "\\varepsilon",
+		        "\\ms": "\\mathsf",
+		        "\\iso": "\\mathsf{iso}",
+		        "\\blet": "\\mathbf{let}\\,",
+		        "\\bin": "\\mathrel\\mathbf{in}",
+		        "\\binl": "\\mathbf{inl}\\,",
+		        "\\babort": "\\mathbf{abort}\\,",
+		        "\\binr": "\\mathbf{inr}\\,",
+		        "\\x": "\\times",
+		        "\\wat": "\\bullet",
+		        "\\celse": "\\mathrel{|}",
+		        "\\st": "\\mathrel{|}",
+		        "\\rid": "\\mathrm{id}",
+		        "\\sem": "[\\![#1]\\!]",
+		        "\\ll": "\\langle",
+		        "\\rr": "\\rangle",
+              "\\dash": "\\hbox{---}",
+              "\\cqed": "\\ \\, \u25a0",
+              "\\pair": "\\langle #1, #2\\rangle",
+              "\\gg": "ꓨ",
+            } } );
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
