@@ -193,12 +193,28 @@ and special case it to
 \over
 \Gamma \prov \langle\!\langle \star, N\rangle\!\rangle : \T
 \]
-This seems like this licenses a new intro rule for $\T$, something like
+This suggests we might want a new rule for $\T$, something like
 \[
 \Gamma^\oplus \prov M : \T
 \over
 \Gamma \prov {\triangle}M : \T\]
-Then we can do:
+
+But actually maybe what we should do is strengthen the $\T$-elim rule a little bit.
+What if we add promotion to the first premise of the elim rule like so:
+\[
+{
+\Gamma^\oplus \prov M : \T \qquad \Gamma, \star \prov N : A
+\over
+\Gamma \prov \blet \star = M \bin N : A}
+\]
+This still seems semantically kosher, because all we're really changing is the
+information we get from the first premise in the "downstairs" case from
+$\Gamma^* \prov M^* : 1$ to $\sem \Gamma \prov M^* : 1$. But this information
+is trivial anyway, and we never use it in the proof of the soundness of the rule!
+So we can say ${\triangle}$ is just a macro for $\blet \star = \dash \bin \star$,
+which is almost but not quite a trivial $\eta$-expansion because of the context promotion.
+<p>
+Then we can prove:
 \[
 \dfrac
 {
