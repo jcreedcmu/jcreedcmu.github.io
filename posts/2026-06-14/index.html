@@ -326,12 +326,27 @@ to be more careful reasoning about universes and elements, I think)
 Let's try the other direction. Assume $A : \T \to \rtype$ and $B : (t : \T)(a : A\ t) \to \rtype$.
 <!-- \[\mathsf{back}\ A\ B = \mathbf{in}_\surd\ (\gg(a : A\ \star).(B\ \star\ a)) \] -->
 We expect $\mathsf{fore}_1\ (\mathsf{back}\ A\ B)\ t = A\ t$ so we compute
-\[\mathsf{fore}_1\ (\mathsf{back}\ A\ B)\ t =  \mathbf{el}_\surd\ (\mathsf{back}\ A\ B) \]
+\[ \mathsf{fore}_1\ (\mathsf{back}\ A\ B)\ t =  \mathbf{el}_\surd\ (\mathsf{back}\ A\ B) \]
 \[=  \mathbf{el}_\surd\ (\mathbf{in}_\surd\ (\gg(a : A\ \star).(B\ \star\ a))) \]
 \[=  \gg(a : A\ \star).(B\ \star\ a) \]
-Something has gone wrong here! This was supposed to be $A\ t$.
+
+At let's now compare semantics. We have a $t : \T$ present, so we only need to check the base, not the relation,
+for we can use $\sem \T(\_) = 0$ to abort. And indeed we have
+\[    (\gg(a : A\ \star).(B\ \star\ a))^* =  (A\ \star)^* =   A^*\ \langle\rangle = (A\ t)^*\]
 
 
+We expect $\mathsf{fore}_2\ (\mathsf{back}\ A\ B)\ t\ a = B\ t\ a$ so we compute:
+\[\mathsf{fore}_2\ (\mathsf{back}\ A\ B)\ t\ a =  { (a' : \surd (\mathbf{el}_\surd (\mathsf{back}\ A\ B))) \x (\mathbf{el}_\surd\ a' \equiv a) } \]
+\[ =  { (a' : \surd (\mathbf{el}_\surd (\mathbf{in}_\surd\ (\gg(a : A\ \star).(B\ \star\ a))))) \x (\mathbf{el}_\surd\ a' \equiv a) } \]
+\[ =  { (a' : \surd  (\gg(a : A\ \star).(B\ \star\ a))) \x (\mathbf{el}_\surd\ a' \equiv a) } \]
+Ok, let's try to compute the semantics of this then.
+\[ ( (a' : \surd  (\gg(a : A\ \star).(B\ \star\ a))) \x (\mathbf{el}_\surd\ a' \equiv a) )^* \]
+\[= ( ({a'}^* :  (y^* : (\gg(a : A\ \star).(B\ \star\ a))^* \x \sem{\gg(a : A\ \star).(B\ \star\ a)}(y^*))) \x ({a'}^*.1 \equiv a^*)  \]
+\[=  ({a'}^* :  (y^* : A^*\ \langle\rangle) \x B^*\ \langle\rangle\ y^*) \x ({a'}^*.1 \equiv a^*)  \]
+\[=   B^*\ \langle\rangle\ a^*  = (B\ \star\ a)^*\]
+
+So although I still would want to realize these type (and $\surd \rtype$) equations internally, it's very promising that
+they make sense semantically.
 
 
 <div style="height: 50em"></div>
