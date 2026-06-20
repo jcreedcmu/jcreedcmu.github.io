@@ -36,23 +36,22 @@
 
   <body>
     <h1>More Tiny Thoughts</h1>
-    I'm still kind of excited about this line of thinking about internalized parametricity in a relatively lightweight modal type theory,
-    which I got in some sense by special-casing MTT.
-    It looks as if we get some rather nice type isomorphisms which are internally provable without introducing any
-    global computation principles not associated with any particular type former. I thought for a while that I might
-    have to do this, but currently I think maybe not. I appear to be able to simply code up isomorphisms
-    \[ \pp_{A \to B}f \cong ((a : \lax A) (a' : \pp_A a) \to \pp_B(f\ (\elax a)))\]
-    \[ \pp_\rtype A \cong  \lax (A \to \rtype)  \]
-    which say "a function is parametric if it maps parametric things to parametric things" and
-    "a type is good to the extent that it is equipped with a unary relation".
+    I'm pretty happy with this line of thinking about internalized parametricity in a relatively lightweight modal type theory,
+    and consequently of course I start wondering if it's all been done already, like maybe it's
+    somehow latent in old Bernardy-Moulin work and I missed it$\ldots$ Dunno, wouldn't be the first time something like that's happened.
     <p>
-      As usual, if all of this turns out to be equivalent to some work
-      from like a decade ago, I won't be too broken up. I am at the very least heavily <i>drawing on</i>
-      ideas I've got from the literature, and then applying a large amount of crank-turning and guesswork. I should make a
-      more careful bibliography at some point. Anyway going through
-      the exercise of all this has been an absolute blast, and I
-      really enjoy seeing these ideas in this particular form.
-
+    Anyway I find this particular presentation easy to wrap my head around, so that's something.
+    It looks like if you just set up the type theory in the right way,
+    which has a type operator $\pp_A M$ whose inhabitants are elements of the fiber of $\surd A$ lying over $M$,
+    you can <b>simply code up</b> isomorphisms that unpacks the definition of parametricity type-by-type:
+    \[ \pp_{A \to B}f \cong ((a : \lax A) (a' : \pp_A a) \to \pp_B(f\ (\elax a)))\]
+    expresses
+    <blockquote>a function is parametric if it maps parametric things to parametric things</blockquote>
+    and
+    \[ \pp_\rtype A \cong  \lax (A \to \rtype)  \]
+    expresses
+    <blockquote>a type is good to the extent that it is equipped with a unary relation</blockquote>
+    I find it quite pleasant that we don't have to axiomatize thes isomorphisms, and so we can compute with them.
     <h2>Recap</h2>
     I want to set up a type theory with four kinds of things going on in the context, normal assumptions $x : A$,
     weak assumptions $x \div A$, strong assumptions $x :: A$, and a "key"  $\star$ which may or may not be present in the context,
