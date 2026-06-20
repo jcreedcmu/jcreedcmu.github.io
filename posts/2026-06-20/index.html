@@ -240,15 +240,14 @@ We can check $\mathsf{back} \o \mathsf{fore}$ is the identity.
 \equiv_{\pp \eta}  f' \\
 \end{array}\]
 <h2>Towards a Theorem for the Universe</h2>
-If we take the glue type from last time
+Let's take the glue type from last time
 \[
 \Gamma, \star \prov A : \rtype \qquad \Gamma^\oplus, \star, x : A \prov B : \rtype
 \over
 \Gamma \prov \gg(x : A). B : \rtype
 \]
-Then I think I know how to at least code up the two maps in an alleged isomorphism
-\[(A : \lax \rtype) \to \pp_\rtype(\elax A) \cong  \lax (\elax A \to \rtype)  \]
-though I don't know how to show their round-trips work yet.
+And try to show, for any $\Gamma, \star \prov A : \rtype$, that we have an isomorphism
+\[ \pp_\rtype A \cong  \lax (A \to \rtype)  \]
 
 Morally, this is saying:
 "a witness that an inhabitant $A$ of $\rtype$ belongs to the parametricity relation is exactly a family $A \to\rtype$".
@@ -256,20 +255,60 @@ Morally, this is saying:
 The maps are:
 <div class="tab">
 <div class="tr"><div class="td">
-$\mathsf{fore} : (A : \lax \rtype) (p : \pp_\rtype(\elax A)) \to  \lax (\elax A \to \rtype)$
+$\mathsf{fore} :  (p : \pp_\rtype A) \to  \lax ( A \to \rtype)$
 </div></div>
 <div class="tr"><div class="td">
-$\mathsf{fore} = \ilax (\lambda a . \pp_{\elax a\  \tri\ p } a)$
+$\mathsf{fore}\ p = \ilax (\lambda a . \pp_{A  \tri p }( a))$
 </div></div>
 <div class="tr"><div class="td">
-$\mathsf{back} : (A : \lax \rtype) (R : \lax (\elax A \to \rtype)) \to \pp_\rtype(\elax A) $
+$\mathsf{back} :  (R : \lax ( A \to \rtype)) \to \pp_\rtype( A) $
 </div></div>
 <div class="tr"><div class="td">
-$\mathsf{back} = \{ \gg (a : \elax A) . (\elax R)\ a\} $
+$\mathsf{back}\ R = \{ \gg (x : A) . (\elax R)\ x\} $
 </div></div>
 </div>
+<h3>First Zigzag</h3>
+We can check $\mathsf{fore} \o \mathsf{back}$ is the identity.
+\[\begin{array}{l}
+\mathsf{fore}\ (\mathsf{back}\ R) \\
+= \mathsf{fore}\ (\{ \gg (x :  A) . (\elax R)\ a\}) \\
+= \ilax (\lambda a . \pp_{A  \tri \{ \gg (x :  A) . (\elax R)\ x\} }( a))  \\
+= \ilax (\lambda a . \pp_{ \gg (x :  A) . (\elax R)\ x }( a))  \\
+\end{array}\]
+We expect this to equal $R$, so by extensionality, it suffices to show
+for every $a : A$ that
+\[ (\elax R)\ a = \pp_{ \gg (x :  A) . (\elax R)\ x }( a)\]
+I'm not sure how to construct the terms for this yet, but if we take the following as semantics:
+\[ (\pp_A M)^* = \sem A (M^*) \qquad \sem {G_A M}(\_) = 1 \]
+\[ (\{M\})^* = \sem M \qquad \sem{\{M\}} = \langle\rangle \]
+\[ (M\tri N)^* = M^* \qquad  \sem { M\tri  N} = N^* \]
+\[ (\gg(x : A).B)^* = A^* \qquad \sem{\gg(x : A).B}(M^*) = [M^*/x^*]B^*\]
+then we can compute
+\[ ((\elax R)\ a)^* = (\pp_{ \gg (x :  A) . (\elax R)\ x }( a))^* = R^*\ a^*\]
+so that's encouraging.
+<h3>Second Zigzag</h3>
+We can check $\mathsf{fore} \o \mathsf{back}$ is the identity.
+\[\begin{array}{l}
+\mathsf{back}\ (\mathsf{fore}\ p) \\
+= \mathsf{back} (\ilax (\lambda a . \pp_{A  \tri p }( a)))\\
+=  \{ \gg (x : A) . (\elax (\ilax (\lambda a . \pp_{A  \tri p }( a))))\ x\} \\
+\equiv_{\lax \eta }  \{ \gg (x : A) . ( (\lambda a . \pp_{A  \tri p }( a)))\ x\} \\
+\equiv_{\to \beta }  \{ \gg (x : A) .  \pp_{A  \tri p }( x)\} \\
+\end{array}\]
+I want this to be equal to $p : \pp_{\rtype} A$, so by extensionality, it would suffice to show
+\[ A \tri p = \gg (x : A) .  \pp_{A  \tri p }( x)\]
+<!-- Here the semantics tells us -->
+<!-- \[ (A \tri p)^* = (\gg (x : A) .  \pp_{A  \tri p }( x))^* = A^*\] -->
+<!-- \[ \sem{A \tri p}(M^*) = \sem{\gg (x : A) .  \pp_{A  \tri p }( x)}(M^*) = p^*\ M^*\] -->
 
-  </body>
+I think this can be done with
+\[\begin{array}{l}
+\mathsf{fore_2} : A \tri p \to \gg (x : A) .  \pp_{A  \tri p }( x)\\
+\mathsf{fore_2}\ z = \mpair{z}{\{z\}} \\
+\mathsf{back_2} : (\gg (x : A) .  \pp_{A  \tri p }( x)) \to A \tri p  \\
+\mathsf{back_2}\ w = w.1 \tri w.2
+\end{array}\]
+<div style="height: 50em"></div>  </body>
   <script>
 	 function go(body) { renderMathInElement( body, { strict: false,
     trust: true, delimiters: [ {left: "$$", right: "$$", display:
@@ -319,6 +358,8 @@ $\mathsf{back} = \{ \gg (a : \elax A) . (\elax R)\ a\} $
               "\\esurd": "\\mathcal{E}_\\surd",
               "\\iblat": "\\mathcal{I}_\\blat",
               "\\eblat": "\\mathcal{E}_\\blat",
+              "\\pair": "\\langle #1, #2\\rangle",
+              "\\mpair": "\\langle\\!\\langle #1, #2\\rangle\\!\\rangle",
               "\\gg": "ꓨ",
             } } );
 
