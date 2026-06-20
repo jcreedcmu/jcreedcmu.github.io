@@ -36,15 +36,23 @@
 
   <body>
     <h1>More Tiny Thoughts</h1>
-    I'm remaining kind of excited by this line of thinking about a relatively lightweight type theory for parametricity-like reasoning.
-    I'm starting to see that it gives me at least some nice type isomorphisms <I>without</I> introducing any
-    global computation principles not associated with any particular type former.
-    It wouldn't be a deal-breaker if it did need one: cubical has its composition operators.
-    But all the better if I don't need something analogous to that! It would be really cool if I could write down a type
-\[ \pp_{(X : \rtype) \to X \to X} (f)\]
-and prove that any inhabitant of it is the identity function just by intro and elim rules.
+    I'm still kind of excited about this line of thinking about internalized parametricity in a relatively lightweight modal type theory,
+    which I got in some sense by special-casing MTT.
+    It looks as if we get some rather nice type isomorphisms which are internally provable without introducing any
+    global computation principles not associated with any particular type former. I thought for a while that I might
+    have to do this, but currently I think maybe not. I appear to be able to simply code up isomorphisms
+    \[ \pp_{A \to B}f \cong ((a : \lax A) (a' : \pp_A a) \to \pp_B(f\ (\elax a)))\]
+    \[ \pp_\rtype A \cong  \lax (A \to \rtype)  \]
+    which say "a function is parametric if it maps parametric things to parametric things" and
+    "a type is good to the extent that it is equipped with a unary relation".
     <p>
-And, as usual, if this all turns out to be equivalent to some paper from a decade ago, I won't be too broken up. Going through the exercise of all this has been an absolute blast.
+      As usual, if all of this turns out to be equivalent to some work
+      from like a decade ago, I won't be too broken up. I am at the very least heavily <i>drawing on</i>
+      ideas I've got from the literature, and then applying a large amount of crank-turning and guesswork. I should make a
+      more careful bibliography at some point. Anyway going through
+      the exercise of all this has been an absolute blast, and I
+      really enjoy seeing these ideas in this particular form.
+
     <h2>Recap</h2>
     I want to set up a type theory with four kinds of things going on in the context, normal assumptions $x : A$,
     weak assumptions $x \div A$, strong assumptions $x :: A$, and a "key"  $\star$ which may or may not be present in the context,
@@ -239,13 +247,28 @@ We can check $\mathsf{back} \o \mathsf{fore}$ is the identity.
 \equiv_{\to \eta} \{    f \tri f' \} \\
 \equiv_{\pp \eta}  f' \\
 \end{array}\]
-<h2>Towards a Theorem for the Universe</h2>
-Let's take the glue type from last time
+<h2>A (Sketch of a) Theorem for the Universe</h2>
+Let's recall the glue type from last time
 \[
 \Gamma, \star \prov A : \rtype \qquad \Gamma^\oplus, \star, x : A \prov B : \rtype
 \over
 \Gamma \prov \gg(x : A). B : \rtype
 \]
+\[
+\Gamma, \star \prov M : A \qquad \Gamma^\oplus, \star \prov N : [M/x]B
+\over
+\Gamma \prov \pair M N : \gg(x : A). B
+\]
+\[
+{\Gamma \prov M  : \gg(x : A). B
+\over
+\Gamma, \star \prov M. 1 : A}
+\qquad
+{\Gamma \prov  M  : \gg(x : A). B
+\over
+\Gamma^\oplus, \star \prov M. 2 : [M. 1/x]B}
+\]
+
 And try to show, for any $\Gamma, \star \prov A : \rtype$, that we have an isomorphism
 \[ \pp_\rtype A \cong  \lax (A \to \rtype)  \]
 
@@ -278,14 +301,22 @@ We can check $\mathsf{fore} \o \mathsf{back}$ is the identity.
 We expect this to equal $R$, so by extensionality, it suffices to show
 for every $a : A$ that
 \[ (\elax R)\ a = \pp_{ \gg (x :  A) . (\elax R)\ x }( a)\]
-I'm not sure how to construct the terms for this yet, but if we take the following as semantics:
-\[ (\pp_A M)^* = \sem A (M^*) \qquad \sem {G_A M}(\_) = 1 \]
-\[ (\{M\})^* = \sem M \qquad \sem{\{M\}} = \langle\rangle \]
-\[ (M\tri N)^* = M^* \qquad  \sem { M\tri  N} = N^* \]
-\[ (\gg(x : A).B)^* = A^* \qquad \sem{\gg(x : A).B}(M^*) = [M^*/x^*]B^*\]
-then we can compute
-\[ ((\elax R)\ a)^* = (\pp_{ \gg (x :  A) . (\elax R)\ x }( a))^* = R^*\ a^*\]
-so that's encouraging.
+<!-- I'm not sure how to construct the terms for this yet, but if we take the following as semantics: -->
+<!-- \[ (\pp_A M)^* = \sem A (M^*) \qquad \sem {G_A M}(\_) = 1 \] -->
+<!-- \[ (\{M\})^* = \sem M \qquad \sem{\{M\}} = \langle\rangle \] -->
+<!-- \[ (M\tri N)^* = M^* \qquad  \sem { M\tri  N} = N^* \] -->
+<!-- \[ (\gg(x : A).B)^* = A^* \qquad \sem{\gg(x : A).B}(M^*) = [M^*/x^*]B^*\] -->
+<!-- then we can compute -->
+<!-- \[ ((\elax R)\ a)^* = (\pp_{ \gg (x :  A) . (\elax R)\ x }( a))^* = R^*\ a^*\] -->
+<!-- so that's encouraging. -->
+
+I think this can be done with univalence and
+\[\begin{array}{l}
+\mathsf{fore_1} : (\elax R)\ a \to \pp_{ \gg (x :  A) . (\elax R)\ x }( a)\\
+\mathsf{fore_1}\ z = \{\mpair a z\} \\
+\mathsf{back_1} : \pp_{ \gg (x :  A) . (\elax R)\ x }( a) \to (\elax R)\ a\\
+\mathsf{back_1}\ w = (a \tri w).2
+\end{array}\]
 <h3>Second Zigzag</h3>
 We can check $\mathsf{fore} \o \mathsf{back}$ is the identity.
 \[\begin{array}{l}
@@ -301,7 +332,7 @@ I want this to be equal to $p : \pp_{\rtype} A$, so by extensionality, it would 
 <!-- \[ (A \tri p)^* = (\gg (x : A) .  \pp_{A  \tri p }( x))^* = A^*\] -->
 <!-- \[ \sem{A \tri p}(M^*) = \sem{\gg (x : A) .  \pp_{A  \tri p }( x)}(M^*) = p^*\ M^*\] -->
 
-I think this can be done with
+I think this can be done with univalence and
 \[\begin{array}{l}
 \mathsf{fore_2} : A \tri p \to \gg (x : A) .  \pp_{A  \tri p }( x)\\
 \mathsf{fore_2}\ z = \mpair{z}{\{z\}} \\
