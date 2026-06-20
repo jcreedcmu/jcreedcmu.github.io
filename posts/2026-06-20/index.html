@@ -44,7 +44,7 @@
     It looks like if you just set up the type theory in the right way,
     which has a type operator $\pp_A M$ whose inhabitants are elements of the fiber of $\surd A$ lying over $M$,
     you can <b>simply code up</b> isomorphisms that unpack the meaning of parametricity type-by-type:
-    \[ \pp_{A \to B}f \cong ((a : \lax A) (a' : \pp_A a) \to \pp_B(f\ (\elax a)))\]
+    \[ \pp_{A \to B}f \cong ((a : \lax A) (a' : \pp_A (\elax a)) \to \pp_B(f\ (\elax a)))\]
     expresses
     <blockquote>a function is parametric if it maps parametric things to parametric things</blockquote>
     and
@@ -170,7 +170,7 @@ the eliminator reduces to its {\em first} component, and we call this "$\star$-r
 <!-- \] -->
 <h3>Fiber types and $\surd$</h3>
 The type $\pp_A M$ is equiexpressive with $\surd$; we can derive one from the other. Exercise: show that
-for any $\Gamma^\ominus \prov A : \rtype$ and $\Gamma, h\prov M  : A$ that
+for any $\Gamma^\ominus \prov A : \rtype$ and $\Gamma, \star\prov M  : A$ that
 \[\pp_A M \cong (a : \surd A) \x (\esurd a \equiv M)\]
 (a fiber is the total space restricted to the preimage of the basepoint)
 \[\surd A \cong (x : \lax A) \x \pp_A (\elax x)\]
@@ -180,8 +180,8 @@ However I think using the definitional fiber type saves me a bunch of headaches 
 <h2> A Theorem for Function Types</h2>
 Now we can, in some sense, derive what the parametricity property is at function types, by coding up an explicit isomorphism.
 Concretely, we claim we can write a program to inhabit
-\[ \pp_{A \to B}f \cong ((a : \lax A) (a' : \pp_A a) \to \pp_B(f\ (\elax a)))\]
-for any $\Gamma$ and $\Gamma, \star \prov A: \rtype$ and $\Gamma, \star \prov B : \rtype$ and $\Gamma, \star \prov f: A \to B$.
+\[ \pp_{A \to B}f \cong ((a : \lax A) (a' : \pp_A (\elax a)) \to \pp_B(f\ (\elax a)))\]
+for any $\Gamma$ and $\Gamma^\ominus \prov A: \rtype$ and $\Gamma^\ominus \prov B : \rtype$ and $\Gamma, \star \prov f: A \to B$.
 <p>
 Let's unpack what this type is saying. We read $\lax$ (or, what's the same, existing in a context with $\star$ present)
 as generally carrying the intuition of the adjectives "raw", "underlying".
@@ -193,7 +193,7 @@ is parametric.
 <h3>Forward Direction</h3>
 <div class="tab">
 <div class="tr"><div class="td">
-$\mathsf{fore} : (f' : \pp_{A \to B}f ) (a : \lax A) (a' : \pp_A a) \to \pp_B(f\ (\elax a)) $
+$\mathsf{fore} : (f' : \pp_{A \to B}f ) (a : \lax A) (a' : \pp_A (\elax a)) \to \pp_B(f\ (\elax a)) $
 </div></div>
 <div class="tr"><div class="td">
 $\mathsf{fore}\ f'\ a\ a' = \{( f \tri f')\ (\elax a \tri a') \}$
@@ -246,6 +246,16 @@ We can check $\mathsf{back} \o \mathsf{fore}$ is the identity.
 \equiv_{\to \eta} \{    f \tri f' \} \\
 \equiv_{\pp \eta}  f' \\
 \end{array}\]
+<h2> A Theorem Statement for Dependent Function Types</h2>
+Let's try to generalize this to dependent function types!
+Suppose $\Gamma^\ominus \prov A: \rtype$ and $\Gamma^\ominus, x : A \prov B : \rtype$.
+Suppose $\Gamma, \star \prov f : (x : A) \to B$.
+We'd like to show
+\[ \pp_{(x : A) \to B}f \cong ((a : \lax A) (a' : \pp_A (\elax a)) \to \pp_{[\elax a \tri a'/x]B}(f\ (\elax a)))\]
+For now I'll leave the proof as an exercise.
+
+
+
 <h2>A (Sketch of a) Theorem for the Universe</h2>
 Let's recall the glue type from last time
 \[
