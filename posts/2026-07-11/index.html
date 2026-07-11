@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.js" integrity="sha384-ljao5I1l+8KYFXG7LNEA7DyaFvuvSCmedUf6Y6JI7LJqiu8q5dEivP2nDdFH31V4" crossorigin="anonymous"></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="go(document.body);"></script>
+    <script src="diagrams.js"></script>
+    <style>
+      img {
+        max-width: 40em;
+      }
+      canvas {
+        margin-top: 2em;
+        margin-bottom: 2em;
+        display: block; width: 100%;
+        border: 1px solid black;
+      }
+      table.proof td {
+        padding-left: 50px;
+      }
+      body {
+        width: 40em;
+        margin-left: 10em;
+      }
+    </style>
+    <title>A Small Modal Type Theory for Internal Parametricity</title>
+  </head>
+
+  <body>
+    <h1>A Small Modal Type Theory for Internal Parametricity</h1>
+
+    Here's another iteration of the idea I keep noodling with. My goal is to really clarify the minimum
+    that's needed to express internalized parametricity in a style that feels aesthetically pleasant given
+    my type-theoretic upbringing.
+    <p>
+      Some tl;dr facts about the system:
+      <ul>
+        <li> It doesn't need an interval object $\mathbb{I}$
+        <li> It doesn't need any cubical notions of computation like $\mathsf{hcomp}$
+        <li> It doesn't, like my previous attempt, require definitional equalities contingent on magic tokens in the context
+        <li> It doesn't require you to say "parametricity at functions means blah blah blah", "parametricity at pairs means blah blah blah". Those facts emerge from the type theory for free in a pleasant way.
+    </ul>
+    <p>
+
+    I'm going
+    describe a modal type theory with two syntactic "levels", called
+    $\wid{\hbox{wide}}$ and $\nar{\hbox{narrow}}$, consistently
+    colored so. Each of the two levels incorporate all the usual stuff
+    you'd expect to find in a dependent type theory, and we're going
+    to introduce two type formers to connect them together. There will be different kinds of
+    hypotheses in the context, including familiar ones $x : \wid A$, but also "weak assumptions"
+    $x \div \nar A$, and "strong assumption" $x :: \wid A$.
+
+
+    <h3>Motivating Example</h3>
+
+    If we have a polymorphic function $ (X : \wid\rtype) \to X \to X$ then, by
+    parametricity, $q$ ought to be the identity. Internalized parametricity means that we should
+    be able to prove this fact internally. What this looks like is that in the context
+
+    \[ \nar\Gamma = (\wid q :: (X : \wid\rtype) \to X \to X, \]
+    \[ \nar A \div \nar\rtype,\ \nar R \div \nar A \to \nar\rtype,\ \nar a \div \nar A,\ \nar a' \div \nar R\ \nar a) \]
+ there does exist a term $\nar M$ such that
+    \[ \nar\Gamma \nprov \nar M : \nar R\ (q\ \nar A\ \nar a) \]
+    In other words, for any type $\nar A$ and any unary relation $\nar R$, if we have an element
+    $\nar a$ of $\nar A$ that does satisfy the relation $\nar R$ (with $\nar a'$ being the witness)
+    then it also holds that $\wid q$ applied to $\nar a$ satisfies $\nar R$.
+    <p>
+    We can substitute $\nar R := \lambda\nar b.\ \nar b \equiv \nar a$ and
+    $\nar a' = \mathsf{refl}$ to get
+    \[ [\mathsf{refl}/\nar a'][\lambda\nar b.\ \nar b \equiv \nar a/R]\nar M: q\ \nar A\ \nar a \equiv \nar a \]
+    which says exactly that $\wid q$ is the identity. If we substitute the actual identity
+function for $\nar M$, we will find that
+    \[ [\lambda X.\lambda x . x / q][\mathsf{refl}/\nar a'][\lambda\nar b.\ \nar b \equiv \nar a/R]\nar M \equiv \mathsf{refl} \]
+That is, the expression actually <i>computes</i> to $\mathsf{refl}$.
+
+    <p>
+      What determined which things in this example were "wide" and "narrow"? Wide things
+intuitively are those
+    "equipped with parametricity data" and narrow things are those that are not.
+Specifically, a wide <i>type</i> can be thought of as "a type equipped with a relation". Crucially,
+since we have an entire copy of dependent type theory living at the wide level, we can write
+ordinary programs without explicitly thinking about how to manipulate parametricity data.
+    <h2>Language</h2>
+
+    Now let's describe the syntax of the language. In both levels the
+    context can carry several sorts of variable. Variables may be
+    ordinary $x : \wid A$, strong $x :: \wid A$, or weak $x \div \nar
+    A$. Ordinary variables are not allowed in narrow contexts,
+    however. One may in its place think of $x \div \nar A$ as the most unmarked "default"
+    hypothetical judgment in a narrow context.
+    <p>
+      Throughout, wide
+    judgments are written with the turnstile $\wprov$ and narrow judgments use $\nprov$.
+    For terms and types we just give the things that are nonstandard. All the usual stuff (variables,
+    dependent function and product types, introduction and elim fors) are all in both the wide and narrow
+   levels.
+    \[
+    \begin{array}{rrcl}
+      \hbox{Wide Contexts}&\wid\Gamma&::=&\cdot \celse \wid\Gamma, x :: \wid A \celse \wid\Gamma, x \div \nar A \celse \wid\Gamma, x : \wid A\\
+      \hbox{Narrow Contexts}&\nar\Gamma&::=&\cdot \celse \nar\Gamma, x :: \wid A \celse \nar\Gamma, x \div \nar A\\
+      \hbox{Wide Types}&\wid A&::=&\cdots \celse \gg(x \div \nar A).\nar B\\
+      \hbox{Narrow Types}&\nar A&::=&\cdots \celse \pp{\nar M}{\wid A}\\
+      \hbox{Wide Terms}&\wid M&::=&\cdots \celse \epair{\nar M}{\nar N} \celse \bgel(\nar M, \nar N)\\
+      \hbox{Narrow Terms}&\nar M&::=&\cdots \celse \{\wid M\} \celse \bungel(\wid M)\\
+    \end{array}
+    \]
+
+      The two new (relative to vanilla dependent type theory; I don't claim conceptual novelty, as they are extremely closely related to many types in the literature) type formers are:
+<ul>
+<li> the <b>glue type</b>
+$\gg(x \div \nar A).\nar B$ which quantifies over a weak variable $x$ in $\nar B$, whose intro
+and elimination forms are $\bgel(\nar M, \nar N)$ and $\bungel(\wid M)$. The glue type
+"glues together" a narrow type $\nar A$ and a predicate $\nar B$ on it into a single wide type
+which "knows what its parametricity relation is", namely $\nar B$.
+<li>the <b>fiber type</b>
+$\pp {\nar M} {\wid A}$ which quantifies over a weak variable $x$ in $\nar B$, whose intro
+and elimination forms are $\{\wid M\}$ and $\epair {\nar M} {\nar N}$. The fiber type
+"extracts the fiber of $\wid A$ over ${\nar M}$": it is the type of witnesses that $\nar M$
+in fact belongs to the parametricity relation of $\wid A$.
+</ul>
+    <h2>Syntactic Operations</h2>
+In order to give the typing rules for Glue and Fiber Types, we have to define a few operations first.
+    <h3>Erasure</h3>
+
+    Erasure $\erase{\dash}$ takes a wide type or term and turns it into a narrow type or term.
+
+    \[
+    \begin{array}{rcl}
+      \erase{(x : \wid A) \to \wid B}&=&(x : \erase{\wid A}) \to \erase{\wid B}\\
+      \erase{(x : \wid A) \x \wid B}&=&(x : \erase{\wid A}) \x \erase{\wid B}\\
+      \erase{\lambda x.\wid M}&=&\lambda x.\erase{\wid M}\\
+      \erase{\wid M\ \wid N}&=&\erase{\wid M}\ \erase{\wid N}\\
+      \erase x&=&x\\
+      \erase{\gg(x \div \nar A).\nar B}&=&\nar A\\
+      \erase{\bgel(\nar M, \nar N)}&=&\nar M\\
+      \erase{\epair{\nar M}{\nar N}}&=&\nar M\\
+      \erase{\wid\rtype}&=&\nar\rtype\\
+    \end{array}
+    \]
+If we believe that wide things are "narrow things with parametricity data", then erasure
+simply returns the underlying narrow thing. It is a boring homomorphism on the usual constructs of
+dependent type theory, and is slightly interesting on the glue type former and intro form, and on
+the fiber elim form.
+    <h3>Inclusion</h3>
+
+    Narrow contexts are a subset of wide contexts. We write $\ups$ for the explicit inclusion of
+    narrow contexts into wide contexts.
+
+    \[
+    \begin{array}{rcl}
+      \ups(\nar\Gamma, x :: \wid A)&:=&(\ups\nar\Gamma, x :: \wid A)\\
+      \ups(\nar\Gamma, x \div \nar A)&:=&(\ups\nar\Gamma, x \div \nar A)\\
+      \ups(\cdot)&:=&\cdot\\
+    \end{array}
+    \]
+
+    <h3>Promotion and Demotion</h3>
+
+    The operations $\promote{\dash}$ and $\demote{\dash}$ both take a wide context to a narrow
+    context. Demotion turns ordinary variables into weak variables and leaves other variables
+    alone; promotion turns ordinary variables into strong variables and leaves other variables
+    alone.
+
+    \[
+    \begin{array}{rcl}
+      \promote{(\wid\Gamma, x : \wid A)}&:=&(\promote{\wid\Gamma}, x :: \wid A)\\
+      \promote{(\wid\Gamma, x :: \wid A)}&:=&(\promote{\wid\Gamma}, x :: \wid A)\\
+      \promote{(\wid\Gamma, x \div \nar A)}&:=&(\promote{\wid\Gamma}, x \div \nar A)\\
+      \promote{(\cdot)}&:=&\cdot\\
+    \end{array}
+    \qquad
+    \begin{array}{rcl}
+      \demote{(\wid\Gamma, x : \wid A)}&:=&(\demote{\wid\Gamma}, x \div \erase{\wid A})\\
+      \demote{(\wid\Gamma, x :: \wid A)}&:=&(\demote{\wid\Gamma}, x :: \wid A)\\
+      \demote{(\wid\Gamma, x \div \nar A)}&:=&(\demote{\wid\Gamma}, x \div \nar A)\\
+      \demote{(\cdot)}&:=&\cdot\\
+    \end{array}
+    \]
+
+    As abbreviations, we define two roundtrips from wide contexts to wide contexts:
+    \[ \rdemote{\wid A} = \ups(\demote{\wid A}) \qquad \rpromote{\wid A} = \ups(\promote{\wid A}) \]
+
+    <h2>Typing Rules</h2>
+   <h3>Variable Rules</h3>
+The variable rules give part of the story of the meaning of the different hypothetical judgments.
+Weak variables can't always be used:  only when constructing a narrow term.
+Strong variables and ordinary variables can always be used whenever they appear. The difference
+between them is really in their interaction with the demotion operator above: strong variables
+survive demotion, whereas normal variables do get demoted to weak.
+    \[
+    {
+      x : \wid A \in \wid\Gamma
+      \over
+      \wid\Gamma \wprov x : \wid A
+    }
+    \qquad
+    {
+      x :: \wid A \in \wid\Gamma
+      \over
+      \wid\Gamma \wprov x : \wid A
+    }
+    \]
+    \[
+    {
+      x \div \nar A \in \nar\Gamma
+      \over
+      \nar\Gamma \nprov x : \nar A
+    }
+    \qquad
+    {
+      x :: \wid A \in \nar\Gamma
+      \over
+      \nar\Gamma \nprov x : \erase{\wid A}
+    }
+    \]
+    <h3>Context Formation</h3>
+I don't have a snappy way to explain here the fiddly context manipulations
+that govern context validity, but they derive ultimately from a chain of adjunctions.
+    \[
+    { {} \over \wprov \cdot \rctx }
+    \qquad
+    { {} \over \nprov \cdot \rctx }
+    \qquad
+    {
+      \wprov \wid\Gamma \rctx \qquad \wid\Gamma \wprov \wid A : \rtype
+      \over
+      \wprov (\wid\Gamma, x : \wid A) \rctx
+    }
+    \]
+    \[
+    {
+      \wprov \wid\Gamma \rctx \qquad \demote{\wid\Gamma} \nprov \nar A : \rtype
+      \over
+      \wprov (\wid\Gamma, x \div \nar A) \rctx
+    }
+    \qquad
+    {
+      \wprov \wid\Gamma \rctx \qquad \rdemote{\wid\Gamma} \wprov \wid A : \rtype
+      \over
+      \wprov (\wid\Gamma, x :: \wid A) \rctx
+    }
+    \]
+    \[
+    {
+      \nprov \nar\Gamma \rctx \qquad \nar\Gamma \nprov \nar A : \rtype
+      \over
+      \nprov (\nar\Gamma, x \div \nar A) \rctx
+    }
+    \qquad
+    {
+      \nprov \nar\Gamma \rctx \qquad \ups\nar\Gamma \wprov \wid A : \rtype
+      \over
+      \nprov (\nar\Gamma, x :: \wid A) \rctx
+    }
+    \]
+
+
+
+    <h3>The Fiber Type</h3>
+Here are the typing rules for the fiber type. We can introduce it by providing a wide
+term $\wid M$, which yields evidence that its erasure, $\erase{\nar M}$, really belongs
+to the relation of type $\wid A$. The elimination rule lets us combine an element
+of the underlying narrow type $\erase{\wid A}$ of $\wid A$ together with a proof
+of $\pp {\nar M} {\wid A}$, to yield a term of type $\wid A$.
+    \[
+    {
+      \ups\nar\Gamma \wprov \wid A : \wid\rtype \quad \nar\Gamma \nprov \nar M : \erase{\wid A}
+      \over
+      \nar\Gamma \nprov \pp{\nar M}{\wid A} : \nar\rtype
+    }
+    \qquad
+    {
+      \ups\nar\Gamma \wprov \wid M : \wid A
+      \over
+      \nar\Gamma \nprov \{\wid M\} : \pp{\erase{\wid M}}{\wid A}
+    }
+    \]
+    \[
+    {
+      \demote{\wid\Gamma} \nprov \nar M : \erase{\wid A} \quad
+      \promote{\wid\Gamma} \nprov \nar N : \pp{\nar M}{\wid A}
+      \over
+      \wid\Gamma \wprov \epair{\nar M}{\nar N} : \wid A
+    }
+    \]
+
+    Definitional equality includes the following conversions.<br>
+    If $\nar\Gamma \nprov \nar N : \pp{\nar M}{\wid A}$ then we can do an $\eta$-expansion
+    \[ \nar N \equiv_\eta \{\epair{\nar M}{\nar N}\} \]
+        and we have a $\beta$-reduction
+    \[ \epair{\nar M}{\{\wid N\}} \equiv_\beta \wid N \]
+
+    <h3>The Glue Type</h3>
+    Here are the typing rules for the glue type. We can introduce it
+by providing a base element $\nar M$ and an element $\nar N$ that witnesses
+that $\nar M$ "belongs to the relation" $\nar B$. And given an element
+of the glue type, we can eliminate it, obtaining a proof that the erased
+glue type element belongs to the relation $\nar B$.
+    \[
+    {
+      \demote{\wid\Gamma} \nprov \nar A : \nar\rtype \qquad
+      \promote{\wid\Gamma}, x \div \nar A \nprov \nar B : \nar\rtype
+      \over
+      \wid\Gamma \wprov \gg(x \div \nar A).\nar B : \wid\rtype
+    }
+    \]
+    \[
+    {
+      \demote{\wid\Gamma} \nprov \nar M : \nar A \qquad
+      \promote{\wid\Gamma} \nprov \nar N : [\nar M/ x]\nar B
+      \over
+      \wid\Gamma \wprov \bgel(\nar M, \nar N) : \gg(x \div \nar A).\nar B
+    }
+    \]
+    \[
+    {
+      \ups\nar\Gamma \wprov \wid M : \gg(x \div \nar A).\nar B
+      \over
+      \nar\Gamma \nprov \bungel \wid M : [\erase{\wid M}/ x]\nar B
+    }
+    \]
+
+    Definitional equality includes the following conversions.<br>
+ If $\wid\Gamma \wprov \wid M : \gg(x \div \nar A).\nar B$ then
+we can do an $\eta$-expansion
+    \[ \wid M \equiv_\eta \bgel(\erase{\wid M}, \bungel \wid M) \]
+    and we have a $\beta$-reduction
+    \[ \bungel(\bgel(\nar M, \nar N)) \equiv_\beta \nar N \]
+
+    <h2>Interesting Theorems</h2>
+
+    <h3>Returning to the Identity Example</h3>
+    Now we can prove that there is $\nar M$ such that
+    \[ \nar\Gamma \nprov \nar M : \nar R\ (q\ \nar A\ \nar a) \]
+    Namely, it's
+    \[\nar M = \bungel(\wid q\ (\gg(x \div \nar A).\nar R\ x)\ (\bgel(\nar a, \nar a'))) \]
+    We take the function $\wid q$, apply it to the glue type that reifies the relation $\nar R$
+    as a single wide type $\gg(x \div \nar A).\nar R\ x$, and then apply it to a further argument
+    $\bgel(\nar a, \nar a')$ which packages up the fact that we know $\nar a$ is an element satisfying
+    the appropriate relation. It's a good exercise to go through the typing derivation and see where it's
+    crucial that $\wid q$ is a strong hypothesis.
+<p>
+    After substituting $\nar R := \lambda\nar b.\ \nar b \equiv \nar a$ and
+    $\nar a' = \mathsf{refl}$ we would get
+    \[ \nar\Gamma \nprov \bungel(\wid q\ (\gg(x \div \nar A).\ x \equiv \nar a)\ (\bgel(\nar a, \mathsf{refl}))) : q\ \nar A\ \nar a \equiv \nar a \]
+    and further substituting $\wid q := \lambda X.\lambda x . x$, we would get
+    \[ \nar\Gamma \nprov \bungel((\lambda X.\lambda x . x)\ (\gg(x \div \nar A).\ x \equiv \nar a)\ (\bgel(\nar a, \mathsf{refl}))) : (\lambda X.\lambda x . x)\ \nar a \equiv \nar a \]
+    We can do some ordinary function $\beta$-reductions to get
+    \[ \nar\Gamma \nprov \bungel(\bgel(\nar a, \mathsf{refl})) : \nar a \equiv \nar a \]
+    and do one further $\beta$-reduction on the glue type to get
+    \[ \nar\Gamma \nprov  \mathsf{refl} : \nar a \equiv \nar a \]
+    <p>
+
+    The identity example is a special case; we can prove some nice
+    incremental theorems that let us massage around parametricity
+    information and extract the free theorem of a type internally.
+
+    <h3>The Nondependent Function Type</h3>
+
+    If
+    \[ \nprov \nar\Gamma \rctx \qquad \ups\nar\Gamma \wprov \wid A : \rtype \qquad \ups\nar\Gamma \wprov \wid B : \rtype \qquad \nar\Gamma \nprov \nar f : \erase{\wid A \to \wid B} \]
+    then there exists an isomorphism
+    \[ \nar\Gamma \nprov \pp{\nar f}{\wid A \to \wid B} \cong (a : \erase{\wid A})(a' : \pp{a}{\wid A}) \to \pp{\nar f\ a}{\wid B} \]
+    That is: a function is parametric exactly when it maps parametric arguments to parametric
+    results. The two directions are
+    \[ \mathsf{fore} = \lambda f'.\lambda a.\lambda a'.\ \{(\epair{\nar f}{f'})\ (\epair{a}{a'})\} \]
+    \[ \mathsf{back} = \lambda k.\ \{\lambda x.\ (\epair{\nar f\ x}{k\ x\ \{x\}})\} \]
+
+    <h3>The Universe</h3>
+
+    For any type
+    \[ \nar\Gamma \nprov \nar A : \nar\rtype \]
+    there is an isomorphism
+    \[ \nar\Gamma \nprov \pp{\nar A}{\wid\rtype} \cong (\nar A \to \nar\rtype) \]
+    That is: to make a type parametric is exactly to equip it with a unary relation. The two
+    directions are
+    \[ \mathsf{fore} = \lambda p.\lambda a.\ \pp{a}{\epair{\nar A}{p}} \]
+    \[ \mathsf{back} = \lambda R.\ \{\gg(x \div \nar A).\ R\ x\} \]
+
+    checking the round trips requires using univalence and then one more "back and forth" for each
+    round trip, but this can be done.
+
+  </body>
+  <script>
+	 function go(body) { renderMathInElement( body, { strict: false,
+    trust: true, delimiters: [ {left: "$$", right: "$$", display:
+    true}, {left: "\\[", right: "\\]", display: true}, {left: "$",
+    right: "$", display: false}, {left: "\\(", right: "\\)", display: false} ],
+    macros: { "\\red": "\\textcolor{bd3b0a}",
+              "\\bx": "{\\bf{x}}",
+              "\\prov": "\\vdash",
+              "\\nar": "\\textcolor{1a80ff}{#1}",
+              "\\wid": "\\textcolor{ff804d}{#1}",
+              "\\wprov": "\\vdash_{\\!\\!\\!\\wid\\bullet}",
+              "\\nprov": "\\vdash_{\\!\\!\\!\\nar\\bullet}",
+              "\\rctx": "\\mathrel\\mathsf{ctx}",
+              "\\rtype": "\\mathsf{type}",
+              "\\rset": "\\mathsf {Type}",
+              "\\green": "\\textcolor{177818}",
+              "\\blue": "\\textcolor{5b37a9}",
+              "\\<": "\\langle",
+              "\\>": "\\rangle",
+              "\\P": "{\\mathsf P}",
+              "\\o": "\\circ",
+		        "\\ms": "\\mathsf",
+		        "\\x": "\\times",
+              "\\celse": "\\mathrel{|}",
+              "\\dash": "\\hbox{---}",
+              "\\erase": "\\left|#1\\right|",
+              "\\demote": "{#1}^{\\nar\\ominus}",
+              "\\promote": "{#1}^{\\nar\\oplus}",
+              "\\rdemote": "{#1}^{\\wid\\ominus}",
+              "\\rpromote": "{#1}^{\\wid\\oplus}",
+              "\\ups": "{\\uparrow}",
+              "\\gg": "\\wid{\\mathsf{\\textbf{G}}}",
+              "\\pp": "[#1 \\in #2]",
+              "\\bgel": "\\mathbf{glue}",
+              "\\bungel": "\\mathbf{unglue}",
+              "\\epair": "#1 \\mathbin\\triangleright #2",
+              "\\cqed": "\\ \\, ■",
+            } } );
+	                   }
+
+    function jump(h){
+      var url = location.href;
+      location.href = "#"+h;
+      history.replaceState(null,null,url);
+    }
+
+  </script>
+
+</html>
